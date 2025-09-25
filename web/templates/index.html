@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANI</title>
+    <meta name="description" content="AI-powered Ramayana question answering system with comprehensive verse citations">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Merriweather:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="om-symbol">🕉️</div>
+                <h1>VANI</h1>
+                <p class="tagline">Voice of Ancient Narrative Intelligence</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Query Section -->
+            <section class="query-section">
+                <div class="query-container">
+                    <h2>Ask about the Ramayana</h2>
+                    
+                    <form id="query-form" class="query-form">
+                        <div class="input-group">
+                            <textarea 
+                                id="question-input" 
+                                class="question-input" 
+                                placeholder="Ask about characters, verses, stories, or philosophical teachings..."
+                                rows="3"
+                                required
+                            ></textarea>
+                            <button type="submit" id="ask-button" class="ask-button">
+                                <span class="button-text">Ask VANI</span>
+                                <span class="loading-spinner hidden">🔄</span>
+                            </button>
+                        </div>
+                        
+                        <div class="query-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-context" checked>
+                                <span class="checkmark"></span>
+                                Include detailed context
+                            </label>
+                            <div class="advanced-options">
+                                <button type="button" id="advanced-toggle" class="advanced-toggle" title="Show advanced options">Advanced ▾</button>
+                                <div id="advanced-panel" class="advanced-panel hidden mt-2">
+                                    <div class="max-results">
+                                        <label for="max-results">
+                                            Max sources to show
+                                            <span class="info" title="Retrieval uses adaptive auto-K. This controls how many sources are displayed.">ℹ️</span>
+                                        </label>
+                                        <select id="max-results" name="max-results">
+                                            <option value="5">5</option>
+                                            <option value="10" selected>10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Query Suggestions -->
+                    <div class="suggestions">
+                        <p class="suggestions-label">Try these examples:</p>
+                        <div class="suggestion-buttons">
+                            <!-- Relationship queries (KG-first) -->
+                            <button class="suggestion-btn" data-query="Who is Rama's grandfather?">Who is Rama's grandfather?</button>
+                            <button class="suggestion-btn" data-query="Who is Vishrava's father?">Who is Vishrava's father?</button>
+                            <button class="suggestion-btn" data-query="Who are Ravana's siblings?">Who are Ravana's siblings?</button>
+                            <button class="suggestion-btn" data-query="Parents of Ravana">Parents of Ravana</button>
+                            <button class="suggestion-btn" data-query="Family of Dasharatha">Family of Dasharatha</button>
+
+                            <!-- Citation queries (direct verse) -->
+                            <button class="suggestion-btn" data-query="1.70.43">Quote verse 1.70.43</button>
+                            <button class="suggestion-btn" data-query="6.71.27">Quote verse 6.71.27</button>
+
+                            <!-- Count queries -->
+                            <button class="suggestion-btn" data-query="How many kandas are in the Ramayana?">How many kandas are in the Ramayana?</button>
+                            <button class="suggestion-btn" data-query="How many verses are there in the Ramayana?">How many verses are there in the Ramayana?</button>
+
+                            <!-- General / narrative -->
+                            <button class="suggestion-btn" data-query="Tell me about Rama's exile">Tell me about Rama's exile</button>
+                            <button class="suggestion-btn" data-query="Battle between Rama and Ravana">Battle between Rama and Ravana</button>
+                            <button class="suggestion-btn" data-query="What is dharma according to Ramayana?">What is dharma according to Ramayana?</button>
+
+                            <!-- Entity / location -->
+                            <button class="suggestion-btn" data-query="Who is Hanuman?">Who is Hanuman?</button>
+                            <button class="suggestion-btn" data-query="Where is Lanka described?">Where is Lanka described?</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Answer Section -->
+            <section id="answer-section" class="answer-section hidden">
+                <div class="answer-container">
+                    <h3>📜 Answer</h3>
+                    <div id="answer-text" class="answer-text"></div>
+                    <div id="answer-metadata" class="answer-metadata">
+                        <span class="metadata-item">Query Type: <span id="query-type"></span></span>
+                        <span class="metadata-item">Response Time: <span id="response-time"></span>ms</span>
+                        <span class="metadata-item">Confidence: <span id="confidence-score"></span></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sources Section -->
+            <section id="sources-section" class="sources-section hidden">
+                <div class="sources-container">
+                    <h3 id="sources-title">📚 Sources & Citations</h3>
+                    <div id="sources-list" class="sources-list"></div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section id="error-section" class="error-section hidden">
+                <div class="error-container">
+                    <h3>⚠️ Error</h3>
+                    <div id="error-message" class="error-message"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 VANI - Voice of Ancient Narrative Intelligence</p>
+            <p>Built with devotion to preserve and share the wisdom of the Ramayana</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/app.js" defer></script>
+</body>
+</html>

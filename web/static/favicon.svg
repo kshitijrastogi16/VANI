@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="sacred" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFEF9"/>
+      <stop offset="50%" stop-color="#FEF9F2"/>
+      <stop offset="100%" stop-color="#FFFEF9"/>
+    </linearGradient>
+    <linearGradient id="divine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#FFD700"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="32" fill="url(#sacred)" stroke="url(#divine)" stroke-width="4"/>
+  <text x="50%" y="40%" text-anchor="middle" font-family="serif" font-size="32" fill="#D4AF37" opacity="0.8">🕉️</text>
+  <text x="50%" y="64%" text-anchor="middle" font-family="Playfair Display, serif" font-size="84" fill="#D4AF37" font-weight="500">V</text>
+  <text x="50%" y="85%" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="24" fill="#7B2D26" opacity="0.9">VANI</text>
+</svg>

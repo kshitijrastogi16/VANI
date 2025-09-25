@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.env/
+.vscode/
+.idea/
+.vs/
+
+# Project-specific venv
+vani_env/
+
+# Environment files (do not commit secrets)
+.env
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Build & dist
+build/
+dist/
+*.egg-info/
+
+# Caches
+.pytest_cache/
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node (if any tooling is added later)
+node_modules/
+
+# Data outputs
+# SQLite databases and WAL/SHM sidecars
+data/processed/*.db
+data/processed/*.db-*
+data/processed/*.db-wal
+data/processed/*.db-shm
+# Embeddings artifacts
+data/processed/embeddings/
+
+#raw data
+data/raw
