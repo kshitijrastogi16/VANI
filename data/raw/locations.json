@@ -1,0 +1,186 @@
+{
+    "ashoka_garden": {
+        "id": "LOC-001",
+        "canonical_name": "Ashoka Garden",
+        "entity_type": "garden",
+        "aliases": ["Asoka Garden", "Ashoka Grove"],
+        "description": "A beautiful grove of Ashoka trees within Ravana's palace in Lanka. Sita was held captive here, guarded by rakshasis. Hanuman first found Sita here during his search.",
+        "disambiguation_context": ["grove in Lanka", "Sita's prison", "full of Ashoka trees", "Hanuman met Sita", "site of Trijata's dream", "guarded by rakshasis"]
+    },
+    "ayodhya": {
+        "id": "LOC-002",
+        "canonical_name": "Ayodhya",
+        "entity_type": "kingdom",
+        "aliases": ["Kosala"],
+        "description": "The magnificent capital city of the Kosala kingdom, ruled by the Ikshvaku dynasty. The birthplace of Lord Rama and the setting of the beginning and end of the epic.",
+        "disambiguation_context": ["capital of Kosala", "city on Sarayu", "birthplace of Rama", "Dasharatha's kingdom", "city of palaces", "return of Rama"]
+    },
+    "chitrakuta": {
+        "id": "LOC-003",
+        "canonical_name": "Chitrakuta",
+        "entity_type": "mountain",
+        "aliases": [],
+        "description": "A beautiful, serene mountain and forest region on the banks of the Mandakini river. Rama spent the early, peaceful part of his exile here, and it was where Bharata came to beg him to return.",
+        "disambiguation_context": ["mountain of many wonders", "on Mandakini river", "early exile", "meeting with Bharata", "peaceful hermitage", "sacred tirtha"]
+    },
+    "dandaka": {
+        "id": "LOC-004",
+        "canonical_name": "Dandaka",
+        "entity_type": "forest",
+        "aliases": ["Dandakaranya", "Dandaka Forest"],
+        "description": "A vast and dense forest in central and southern India. Rama, Sita, and Lakshmana spent the majority of their exile here, encountering many sages and rakshasas.",
+        "disambiguation_context": ["deep forest", "southern wilderness", "exile of Rama", "abode of sages", "infested with rakshasas", "wandering ground"]
+    },
+    "ganga": {
+        "id": "LOC-005",
+        "canonical_name": "Ganga",
+        "entity_type": "river",
+        "aliases": ["River Ganges", "Sacred River", "Bhagirathi", "Jahnavi", "Ganges"],
+        "description": "A sacred river that flows through India, brought to earth by Bhagiratha. It is a symbol of purity and spirituality.",
+        "disambiguation_context": ["sacred river", "brought by Bhagiratha", "site of rituals", "flows from Himalayas"]
+    },
+    "janasthana": {
+        "id": "LOC-006",
+        "canonical_name": "Janasthana",
+        "entity_type": "region",
+        "aliases": [],
+        "description": "A region within the Dandaka forest that was a stronghold of rakshasas under Khara and Dushana, subordinates of Ravana. Rama single-handedly destroyed their army here.",
+        "disambiguation_context": ["region in Dandaka", "rakshasa stronghold", "Khara and Dushana", "site of Rama's battle", "near Panchavati", "cleared by Rama"]
+    },
+    "kekaya": {
+        "id": "LOC-007",
+        "canonical_name": "Kekaya",
+        "entity_type": "kingdom",
+        "aliases": ["Kekaya Kingdom"],
+        "description": "The kingdom of Kaikeyi's family, where Bharata spent time before Rama's exile.",
+        "disambiguation_context": ["kingdom of Kaikeyi", "Bharata's maternal home", "western kingdom"]
+    },
+    "kishkindha": {
+        "id": "LOC-008",
+        "canonical_name": "Kishkindha",
+        "entity_type": "kingdom",
+        "aliases": [],
+        "description": "The kingdom of the vanaras, located near the Rishyamuka mountain and the Pampa lake. Ruled successively by Vali and Sugriva, it became the base for the search of Sita.",
+        "disambiguation_context": ["vanara kingdom", "near Rishyamuka hill", "by Pampa lake", "cave of Vali", "capital of Sugriva", "alliance with Rama"]
+    },
+    "lanka": {
+        "id": "LOC-009",
+        "canonical_name": "Lanka",
+        "entity_type": "island_kingdom",
+        "aliases": ["Ravana's Palace"],
+        "description": "The golden, fortified island kingdom of Ravana, located south of India. Built by Vishwakarma for Kubera and later taken by Ravana. It was the site of the great war and Sita's captivity.",
+        "disambiguation_context": ["island fortress", "kingdom of Ravana", "golden city", "on Trikuta hill", "site of war", "Sita's captivity"]
+    },
+    "madhuvana": {
+        "id": "LOC-010",
+        "canonical_name": "Madhuvana",
+        "entity_type": "forest",
+        "aliases": ["Madhu Forest"],
+        "description": "A forest garden guarded by Dadhimukha, which Hanuman and the vanaras entered after returning from Lanka.",
+        "disambiguation_context": ["forest garden", "guarded by Dadhimukha", "vanaras entered", "near Kishkindha"]
+    },
+    "mahendra": {
+        "id": "LOC-011",
+        "canonical_name": "Mahendra",
+        "entity_type": "mountain",
+        "aliases": ["Mount Mahendra"],
+        "description": "A mighty mountain on the southern coast of India. It was from its peak that Hanuman made his legendary leap across the ocean to Lanka in search of Sita.",
+        "disambiguation_context": ["mountain of great power", "Hanuman's leap point", "southern coast", "starting point of search"]
+    },
+    "mithila": {
+        "id": "LOC-012",
+        "canonical_name": "Mithila",
+        "entity_type": "kingdom",
+        "aliases": ["Videha"],
+        "description": "The capital of the Videha kingdom, ruled by the wise King Janaka. The birthplace of Sita and the site of Rama's breaking of the Shiva Dhanusha to win her hand.",
+        "disambiguation_context": ["kingdom of Janaka", "birthplace of Sita", "site of swayamvara", "Shiva's bow", "in ancient Bihar", "cultural center"]
+    },
+    "nandigrama": {
+        "id": "LOC-013",
+        "canonical_name": "Nandigrama",
+        "entity_type": "village",
+        "aliases": [],
+        "description": "A small village near Ayodhya where Bharata, Shatrughna, and their retinue lived in austerity for fourteen years, awaiting Rama's return. Bharata ruled from here, with Rama's sandals symbolizing his authority.",
+        "disambiguation_context": ["village near Ayodhya", "Bharata's residence during exile", "place of sandals", "ascetic rule", "awaiting Rama"]
+    },
+    "nikumbhila": {
+        "id": "LOC-014",
+        "canonical_name": "Nikumbhila",
+        "entity_type": "grove",
+        "aliases": ["Nikumbhilam"],
+        "description": "A sacred grove in Lanka where Indrajit performed a powerful yajna (fire sacrifice) to acquire invincibility in battle. Lakshmana and Vibhishana disrupted this yajna, leading to Indrajit's eventual death.",
+        "disambiguation_context": ["sacred grove in Lanka", "Indrajit's sacrificial site", "yajna for invincibility", "disrupted by Lakshmana"]
+    },
+    "pampa": {
+        "id": "LOC-015",
+        "canonical_name": "Pampa",
+        "entity_type": "lake",
+        "aliases": ["Pampa Lake"],
+        "description": "A beautiful and sacred lake near Kishkindha. Rama and Lakshmana came here in their search for Sita and met the devotee Shabari. The lake is closely associated with Sugriva.",
+        "disambiguation_context": ["lake near Kishkindha", "met Shabari", "beauty reminded Rama of Sita", "gateway to Rishyamuka", "sacred waters"]
+    },
+    "panchavati": {
+        "id": "LOC-016",
+        "canonical_name": "Panchavati",
+        "entity_type": "hermitage",
+        "aliases": [],
+        "description": "A forest area on the banks of the Godavari river, famous for its five banyan trees. Rama built a hermitage here during his exile. It is the site of Shurpanakha's mutilation and Sita's abduction.",
+        "disambiguation_context": ["forest on Godavari", "five banyan trees", "Rama's hermitage", "site of abduction", "Shurpanakha's mutilation", "near modern Nashik"]
+    },
+    "rishyamuka": {
+        "id": "LOC-017",
+        "canonical_name": "Rishyamuka",
+        "entity_type": "mountain",
+        "aliases": ["Mount Rishyamuka"],
+        "description": "A mountain near Kishkindha and Lake Pampa. It was cursed so that Vali could not set foot on it, making it the perfect hiding place for Sugriva and Hanuman. It was here that Sugriva first met Rama and Lakshmana.",
+        "disambiguation_context": ["cursed mountain", "refuge of Sugriva", "Vali could not enter", "meeting place of Rama and Sugriva"]
+    },
+    "samudra": {
+        "id": "LOC-018",
+        "canonical_name": "Samudra",
+        "entity_type": "body_of_water",
+        "aliases": [],
+        "description": "The great ocean separating the mainland from Lanka. Rama prayed to the Ocean God for three days for a way to cross. When the god did not respond, Rama threatened to dry it up with his arrows, forcing the god to appear and suggest the building of the bridge (Nala Setu).",
+        "disambiguation_context": ["body of water to Lanka", "prayed to by Rama", "suggested building a bridge", "crossed by vanara army"]
+    },
+    "sarayu": {
+        "id": "LOC-019",
+        "canonical_name": "Sarayu",
+        "entity_type": "river",
+        "aliases": [],
+        "description": "A sacred river that flows past the city of Ayodhya. It is central to the city's identity and is the site where Rama ended his earthly avatar through Jal Samadhi.",
+        "disambiguation_context": ["sacred river", "flows by Ayodhya", "bathing ghats", "site of Jal Samadhi", "water of liberation", "ancient river"]
+    },
+    "shringiberapura": {
+        "id": "LOC-020",
+        "canonical_name": "Shringiberapura",
+        "entity_type": "village",
+        "aliases": ["Sringaberipuram"],
+        "description": "A village on the banks of the Ganga, ruled by Guha, where Rama stayed during exile.",
+        "disambiguation_context": ["village of Guha", "on Ganga banks", "Rama stayed here"]
+    },
+    "suvela": {
+        "id": "LOC-021",
+        "canonical_name": "Suvela",
+        "entity_type": "mountain",
+        "aliases": [],
+        "description": "A mountain in Lanka where Hanuman leapt from and where Rama's army positioned itself to view Lanka.",
+        "disambiguation_context": ["mountain in Lanka", "Hanuman's leap point", "army's vantage point", "viewing Lanka"]
+    },
+    "trikuta": {
+        "id": "LOC-022",
+        "canonical_name": "Trikuta",
+        "entity_type": "mountain",
+        "aliases": [],
+        "description": "The mountain in Lanka where Ravana's city was built. It is often referred to as the golden mountain.",
+        "disambiguation_context": ["mountain in Lanka", "site of Ravana's city", "golden mountain"]
+    },
+    "vindhya": {
+        "id": "LOC-023",
+        "canonical_name": "Vindhya",
+        "entity_type": "mountain_range",
+        "aliases": ["Vindhyas"],
+        "description": "A mountain range in central India, mentioned in the Ramayana as part of the landscape.",
+        "disambiguation_context": ["mountain range", "central India", "mentioned in exile"]
+    }
+}

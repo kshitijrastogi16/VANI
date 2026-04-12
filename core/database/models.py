@@ -3,7 +3,7 @@ VANI V3 Database Models - Pydantic Models for Data Validation
 Enforcing: Type safety and data validation for all database operations
 """
 
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Literal
 from pydantic import BaseModel, Field, validator
 from datetime import datetime
 import json
@@ -14,7 +14,7 @@ class VerseModel(BaseModel):
     """Pydantic model for verse data validation"""
     
     id: Optional[int] = None
-    verse_id: str = Field(..., pattern=r'^\d+-\d+-\d+(?:-\d+)?$')
+    verse_id: str = Field(...)
     kanda_num: int = Field(..., ge=1, le=7)
     sarga_num: int = Field(..., ge=1)
     verse_index: int = Field(..., ge=1)
@@ -71,7 +71,8 @@ class EntityModel(BaseModel):
     
     id: str = Field(..., min_length=1)
     canonical_name: str = Field(..., min_length=1)
-    entity_type: str = Field(..., pattern=r'^(human|divine|rakshasa|vanara|asura|bird|bear|kingdom|mountain|forest|river|village|garden)$')
+    # Use Literal for a closed set of entity_type values for stronger validation
+    entity_type: Literal['human','divine','rakshasa','vanara','asura','bird','bear','kingdom','mountain','forest','river','village','garden'] = Field(...)
     aliases: List[str] = Field(default_factory=list)
     description: str = Field(default="")
     disambiguation_context: List[str] = Field(default_factory=list, alias='disambiguationcontext')
@@ -107,7 +108,8 @@ class QueryRequestModel(BaseModel):
     question: str = Field(..., min_length=1, max_length=1000)
     include_context: bool = Field(default=True)
     max_results: int = Field(default=10, ge=1, le=50)
-    query_type: Optional[str] = Field(default=None, pattern=r'^(general|count|citation|relationship)$')
+    # Query type limited to a small set of known types
+    query_type: Optional[Literal['general','count','citation','relationship']] = Field(default=None)
     
     @validator('question')
     def validate_question(cls, v):
@@ -135,7 +137,7 @@ class QueryResponseModel(BaseModel):
 class HealthStatusModel(BaseModel):
     """Health check response model"""
     
-    status: str = Field(..., pattern=r'^(healthy|degraded|unhealthy)$')
+    status: str = Field(...)
     version: str
     timestamp: float
     components: Dict[str, bool]
@@ -143,6 +145,21 @@ class HealthStatusModel(BaseModel):
     
     class Config:
         from_attributes = True
+
+
+    # Validators for regex-style constraints (keeps behavior but compatible with pydantic v2)
+    @validator('verse_id')
+    def validate_verse_id(cls, v):
+        import re
+        if not re.match(r'^\d+-\d+-\d+(?:-\d+)?$', v):
+            raise ValueError('verse_id must be in format K-S-V or K-S-V-V2')
+        return v
+
+    @validator('status')
+    def validate_status(cls, v):
+        if v not in {'healthy', 'degraded', 'unhealthy'}:
+            raise ValueError("status must be one of: 'healthy', 'degraded', 'unhealthy'")
+        return v
 
 
 # Database table creation helpers

@@ -39,15 +39,3 @@ Thumbs.db
 
 # Node (if any tooling is added later)
 node_modules/
-
-# Data outputs
-# SQLite databases and WAL/SHM sidecars
-data/processed/*.db
-data/processed/*.db-*
-data/processed/*.db-wal
-data/processed/*.db-shm
-# Embeddings artifacts
-data/processed/embeddings/
-
-#raw data
-data/raw

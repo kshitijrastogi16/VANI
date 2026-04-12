@@ -1,0 +1,3015 @@
+{
+    "adisesha": {
+        "id": "ENT-001",
+        "canonical_name": "Adisesha",
+        "entity_type": "divine",
+        "aliases": ["Ananta", "Sesha"],
+        "description": "Adisesha, son of Kadru, is a divine thousand-hooded serpent serving as Vishnu's couch and bearing the earth in some traditions.",
+        "disambiguation_context": ["Serpent Son", "Kadru's Child", "Vishnu's Couch", "Divine Serpent", "Ananta Sesha"],
+        "relations": {
+            "parents": {
+                "father": "kasyapa",
+                "mother": "kadru"
+            }
+        }
+    },
+    "aditi": {
+        "id": "ENT-002",
+        "canonical_name": "Aditi",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Aditi is a mother of the gods and spouse of Kasyapa, described as the mother of Vamana, Vishnu's dwarf avatar.",
+        "disambiguation_context": ["Mother of Devas", "Spouse of Kasyapa", "Vamana's Mother"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"],
+            "children": {
+                "sons": ["vamana", "vivasvana"]
+            }
+        }
+    },
+    "agastya": {
+        "id": "ENT-003",
+        "canonical_name": "Agastya",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Agastya is a powerful sage, brother of Vasishtha, who plays a significant role in the Ramayana, guiding Rama and exerting immense influence.",
+        "disambiguation_context": ["Vasishtha Sibling", "Rama's Guide"],
+        "relations": {}
+    },
+    "agni": {
+        "id": "ENT-004",
+        "canonical_name": "Agni",
+        "entity_type": "divine",
+        "aliases": ["Pavaka"],
+        "description": "Agni, the Fire God, is a divine being and father of Nila, playing a significant role in the Ramayana narrative.",
+        "disambiguation_context": ["Fire God", "Nila's Father"],
+        "relations": {
+            "children": {
+                "sons": ["nila"]
+            }
+        }
+    },
+    "agnivarna": {
+        "id": "ENT-005",
+        "canonical_name": "Agnivarna",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Agnivarna, son of Sudarshana, is a character with sons including Shighraga, playing a role in the Ramayana's narrative.",
+        "disambiguation_context": ["Son of Sudarshana", "Shighraga's Father"],
+        "relations": {
+            "parents": {
+                "father": "sudarshana"
+            },
+            "children": {
+                "sons": ["shighraga"]
+            }
+        }
+    },
+    "ahalya": {
+        "id": "ENT-006",
+        "canonical_name": "Ahalya",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Ahalya, wife of Gautama, is a pious and chaste woman, mother of Shatananda, known for her patience and devotion, playing a significant role in the Ramayana narrative.",
+        "disambiguation_context": ["Gautama's Wife", "Shatananda's Mother", "Indra's Curse", "Pious Woman"],
+        "relations": {
+            "spouses": ["gautama"],
+            "children": {
+                "sons": ["shatananda"]
+            }
+        }
+    },
+    "aja": {
+        "id": "ENT-007",
+        "canonical_name": "Aja",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Aja, son of Nabhaga, was the father of Dasharatha and a king of the Ikshvaku dynasty, playing a significant role in the lineage of Lord Rama.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Father of Dasharatha", "Son of Nabhaga", "King Aja"],
+        "relations": {
+            "parents": {
+                "father": "nabhaga"
+            },
+            "children": {
+                "sons": ["dasharatha"]
+            }
+        }
+    },
+    "akshayakumara": {
+        "id": "ENT-008",
+        "canonical_name": "Akshayakumara",
+        "entity_type": "rakshasa",
+        "aliases": ["Aksha"],
+        "description": "Akshayakumara, son of Ravana and Mandodari, is a rakshasa and brother of Indrajit, playing a role in the epic battle.",
+        "disambiguation_context": ["Son of Ravana", "Mandodari's Child", "Lanka's Prince", "Rakshasa Warrior", "Son of Mandodari"],
+        "relations": {
+            "parents": {
+                "father": "ravana",
+                "mother": "mandodari"
+            },
+            "siblings": {
+                "brothers": ["indrajit"]
+            }
+        }
+    },
+    "ambarisha": {
+        "id": "ENT-009",
+        "canonical_name": "Ambarisha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Ambarisha, son of Prashushruva, was a king and father of Nahusha, known for his righteousness and role in the Valmiki Ramayana.",
+        "disambiguation_context": ["Son of Prashushruva", "Father of Nahusha", "Righteous Ruler", "King Ambarisha"],
+        "relations": {
+            "parents": {
+                "father": "prashushruva"
+            },
+            "children": {
+                "sons": ["nahusha"]
+            }
+        }
+    },
+    "anala": {
+        "id": "ENT-010",
+        "canonical_name": "Anala",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"]
+        }
+    },
+    "anaranya": {
+        "id": "ENT-011",
+        "canonical_name": "Anaranya",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Anaranya, father of Prithu, was a king who played a significant role in the narrative, highlighting his lineage and paternal relationship.",
+        "disambiguation_context": ["King of Men", "Father of Prithu", "Son of Bana", "King Anaranya"],
+        "relations": {
+            "parents": {
+                "father": "bana"
+            },
+            "children": {
+                "sons": ["prithu"]
+            }
+        }
+    },
+    "angada": {
+        "id": "ENT-012",
+        "canonical_name": "Angada",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Angada, son of Vali and Tara, is a brave vanara and key figure in Rama's army, playing a crucial role in the battle against Ravana.",
+        "disambiguation_context": ["Son of Vali", "Son of Tara", "Vanara Leader", "Rama's Ally", "Kishkindha Prince"],
+        "relations": {
+            "parents": {
+                "father": "vali",
+                "mother": "tara"
+            }
+        }
+    },
+    "angirasa": {
+        "id": "ENT-013",
+        "canonical_name": "Angirasa",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Angirasa, one of Brahma's mind-born sages and counted among Prajapatis in several lists.",
+        "disambiguation_context": ["Mind-born of Brahma", "Prajapati"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "anjana": {
+        "id": "ENT-014",
+        "canonical_name": "Anjana",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Anjana is Kesari's wife and Hanuman's mother, a vanara woman with devotion to Lord Shiva, playing a significant role in Hanuman's birth story.",
+        "disambiguation_context": ["Vanara Woman", "Kesari's Spouse", "Hanuman's Mother", "Devotee of Shiva"],
+        "relations": {
+            "spouses": ["kesari"],
+            "children": {
+                "sons": ["hanuman"]
+            }
+        }
+    },
+    "anshuman": {
+        "id": "ENT-015",
+        "canonical_name": "Anshuman",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Anshuman, son of Asamanja, is a king and father of Dilipa, known for his role in the lineage of Raghu dynasty.",
+        "disambiguation_context": ["Raghu Dynasty", "Asamanja Son", "Dilipa Father"],
+        "relations": {
+            "parents": {
+                "father": "asamanja"
+            },
+            "children": {
+                "sons": ["dilipa"]
+            }
+        }
+    },
+    "anuhlada": {
+        "id": "ENT-016",
+        "canonical_name": "Anuhlada",
+        "entity_type": "asura",
+        "aliases": [],
+        "description": "Anuhlada, son of Hiranyakasipu and brother of Prahlada, a noted Daitya in Puranic genealogies invoked in Ramayana discussions.",
+        "disambiguation_context": ["Son of Hiranyakasipu", "Brother of Prahlada", "Daitya Prince"],
+        "relations": {
+            "parents": {
+                "father": "hiranyakasipu"
+            },
+            "siblings": {
+                "brothers": ["prahlada"]
+            }
+        }
+    },
+    "arishtanemi": {
+        "id": "ENT-017",
+        "canonical_name": "Arishtanemi",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Named among lords of Prajapati-style lists in Ramayana-aligned enumerations.",
+        "disambiguation_context": ["Prajapati Listing"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "aruna": {
+        "id": "ENT-018",
+        "canonical_name": "Aruna",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Charioteer of the sun god Surya, son of Vinata, and father of Jatayu and Sampati.",
+        "disambiguation_context": ["Son of Vinata", "Father of Jatayu", "Father of Sampati"],
+        "relations": {
+            "parents": {
+                "father": "kasyapa",
+                "mother": "vinata"
+            },
+            "spouses": ["syeni"],
+            "children": {
+                "sons": ["jatayu", "sampati"]
+            }
+        }
+    },
+    "asamanja": {
+        "id": "ENT-019",
+        "canonical_name": "Asamanja",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Asamanja, son of Sagara, abandoned his sons, including Anshuman, in the forest, due to their misbehavior.",
+        "disambiguation_context": ["Son of Sagara", "Anshuman's Father"],
+        "relations": {
+            "parents": {
+                "father": "sagara"
+            },
+            "children": {
+                "sons": ["anshuman"]
+            }
+        }
+    },
+    "ashwapati": {
+        "id": "ENT-020",
+        "canonical_name": "Ashwapati",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Ashwapati, king of Kekeya, is Kaikeyi's father, playing a significant role in her marriage to Dasharatha, highlighting his diplomatic relations with Ayodhya.",
+        "disambiguation_context": ["King of Kekeya", "Father of Kaikeyi", "Dasharatha's Father-in-law", "Kekeya Kingdom"],
+        "relations": {
+            "children": {
+                "daughters": ["kaikeyi"]
+            }
+        }
+    },
+    "ashwins": {
+        "id": "ENT-021",
+        "canonical_name": "Ashwins",
+        "entity_type": "divine",
+        "aliases": ["Asvins", "Aswinis"],
+        "description": "Divine twins, sons of Savitri, known for their medical skills and role in Ramayana as helpers of Rama.",
+        "disambiguation_context": ["Twin Gods", "Sons of Savitri", "Divine Physicians", "Rama's Allies"],
+        "relations": {
+            "children": {
+                "sons": ["dvivida", "mainda"]
+            }
+        }
+    },
+    "asita": {
+        "id": "ENT-022",
+        "canonical_name": "Asita",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Asita is the father of Sagara, playing a role in the lineage of Rama's ancestors.",
+        "disambiguation_context": ["Father of Sagara"],
+        "relations": {
+            "parents": {
+                "father": "bharata_2"
+            },
+            "children": {
+                "sons": ["sagara"]
+            }
+        }
+    },
+    "atikaya": {
+        "id": "ENT-023",
+        "canonical_name": "Atikaya",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Atikaya, a powerful rakshasa, is Ravana's son and Indrajit's brother, playing a significant role in the epic battle of the Ramayana.",
+        "disambiguation_context": ["Son of Ravana", "Lanka Warrior", "Rakshasa Prince", "Brother of Indrajit", "Rakshasa Atikaya"],
+        "relations": {
+            "parents": {
+                "father": "ravana"
+            },
+            "siblings": {
+                "brothers": ["indrajit"]
+            }
+        }
+    },
+    "atri": {
+        "id": "ENT-024",
+        "canonical_name": "Atri",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Atri, one of Brahma's mind-born sages and counted among Prajapatis in several lists.",
+        "disambiguation_context": ["Mind-born of Brahma", "Prajapati"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "bali": {
+        "id": "ENT-025",
+        "canonical_name": "Bali",
+        "entity_type": "asura",
+        "aliases": [],
+        "description": "Bali, also known as Mahabali, is the Asura king, son of Virochana and grandson of Prahlada.",
+        "disambiguation_context": ["Virochana's Son", "Prahlada's Grandson"],
+        "relations": {
+            "parents": {
+                "father": "virochana"
+            }
+        }
+    },
+    "bana": {
+        "id": "ENT-026",
+        "canonical_name": "Bana",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Bana, son of Vikukshi, is a king and father of Anaranya, playing a role in the narrative of the Ramayana.",
+        "disambiguation_context": ["Son of Vikukshi", "Father of Anaranya", "King Bana"],
+        "relations": {
+            "parents": {
+                "father": "vikukshi"
+            },
+            "children": {
+                "sons": ["anaranya"]
+            }
+        }
+    },
+    "bhagiratha": {
+        "id": "ENT-027",
+        "canonical_name": "Bhagiratha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Bhagiratha, son of Dilipa, is a king who brings Ganga to earth, ancestor of Rama, and father of Kakutstha, playing a pivotal role in the Ikshvaku dynasty.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Ganga Descent", "Rama's Ancestor", "Father of Kakutstha", "Son of Dilipa"],
+        "relations": {
+            "parents": {
+                "father": "dilipa"
+            },
+            "children": {
+                "sons": ["kakutstha"]
+            }
+        }
+    },
+    "bharata_1": {
+        "id": "ENT-028",
+        "canonical_name": "Bharata (Dasharatha's son)",
+        "entity_type": "human",
+        "aliases": ["Bharata"],
+        "description": "Bharata, son of Dasharatha and Kaikeyi, is Rama's brother and plays a crucial role in the Ramayana, showcasing loyalty and devotion to Rama.",
+        "disambiguation_context": ["Brother of Rama", "Son of Kaikeyi", "Ayodhya Prince", "Mandavi's Husband"],
+        "relations": {
+            "parents": {
+                "father": "dasharatha",
+                "mother": "kaikeyi"
+            },
+            "spouses": ["mandavi"],
+            "siblings": {
+                "brothers": ["lakshmana", "rama", "shatrughna"]
+            }
+        }
+    },
+    "bharata_2": {
+        "id": "ENT-029",
+        "canonical_name": "Bharata (Dhruvasandhi's son)",
+        "entity_type": "human",
+        "aliases": ["Bharata"],
+        "description": "Bharata, son of Dhruvasandhi, is a king and ancestor, known for his lineage and fatherhood of Asita, playing a role in the genealogy of Rama's lineage.",
+        "disambiguation_context": ["Son of Dhruvasandhi", "Father of Asita", "Rama's Ancestor"],
+        "relations": {
+            "parents": {
+                "father": "dhruvasandhi"
+            },
+            "children": {
+                "sons": ["asita"]
+            }
+        }
+    },
+    "bhrigu": {
+        "id": "ENT-030",
+        "canonical_name": "Bhrigu",
+        "entity_type": "sage",
+        "aliases": ["Bhargava"],
+        "description": "Bhrigu, the eminent Bhargava rishi, consort of Kavya and progenitor of Shukracharya in Bhargava lineages.",
+        "disambiguation_context": ["Bhargava Lineage", "Prajapati Sage"],
+        "relations": {
+            "spouses": ["kavya"],
+            "children": {
+                "sons": ["shukracharya"]
+            }
+        }
+    },
+    "brahma": {
+        "id": "ENT-031",
+        "canonical_name": "Brahma",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Brahma, the creator, is the father of Marichi and Pulastya, and Kusha is his son. He plays a significant role in the Ramayana narrative.",
+        "disambiguation_context": ["Creator God", "Four Heads", "Vedic Origin", "Cosmic Order"],
+        "relations": {
+            "children": {
+                "sons": ["angirasa", "arishtanemi", "atri", "kardama", "kratu", "kusha", "marichi", "pracheta", "pulaha", "pulastya"]
+            }
+        }
+    },
+    "brihadaratha": {
+        "id": "ENT-032",
+        "canonical_name": "Brihadaratha",
+        "entity_type": "human",
+        "aliases": ["Brihadarha"],
+        "description": "Brihadaratha, son of Devarata, is a king and father of Mahavira, playing a minor role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Devarata", "Father of Mahavira", "King Brihadaratha"],
+        "relations": {
+            "parents": {
+                "father": "devarata"
+            },
+            "children": {
+                "sons": ["mahavira"]
+            }
+        }
+    },
+    "dadhimukha": {
+        "id": "ENT-033",
+        "canonical_name": "Dadhimukha",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Dadhimukha, a vanara, is the son of Soma, playing a role in Rama's search for Sita.",
+        "disambiguation_context": ["Vanara Son", "Son of Soma", "Rama's Ally"],
+        "relations": {
+            "parents": {
+                "father": "soma"
+            }
+        }
+    },
+    "daksha": {
+        "id": "ENT-034",
+        "canonical_name": "Daksha",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daksha is a Prajapati renowned for his sixty daughters and the yajna later obstructed by Rudra.",
+        "disambiguation_context": ["Prajapati", "Sixty Daughters", "Daksha Yajna"],
+        "relations": {
+            "children": {
+                "daughters": ["aditi", "anala", "danu", "diti", "jaya", "kadru", "kalika", "krodhavasa", "manu_2", "suprabha", "surasa", "tamra", "vinata"]
+            }
+        }
+    },
+    "danu": {
+        "id": "ENT-035",
+        "canonical_name": "Danu",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"]
+        }
+    },
+    "dasharatha": {
+        "id": "ENT-036",
+        "canonical_name": "Dasharatha",
+        "entity_type": "human",
+        "aliases": ["Dasaratha"],
+        "description": "King of Ayodhya, husband of Kausalya, Kaikeyi, and Sumitra, and father of Rama, Bharata, and Lakshmana, known for his righteousness and paternal love.",
+        "disambiguation_context": ["Rama's Father", "Ayodhya Ruler", "Righteous King", "King Dasharatha"],
+        "relations": {
+            "parents": {
+                "father": "aja"
+            },
+            "spouses": ["kaikeyi", "kausalya", "sumitra"],
+            "children": {
+                "sons": ["bharata_1", "lakshmana", "rama", "shatrughna"]
+            }
+        }
+    },
+    "devamidha": {
+        "id": "ENT-037",
+        "canonical_name": "Devamidha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Devamidha, son of Kirtiratha, is a minor character and father of Vibudha, mentioned briefly in the genealogy.",
+        "disambiguation_context": ["Son of Kirtiratha", "Father of Vibudha"],
+        "relations": {
+            "parents": {
+                "father": "kirtiratha"
+            },
+            "children": {
+                "sons": ["vibudha"]
+            }
+        }
+    },
+    "devantaka": {
+        "id": "ENT-038",
+        "canonical_name": "Devantaka",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Devantaka, son of Ravana and brother of Indrajit, plays a role in the Valmiki Ramayana as a rakshasa fighting against Rama's army.",
+        "disambiguation_context": ["Son of Ravana", "Lanka Warrior", "Rakshasa Brother", "Yuddha Kanda"],
+        "relations": {
+            "parents": {
+                "father": "ravana"
+            },
+            "siblings": {
+                "brothers": ["indrajit"]
+            }
+        }
+    },
+    "devarata": {
+        "id": "ENT-039",
+        "canonical_name": "Devarata",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Devarata, son of Suketu, is the father of Brihadaratha, a king in the Valmiki Ramayana, playing a minor role in the epic.",
+        "disambiguation_context": ["Son of Suketu", "Father of Brihadaratha", "King's Lineage"],
+        "relations": {
+            "parents": {
+                "father": "suketu_1"
+            },
+            "children": {
+                "sons": ["brihadaratha"]
+            }
+        }
+    },
+    "dhruvasandhi": {
+        "id": "ENT-040",
+        "canonical_name": "Dhruvasandhi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Dhruvasandhi, father of Bharata's ancestor, was a king and brother of Prasenajit, son of Susandhi, playing a role in the lineage of Rama.",
+        "disambiguation_context": ["Son of Susandhi", "Brother of Prasenajit", "Ancestor of Rama", "King Dhruvasandhi"],
+        "relations": {
+            "parents": {
+                "father": "susandhi"
+            },
+            "children": {
+                "sons": ["bharata_2"]
+            },
+            "siblings": {
+                "brothers": ["prasenajit"]
+            }
+        }
+    },
+    "dhumra": {
+        "id": "ENT-041",
+        "canonical_name": "Dhumra",
+        "entity_type": "bear",
+        "aliases": [],
+        "description": "Dhumra, a bear, is the son of Gadgada, playing a role in the Ramayana as a helper to Rama.",
+        "disambiguation_context": ["Son of Gadgada", "Bear Helper", "Rama's Ally", "Forest Dweller"],
+        "relations": {
+            "parents": {
+                "father": "gadgada"
+            }
+        }
+    },
+    "dilipa": {
+        "id": "ENT-042",
+        "canonical_name": "Dilipa",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Dilipa, father of Bhagiratha, was a king and ancestor of Rama, known for his righteousness and role in the Ikshvaku dynasty.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Father of Bhagiratha", "Ancestor of Rama", "King Dilipa"],
+        "relations": {
+            "parents": {
+                "father": "anshuman"
+            },
+            "children": {
+                "sons": ["bhagiratha"]
+            }
+        }
+    },
+    "diti": {
+        "id": "ENT-043",
+        "canonical_name": "Diti",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"],
+            "children": {
+                "sons": ["hiranyakasipu"]
+            }
+        }
+    },
+    "drishtaketu": {
+        "id": "ENT-044",
+        "canonical_name": "Drishtaketu",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Drishtaketu, son of Sudhruti, is a king with sons like Haryasva, playing a role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Sudhruti", "Haryasva's Father"],
+        "relations": {
+            "parents": {
+                "father": "sudhruti"
+            },
+            "children": {
+                "sons": ["haryasva"]
+            }
+        }
+    },
+    "dundhumara": {
+        "id": "ENT-045",
+        "canonical_name": "Dundhumara",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Dundhumara, son of Trishanku, is a king and father of Yuvanashva, playing a role in the Ikshvaku dynasty's lineage.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Son of Trishanku", "Yuvanashva's Father"],
+        "relations": {
+            "parents": {
+                "father": "trishanku"
+            },
+            "children": {
+                "sons": ["yuvanashva"]
+            }
+        }
+    },
+    "durdhara": {
+        "id": "ENT-046",
+        "canonical_name": "Durdhara",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Durdhara, son of Vasu, is a minor character in the Valmiki Ramayana, with limited narrative role.",
+        "disambiguation_context": ["Son of Vasu"],
+        "relations": {
+            "parents": {
+                "father": "vasu"
+            }
+        }
+    },
+    "dvivida": {
+        "id": "ENT-047",
+        "canonical_name": "Dvivida",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Dvivida, a vanara, is the son of Ashwins and brother of Mainda, known for his strength and role in Rama's army.",
+        "disambiguation_context": ["Vanara Brother", "Son of Ashwins", "Rama's Army", "Mainda Brother"],
+        "relations": {
+            "parents": {
+                "father": "ashwins"
+            },
+            "siblings": {
+                "brothers": ["mainda"]
+            }
+        }
+    },
+    "gadgada": {
+        "id": "ENT-048",
+        "canonical_name": "Gadgada",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Gadgada is a divine being, father of Jambavan and Dhumra, playing a role in the narrative of the Ramayana.",
+        "disambiguation_context": ["Father of Jambavan"],
+        "relations": {
+            "children": {
+                "sons": ["dhumra", "jambavan"]
+            }
+        }
+    },
+    "gadhi": {
+        "id": "ENT-049",
+        "canonical_name": "Gadhi",
+        "entity_type": "human",
+        "aliases": ["Kausika"],
+        "description": "Gadhi, father of Vishvamitra, was a king and son of Kushanabha, known for his lineage and role in the narrative of the Valmiki Ramayana.",
+        "disambiguation_context": ["King Kushanabha", "Vishvamitra's Father", "Royal Lineage", "Family of Kushanabha"],
+        "relations": {
+            "parents": {
+                "father": "kushanabha"
+            },
+            "children": {
+                "sons": ["vishvamitra"]
+            }
+        }
+    },
+    "gaja": {
+        "id": "ENT-050",
+        "canonical_name": "Gaja",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Gaja, a vanara, is the son of Yama, playing a role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Yama"],
+        "relations": {
+            "parents": {
+                "father": "yama"
+            }
+        }
+    },
+    "gandhamadana": {
+        "id": "ENT-051",
+        "canonical_name": "Gandhamadana",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Gandhamadana, a vanara, is the son of Yama, playing a role in the Ramayana as a minor character with divine lineage.",
+        "disambiguation_context": ["Vanara Son", "Yama's Child", "Divine Lineage", "Son of Yama"],
+        "relations": {
+            "parents": {
+                "father": "yama"
+            }
+        }
+    },
+    "garuda": {
+        "id": "ENT-052",
+        "canonical_name": "Garuda",
+        "entity_type": "divine",
+        "aliases": ["Suparna"],
+        "description": "The divine eagle, vehicle of Vishnu, son of Vinata; renowned for speed and strength, often depicted carrying Vishnu.",
+        "disambiguation_context": ["Son of Vinata", "Vishnu's Mount"],
+        "relations": {
+            "parents": {
+                "father": "kasyapa",
+                "mother": "vinata"
+            }
+        }
+    },
+    "gautama": {
+        "id": "ENT-053",
+        "canonical_name": "Gautama",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Gautama is a sage, husband of Ahalya, and father of Shatananda, playing a significant role in the Ramayana narrative.",
+        "disambiguation_context": ["Husband of Ahalya", "Father of Shatananda"],
+        "relations": {
+            "spouses": ["ahalya"],
+            "children": {
+                "sons": ["shatananda"]
+            }
+        }
+    },
+    "gavaksha": {
+        "id": "ENT-054",
+        "canonical_name": "Gavaksha",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Gavaksha, son of Yama, is a vanara who plays a role in the Ramayana, participating in the search for Sita.",
+        "disambiguation_context": ["Vanara Warrior", "Son of Yama", "Search Party Member"],
+        "relations": {
+            "parents": {
+                "father": "yama"
+            }
+        }
+    },
+    "gavaya": {
+        "id": "ENT-055",
+        "canonical_name": "Gavaya",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Gavaya, son of Yama, is a vanara who plays a role in the Ramayana, participating in the search for Sita.",
+        "disambiguation_context": ["Vanara Warrior", "Son of Yama", "Search Party", "Monkey Army"],
+        "relations": {
+            "parents": {
+                "father": "yama"
+            }
+        }
+    },
+    "guha": {
+        "id": "ENT-056",
+        "canonical_name": "Guha",
+        "entity_type": "human",
+        "aliases": ["Nishada"],
+        "description": "Guha, a Nishada chief, helps Rama, Lakshmana, and Sita, providing them with food and shelter, showcasing his loyalty and hospitality.",
+        "disambiguation_context": ["Nishada King", "Rama's Helper", "Forest Dweller", "Loyal Subject"],
+        "relations": {}
+    },
+    "hanuman": {
+        "id": "ENT-057",
+        "canonical_name": "Hanuman",
+        "entity_type": "vanara",
+        "aliases": ["Maruti"],
+        "description": "Hanuman, son of Vayu and Anjana, is a powerful vanara and devotee of Rama, playing a crucial role in the Ramayana as a messenger and warrior.",
+        "disambiguation_context": ["Vanara Leader", "Rama's Devotee", "Son of Vayu", "Anjana's Child", "Messenger to Sita", "Warrior in Yuddha", "Monkey General", "Pavana Putra"],
+        "relations": {
+            "parents": {
+                "father": "vayu",
+                "mother": "anjana"
+            }
+        }
+    },
+    "haryasva": {
+        "id": "ENT-058",
+        "canonical_name": "Haryasva",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Ancestor of Janaka, son of Drishtaketu and father of Maru (Videha).",
+        "disambiguation_context": ["Son of Drishtaketu", "Father of Maru", "Father of Maru (Videha)"],
+        "relations": {
+            "parents": {
+                "father": "drishtaketu"
+            },
+            "children": {
+                "sons": ["maru_2"]
+            }
+        }
+    },
+    "hemakuta": {
+        "id": "ENT-059",
+        "canonical_name": "Hemakuta",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "A being mentioned as a son of Varuna in lists.",
+        "disambiguation_context": ["Divine Mountain", "Mainaka's Father", "Mountain Range"],
+        "relations": {
+            "parents": {
+                "father": "varuna"
+            }
+        }
+    },
+    "hiranyakasipu": {
+        "id": "ENT-060",
+        "canonical_name": "Hiranyakasipu",
+        "entity_type": "asura",
+        "aliases": [],
+        "description": "Hiranyakasipu is an Asura king, father of Prahlada and ancestor of Virochana and Bali.",
+        "disambiguation_context": ["Prahlada's Father", "Daitya King"],
+        "relations": {
+            "parents": {
+                "father": "kasyapa",
+                "mother": "diti"
+            },
+            "children": {
+                "sons": ["anuhlada", "prahlada"]
+            }
+        }
+    },
+    "hrasvaroma": {
+        "id": "ENT-061",
+        "canonical_name": "Hrasvaroma",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Hrasvaroma, father of Janaka and Kushadhvaja, and son of Swarnaroma, plays a role in the lineage of Mithila's kings.",
+        "disambiguation_context": ["Mithila King", "Janaka's Father", "Son of Swarnaroma"],
+        "relations": {
+            "parents": {
+                "father": "swarnaroma"
+            },
+            "children": {
+                "sons": ["janaka", "kushadhvaja"]
+            }
+        }
+    },
+    "ikshvaku": {
+        "id": "ENT-062",
+        "canonical_name": "Ikshvaku",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Ikshvaku, son of Manu, is a king and ancestor of Rama, known for his righteousness and role in the Ikshvaku dynasty.",
+        "disambiguation_context": ["Son of Manu", "Father of Kukshi", "Ikshvaku Dynasty", "Rama's Ancestor", "King Ikshvaku"],
+        "relations": {
+            "parents": {
+                "father": "manu_1"
+            },
+            "children": {
+                "sons": ["kukshi"]
+            }
+        }
+    },
+    "indra": {
+        "id": "ENT-063",
+        "canonical_name": "Indra",
+        "entity_type": "divine",
+        "aliases": ["Purandara"],
+        "description": "Indra, king of gods, is Vali's father and a significant figure, often interacting with other divine beings and mortals in the epic.",
+        "disambiguation_context": ["King of Gods", "God of Heaven", "Vali's Father", "God of Thunder"],
+        "relations": {
+            "spouses": ["sachi"],
+            "children": {
+                "sons": ["vali"]
+            }
+        }
+    },
+    "indrajit": {
+        "id": "ENT-064",
+        "canonical_name": "Indrajit",
+        "entity_type": "rakshasa",
+        "aliases": ["Meghanada"],
+        "description": "Indrajit, son of Ravana and Mandodari, is a powerful rakshasa and skilled warrior, playing a crucial role in the Ramayana war.",
+        "disambiguation_context": ["Son of Ravana", "Mandodari's Child", "Ramayana War"],
+        "relations": {
+            "parents": {
+                "father": "ravana",
+                "mother": "mandodari"
+            },
+            "siblings": {
+                "brothers": ["akshayakumara", "atikaya", "devantaka", "naranthaka", "trishira"]
+            }
+        }
+    },
+    "jamadagni": {
+        "id": "ENT-065",
+        "canonical_name": "Jamadagni",
+        "entity_type": "sage",
+        "aliases": ["Bhargava"],
+        "description": "Jamadagni, a sage, was the husband of Renuka and father of Parashurama, playing a significant role in the narrative.",
+        "disambiguation_context": ["Husband of Renuka", "Father of Parashurama", "Bhargava Sage", "Killed by Kartaviryarjuna"],
+        "relations": {
+            "spouses": ["renuka"],
+            "children": {
+                "sons": ["parashurama"]
+            }
+        }
+    },
+    "jambavan": {
+        "id": "ENT-066",
+        "canonical_name": "Jambavan",
+        "entity_type": "bear",
+        "aliases": [],
+        "description": "Jambavan, a wise bear, helps Rama find Sita, utilizing his strength and knowledge, son of Gadgada.",
+        "disambiguation_context": ["Rama's Ally", "Bear King", "Forest Dweller", "Sita's Helper"],
+        "relations": {
+            "parents": {
+                "father": "gadgada"
+            }
+        }
+    },
+    "janaka": {
+        "id": "ENT-067",
+        "canonical_name": "Janaka",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Janaka, king of Mithila, is Sita and Urmila's father and brother of Kushadhvaja, known for his wisdom and role in Sita's marriage to Rama.",
+        "disambiguation_context": ["Mithila's King", "Sita's Father", "Rama's Father-in-law"],
+        "relations": {
+            "parents": {
+                "father": "hrasvaroma"
+            },
+            "siblings": {
+                "brothers": ["kushadhvaja"]
+            },
+            "children": {
+                "daughters": ["sita", "urmila"]
+            }
+        }
+    },
+    "jatayu": {
+        "id": "ENT-068",
+        "canonical_name": "Jatayu",
+        "entity_type": "bird",
+        "aliases": [],
+        "description": "Jatayu, son of Aruna and brother of Sampati, is a bird who attempts to rescue Sita from Ravana, showcasing his bravery and loyalty.",
+        "disambiguation_context": ["Bird King", "Son of Aruna", "Brother of Sampati", "Sita's Rescuer"],
+        "relations": {
+            "parents": {
+                "father": "aruna",
+                "mother": "syeni"
+            },
+            "siblings": {
+                "brothers": ["sampati"]
+            }
+        }
+    },
+    "jaya": {
+        "id": "ENT-069",
+        "canonical_name": "Jaya",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, noted in lists as mother to a hundred sons collectively called astras and shastras.",
+        "disambiguation_context": ["Daksha's Daughter", "Astras & Shastras"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            }
+        }
+    },
+    "jharjha": {
+        "id": "ENT-070",
+        "canonical_name": "Jharjha",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Rakshasa and father of Sundaa, playing a role in the narrative of the Ramayana.",
+        "disambiguation_context": ["Sundaa's Father"],
+        "relations": {
+            "children": {
+                "sons": ["sunda"]
+            }
+        }
+    },
+    "jyothirmukha": {
+        "id": "ENT-071",
+        "canonical_name": "Jyothirmukha",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Jyothirmukha, son of Surya, is a vanara, playing a role in Ramayana.",
+        "disambiguation_context": ["Son of Surya"],
+        "relations": {
+            "parents": {
+                "father": "surya"
+            }
+        }
+    },
+    "kadru": {
+        "id": "ENT-072",
+        "canonical_name": "Kadru",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Kadru is a divine being, wife of Kasyapa and mother of serpents, including Adisesha, playing a role in the narrative of the Valmiki Ramayana.",
+        "disambiguation_context": ["Kasyapa's Wife", "Mother of serpents", "Adisesha's Mother"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "children": {
+                "sons": ["adisesha"]
+            },
+            "spouses": ["kasyapa"],
+            "siblings": {
+                "sisters": ["surasa", "vinata"]
+            }
+        }
+    },
+    "kaikasi": {
+        "id": "ENT-073",
+        "canonical_name": "Kaikasi",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Kaikesi, a rakshasa, was the wife of Vishrava and mother of Ravana, Kumbhakarna, Vibhishana, and Shurpanakha, playing a significant role in their lives and the Ramayana narrative.",
+        "disambiguation_context": ["Vishrava Spouse", "Ravana Mother", "Sumali Daughter"],
+        "relations": {
+            "parents": {
+                "father": "sumali"
+            },
+            "spouses": ["vishrava"],
+            "children": {
+                "sons": ["kumbhakarna", "ravana", "vibhishana"],
+                "daughters": ["shurpanakha"]
+            }
+        }
+    },
+    "kaikeyi": {
+        "id": "ENT-074",
+        "canonical_name": "Kaikeyi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Queen of Ayodhya, wife of Dasharatha, and mother of Bharata, known for her role in Rama's exile.",
+        "disambiguation_context": ["Queen of Ayodhya", "Wife of Dasharatha", "Mother of Bharata", "Stepmother of Rama"],
+        "relations": {
+            "parents": {
+                "father": "ashwapati"
+            },
+            "siblings": {
+                "brothers": ["yudhajit"]
+            },
+            "spouses": ["dasharatha"],
+            "children": {
+                "sons": ["bharata_1"]
+            }
+        }
+    },
+    "kakutstha": {
+        "id": "ENT-075",
+        "canonical_name": "Kakutstha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kakutstha, father of Raghu, was a king and descendant of Bhagiratha, playing a role in the Ikshvaku dynasty's lineage.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Raghu's Father", "Son of Bhagiratha"],
+        "relations": {
+            "parents": {
+                "father": "bhagiratha"
+            },
+            "children": {
+                "sons": ["raghu"]
+            }
+        }
+    },
+    "kalika": {
+        "id": "ENT-076",
+        "canonical_name": "Kalika",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"]
+        }
+    },
+    "kardama": {
+        "id": "ENT-077",
+        "canonical_name": "Kardama",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Named among lords of Prajapati-style lists in Ramayana-aligned enumerations.",
+        "disambiguation_context": ["Prajapati Listing", "The First Prajapati"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "kasyapa": {
+        "id": "ENT-078",
+        "canonical_name": "Kasyapa",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Kasyapa, son of Marichi, is a revered sage and father of Vivasvana, playing a significant role in the Ramayana's cosmogony.",
+        "disambiguation_context": ["Son of Marichi", "Father of Vivasvana", "Ancient Rishi"],
+        "relations": {
+            "parents": {
+                "father": "marichi"
+            },
+            "spouses": ["aditi", "anala", "danu", "diti", "kadru", "kalika", "krodhavasa", "manu_2", "tamra", "vinata"],
+            "children": {
+                "sons": ["adisesha", "aruna", "garuda", "hiranyakasipu", "vamana", "vivasvana"]
+            }
+        }
+    },
+    "kausalya": {
+        "id": "ENT-079",
+        "canonical_name": "Kausalya",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kausalya, Dasharatha's chief queen, is Rama's mother, known for her piety and maternal love, playing a significant role in the Ramayana's early narrative.",
+        "disambiguation_context": ["Ayodhya Queen", "Rama's Mother", "Dasharatha's Wife", "Kaushal Kingdom", "Queen Kausalya"],
+        "relations": {
+            "spouses": ["dasharatha"],
+            "children": {
+                "sons": ["rama"]
+            }
+        }
+    },
+    "kavya": {
+        "id": "ENT-080",
+        "canonical_name": "Kavya",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kavya, consort of the sage Bhrigu and mother of Shukracharya, beheaded by Vishnu in a dharmic precedent referenced in Ramayana discourse.",
+        "disambiguation_context": ["Mother of Shukracharya", "Consort of Bhrigu", "Beheaded by Vishnu"],
+        "relations": {
+            "spouses": ["bhrigu"],
+            "children": {
+                "sons": ["shukracharya"]
+            }
+        }
+    },
+    "kesari": {
+        "id": "ENT-081",
+        "canonical_name": "Kesari",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Kesari, a vanara, is Anjana's husband also regarded as Hanuman's foster father, playing a significant role in Hanuman's birth story.",
+        "disambiguation_context": ["Vanara Leader", "Hanuman's foster father", "Anjana's Husband"],
+        "relations": {
+            "spouses": ["anjana"]
+        }
+    },
+    "kirtirata": {
+        "id": "ENT-082",
+        "canonical_name": "Kirtirata",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kirtirata, son of Mahidhraka, is a minor character and father of Maharoma in the Valmiki Ramayana.",
+        "disambiguation_context": ["Son of Mahidhraka", "Father of Maharoma"],
+        "relations": {
+            "parents": {
+                "father": "mahidhraka"
+            },
+            "children": {
+                "sons": ["maharoma"]
+            }
+        }
+    },
+    "kirtiratha": {
+        "id": "ENT-083",
+        "canonical_name": "Kirtiratha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kirtiratha, son of Pratindhaka, is a king and father of Devamidha, playing a minor role in the Ramayana.",
+        "disambiguation_context": ["Son of Pratindhaka", "Father of Devamidha"],
+        "relations": {
+            "parents": {
+                "father": "pratindhaka"
+            },
+            "children": {
+                "sons": ["devamidha"]
+            }
+        }
+    },
+    "kratu": {
+        "id": "ENT-084",
+        "canonical_name": "Kratu",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Kratu, one of Brahma's mind-born sages and counted among Prajapatis in several lists.",
+        "disambiguation_context": ["Mind-born of Brahma", "Prajapati"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "krodhavasa": {
+        "id": "ENT-085",
+        "canonical_name": "Krodhavasa",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"]
+        }
+    },
+    "kubera": {
+        "id": "ENT-086",
+        "canonical_name": "Kubera",
+        "entity_type": "divine",
+        "aliases": ["Vaishravana", "Vaisravana"],
+        "description": "Kubera, son of Vishrava, is the lord of wealth and king of the Yakshas, playing a significant role in the Ramayana narrative.",
+        "disambiguation_context": ["Lord of Wealth", "Yaksha King", "Half-Brother of Ravana", "King of Alaka"],
+        "relations": {
+            "parents": {
+                "father": "vishrava"
+            }
+        }
+    },
+    "kukshi": {
+        "id": "ENT-087",
+        "canonical_name": "Kukshi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kukshi, son of Ikshvaku, is a king in the solar dynasty, father of Vikukshi, playing a role in the lineage of Rama.",
+        "disambiguation_context": ["Solar Dynasty", "Ikshvaku Son", "Vikukshi Father", "Rama Ancestor"],
+        "relations": {
+            "parents": {
+                "father": "ikshvaku"
+            },
+            "children": {
+                "sons": ["vikukshi"]
+            }
+        }
+    },
+    "kumbhakarna": {
+        "id": "ENT-088",
+        "canonical_name": "Kumbhakarna",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Kumbhakarna, brother of Ravana and Vibhishana, is a powerful rakshasa, son of Vishrava and Kaikesi, known for his immense strength and role in the epic battle of Lanka.",
+        "disambiguation_context": ["Brother of Ravana", "Son of Vishrava", "Rakshasa Prince"],
+        "relations": {
+            "parents": {
+                "father": "vishrava",
+                "mother": "kaikasi"
+            },
+            "siblings": {
+                "brothers": ["ravana", "vibhishana"],
+                "sisters": ["shurpanakha"]
+            }
+        }
+    },
+    "kusa": {
+        "id": "ENT-089",
+        "canonical_name": "Kusa",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Kusa, brother of Lava, both the brothers narrated and recited the Ramayana in the courts of Rama.",
+        "disambiguation_context": ["Brother of Lava"],
+        "relations": {
+            "siblings": {
+                "brothers": ["lava"]
+            }
+        }
+    },
+    "kusha": {
+        "id": "ENT-090",
+        "canonical_name": "Kusha",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Kusha, son of Brahma, is a divine being and father of Kushanabha, playing a role in the Ramayana's cosmogony.",
+        "disambiguation_context": ["Son of Brahma", "Kushanabha's Father", "Cosmogonic Role"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            },
+            "children": {
+                "sons": ["kushanabha"]
+            }
+        }
+    },
+    "kushadhvaja": {
+        "id": "ENT-091",
+        "canonical_name": "Kushadhvaja",
+        "entity_type": "human",
+        "aliases": ["Videha"],
+        "description": "Kushadhvaja, father of Mandavi and Srutakirti, is Janaka's brother and a king, known for his noble character and familial bonds.",
+        "disambiguation_context": ["Videha King", "Janaka Brother", "Mandavi Father", "Srutakirti Father"],
+        "relations": {
+            "parents": {
+                "father": "hrasvaroma"
+            },
+            "siblings": {
+                "brothers": ["janaka"]
+            },
+            "children": {
+                "daughters": ["mandavi", "srutakirti"]
+            }
+        }
+    },
+    "kushanabha": {
+        "id": "ENT-092",
+        "canonical_name": "Kushanabha",
+        "entity_type": "human",
+        "aliases": ["Kusanabha"],
+        "description": "Kushanabha, son of Kusha, is a king and father of Gadhi, playing a role in the lineage of Vishvamitra.",
+        "disambiguation_context": ["Son of Kusha", "Father of Gadhi", "Vishvamitra Lineage", "King Kushanabha"],
+        "relations": {
+            "parents": {
+                "father": "kusha"
+            },
+            "children": {
+                "sons": ["gadhi"]
+            }
+        }
+    },
+    "lakshmana": {
+        "id": "ENT-093",
+        "canonical_name": "Lakshmana",
+        "entity_type": "human",
+        "aliases": ["Lakshman", "Saumitra"],
+        "description": "Lakshmana, son of Dasharatha and Sumitra, is Rama's loyal brother and companion, married to Urmila, playing a crucial role in the Ramayana.",
+        "disambiguation_context": ["Brother of Rama", "Son of Sumitra", "Urmila's Husband", "Ayodhya Prince"],
+        "relations": {
+            "parents": {
+                "father": "dasharatha",
+                "mother": "sumitra"
+            },
+            "spouses": ["urmila"],
+            "siblings": {
+                "brothers": ["bharata_1", "rama", "shatrughna"]
+            }
+        }
+    },
+    "lava": {
+        "id": "ENT-094",
+        "canonical_name": "Lava",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Lava, brother of Kusa, both the brothers narrated and recited the Ramayana in the courts of Rama.",
+        "disambiguation_context": ["Brother of Kusa", "Ayodhya Prince"],
+        "relations": {
+            "siblings": {
+                "brothers": ["kusa"]
+            }
+        }
+    },
+    "maharoma": {
+        "id": "ENT-095",
+        "canonical_name": "Maharoma",
+        "entity_type": "human",
+        "aliases": ["Romapada"],
+        "description": "Maharoma, son of Kirtirata, is a sage and father of Swarnaroma, known for his wisdom and role in the narrative.",
+        "disambiguation_context": ["Son of Kirtirata", "Father of Swarnaroma", "Wise Sage"],
+        "relations": {
+            "parents": {
+                "father": "kirtirata"
+            },
+            "children": {
+                "sons": ["swarnaroma"]
+            }
+        }
+    },
+    "mahavira": {
+        "id": "ENT-096",
+        "canonical_name": "Mahavira",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Mahavira, father of Sudhruti, was a king and a just ruler, known for his wisdom and role in the narrative of the Ramayana.",
+        "disambiguation_context": ["King of Mithila", "Father of Sudhruti", "Son of Brihadaratha", "Mithila King"],
+        "relations": {
+            "parents": {
+                "father": "brihadaratha"
+            },
+            "children": {
+                "sons": ["sudhruti"]
+            }
+        }
+    },
+    "mahidhraka": {
+        "id": "ENT-097",
+        "canonical_name": "Mahidhraka",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Mahidhraka, son of Vibudha, is a minor character and father of Kirtirata, mentioned briefly in the Ramayana.",
+        "disambiguation_context": ["Son of Vibudha", "Father of Kirtirata"],
+        "relations": {
+            "parents": {
+                "father": "vibudha"
+            },
+            "children": {
+                "sons": ["kirtirata"]
+            }
+        }
+    },
+    "mainda": {
+        "id": "ENT-098",
+        "canonical_name": "Mainda",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Mainda, son of Ashwins, brother of Dvivida, is a vanara who helps Rama.",
+        "disambiguation_context": ["Son of Ashwins", "Vanara Brother", "Rama Helper"],
+        "relations": {
+            "parents": {
+                "father": "ashwins"
+            },
+            "siblings": {
+                "brothers": ["dvivida"]
+            }
+        }
+    },
+    "malyavan": {
+        "id": "ENT-099",
+        "canonical_name": "Malyavan",
+        "entity_type": "rakshasa",
+        "aliases": ["Malyavantha"],
+        "description": "Malyavan, a rakshasa, is Sumali's brother, playing a significant role in the narrative as a powerful figure in Lanka's demonic forces.",
+        "disambiguation_context": ["Lanka's Forces", "Rakshasa Brother", "Brother of Sumali", "Demonic Ally"],
+        "relations": {
+            "siblings": {
+                "brothers": ["sumali"]
+            }
+        }
+    },
+    "mandavi": {
+        "id": "ENT-100",
+        "canonical_name": "Mandavi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Mandavi, daughter of Kushadhvaja, married Bharata and played a supportive role in the Ramayana narrative.",
+        "disambiguation_context": ["Bharata's Wife", "Daughter of Kushadhvaja", "sister-in-law of Rama", "Sister of Srutakirti"],
+        "relations": {
+            "parents": {
+                "father": "kushadhvaja"
+            },
+            "spouses": ["bharata_1"],
+            "siblings": {
+                "sisters": ["srutakirti"]
+            }
+        }
+    },
+    "mandhata": {
+        "id": "ENT-101",
+        "canonical_name": "Mandhata",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Mandhata, son of Yuvanashva, was a king and father of Susandhi, known for his role in the Ikshvaku dynasty.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Son of Yuvanashva", "Susandhi's Father", "King of Old"],
+        "relations": {
+            "parents": {
+                "father": "yuvanashva"
+            },
+            "children": {
+                "sons": ["susandhi"]
+            }
+        }
+    },
+    "mandodari": {
+        "id": "ENT-102",
+        "canonical_name": "Mandodari",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Mandodari, Ravana's wife and Indrajit's mother, plays a pivotal role in the Ramayana, showcasing wisdom and loyalty amidst turmoil.",
+        "disambiguation_context": ["Ravana's Queen", "Indrajit's Mother", "Lanka's Princess", "Rakshasa Wife", "Daughter of Maya", "Ravana's Wife"],
+        "relations": {
+            "spouses": ["ravana"],
+            "children": {
+                "sons": ["akshayakumara", "indrajit"]
+            }
+        }
+    },
+    "manthara_1": {
+        "id": "ENT-103",
+        "canonical_name": "Manthara (Kaikeyi's maid)",
+        "entity_type": "human",
+        "aliases": ["Manthara"],
+        "description": "Manthara is a hunchbacked maid of Queen Kaikeyi, fueling her jealousy and manipulating her to demand Bharata's coronation, playing a pivotal role in Rama's exile.",
+        "disambiguation_context": ["Queen Kaikeyi's Maid", "Hunchbacked Servant or Maid", "Rama's Exile", "Ayodhya Palace", "Bharata's Coronation"],
+        "relations": {}
+    },
+    "manthara_2": {
+        "id": "ENT-104",
+        "canonical_name": "Manthara (Virochana's daughter)",
+        "entity_type": "asura",
+        "aliases": ["Manthara"],
+        "description": "Daitya princess, daughter of Virochana, slain by Indra for attempting to destroy the earth; distinct from Kaikeyi's maid Manthara.",
+        "disambiguation_context": ["Virochana's Daughter", "Slain by Indra", "Daitya Princess"],
+        "relations": {
+            "parents": {
+                "father": "virochana"
+            }
+        }
+    },
+    "manu_1": {
+        "id": "ENT-105",
+        "canonical_name": "Manu (Vivasvana's son)",
+        "entity_type": "human",
+        "aliases": ["Manu", "Vaivasvata"],
+        "description": "Manu, son of Vivasvana, is the father of Ikshvaku, initiating the solar dynasty in the Valmiki Ramayana.",
+        "disambiguation_context": ["First Manu", "Solar Dynasty", "Ikshvaku Father", "Vivasvana Son"],
+        "relations": {
+            "parents": {
+                "father": "vivasvana"
+            },
+            "children": {
+                "sons": ["ikshvaku"]
+            }
+        }
+    },
+    "manu_2": {
+        "id": "ENT-106",
+        "canonical_name": "Manu (Daksha's daughter)",
+        "entity_type": "divine",
+        "aliases": ["Manu"],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"]
+        }
+    },
+    "maricha": {
+        "id": "ENT-107",
+        "canonical_name": "Maricha",
+        "entity_type": "rakshasa",
+        "aliases": ["Pisacha"],
+        "description": "A rakshasa who, as a golden deer at Ravana's behest, lured Rama away and was slain by him.",
+        "disambiguation_context": ["Ravana's Ally", "Rakshasa Son", "Brother of Subahu", "Golden Deer Decoy", "Slain by Rama"],
+        "relations": {
+            "parents": {
+                "father": "sunda",
+                "mother": "tataka"
+            },
+            "siblings": {
+                "brothers": ["subahu"]
+            }
+        }
+    },
+    "marichi": {
+        "id": "ENT-108",
+        "canonical_name": "Marichi",
+        "entity_type": "sage",
+        "aliases": ["Mareechi"],
+        "description": "Marichi is a sage and son of Brahma, father of Kasyapa, playing a significant role in the Ramayana's cosmogony.",
+        "disambiguation_context": ["Son of Brahma", "Father of Kasyapa", "Sage Marichi", "Cosmogonic Role"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            },
+            "children": {
+                "sons": ["kasyapa"]
+            }
+        }
+    },
+    "maru_1": {
+        "id": "ENT-109",
+        "canonical_name": "Maru (Shighraga's son)",
+        "entity_type": "human",
+        "aliases": ["Maru"],
+        "description": "Maru, son of Shighraga, father of Prashushruva, in the Ikshvaku lineage.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Son of Shighraga", "Father of Prashushruva"],
+        "relations": {
+            "parents": {
+                "father": "shighraga"
+            },
+            "children": {
+                "sons": ["prashushruva"]
+            }
+        }
+    },
+    "maru_2": {
+        "id": "ENT-110",
+        "canonical_name": "Maru (Haryasva's son)",
+        "entity_type": "human",
+        "aliases": ["Maru"],
+        "description": "Maru, son of Haryasva, is a king of the Videha kingdom, known for his lineage and fatherhood of Pratindhaka, playing a minor role in the Ramayana narrative.",
+        "disambiguation_context": ["Videha Kingdom", "Son of Haryasva", "Father of Pratindhaka"],
+        "relations": {
+            "parents": {
+                "father": "haryasva"
+            },
+            "children": {
+                "sons": ["pratindhaka"]
+            }
+        }
+    },
+    "matanga": {
+        "id": "ENT-111",
+        "canonical_name": "Matanga",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Matanga is a sage who appears in the Valmiki Ramayana, known for his wisdom and role in the narrative, particularly in relation to Shabari.",
+        "disambiguation_context": ["Matanga Muni", "Shabari's Guru", "Wise Hermit"],
+        "relations": {
+            "students": ["sabari"]
+        }
+    },
+    "mayavi": {
+        "id": "ENT-112",
+        "canonical_name": "Mayavi",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Mayavi, a rakshasa, played a role in the Valmiki Ramayana, known for his magical powers and encounters with the main characters.",
+        "disambiguation_context": ["Magical Powers"],
+        "relations": {}
+    },
+    "mithi": {
+        "id": "ENT-113",
+        "canonical_name": "Mithi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Early king of Videha, son of Nimi and father of Udavasu in genealogies.",
+        "disambiguation_context": ["Son of Nimi", "Father of Udavasu"],
+        "relations": {
+            "parents": {
+                "father": "nimi"
+            },
+            "children": {
+                "sons": ["udavasu"]
+            }
+        }
+    },
+    "nabhaga": {
+        "id": "ENT-114",
+        "canonical_name": "Nabhaga",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Nabhaga, son of Yayati, is a king and father of Aja, playing a role in the lineage of Raghu dynasty.",
+        "disambiguation_context": ["Son of Yayati", "Father of Aja", "Raghu Dynasty"],
+        "relations": {
+            "parents": {
+                "father": "yayati"
+            },
+            "children": {
+                "sons": ["aja"]
+            }
+        }
+    },
+    "nahusha": {
+        "id": "ENT-115",
+        "canonical_name": "Nahusha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Nahusha, son of Ambarisha, was a king and father of Yayati, playing a significant role in the lineage of lunar dynasty.",
+        "disambiguation_context": ["Lunar Dynasty", "King Ambarisha", "Yayati's Father", "King Nahusha"],
+        "relations": {
+            "parents": {
+                "father": "ambarisha"
+            },
+            "children": {
+                "sons": ["yayati"]
+            }
+        }
+    },
+    "nala": {
+        "id": "ENT-116",
+        "canonical_name": "Nala",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Nala, son of Vishwakarma, is a skilled vanara and architect, contributing to the bridge construction to Lanka.",
+        "disambiguation_context": ["Son of Vishwakarma", "Bridge Builder", "Lanka Expedition"],
+        "relations": {
+            "parents": {
+                "father": "vishwakarma"
+            }
+        }
+    },
+    "nandivardhana": {
+        "id": "ENT-117",
+        "canonical_name": "Nandivardhana",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Nandivardhana, son of Udavasu, is a minor character and father of Suketu, mentioned in the Valmiki Ramayana.",
+        "disambiguation_context": ["Son of Udavasu", "Father of Suketu"],
+        "relations": {
+            "parents": {
+                "father": "udavasu"
+            },
+            "children": {
+                "sons": ["suketu_1"]
+            }
+        }
+    },
+    "naranthaka": {
+        "id": "ENT-118",
+        "canonical_name": "Naranthaka",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Naranthaka, son of Ravana and brother of Indrajit, plays a role in the epic battle of the Ramayana, showcasing his rakshasa prowess.",
+        "disambiguation_context": ["Son of Ravana", "Lanka Warrior", "Ramayana Battle", "Rakshasa Prince"],
+        "relations": {
+            "parents": {
+                "father": "ravana"
+            },
+            "siblings": {
+                "brothers": ["indrajit"]
+            }
+        }
+    },
+    "nila": {
+        "id": "ENT-119",
+        "canonical_name": "Nila",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Nila, son of Agni, is a skilled vanara and architect who helps build the bridge to Lanka, showcasing his engineering prowess and loyalty to Rama.",
+        "disambiguation_context": ["Son of Agni", "Vanara Warrior", "Rama's Ally", "Bridge Builder", "Vanara Nila"],
+        "relations": {
+            "parents": {
+                "father": "agni"
+            }
+        }
+    },
+    "nimi": {
+        "id": "ENT-120",
+        "canonical_name": "Nimi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Nimi, a king of Mithila, is the father of Mithi and an ancestor of Sita, playing a role in the lineage of Rama's wife.",
+        "disambiguation_context": ["King of Mithila", "Father of Mithi", "Ancestor of Sita", "Vaideha King", "King Nimi"],
+        "relations": {
+            "children": {
+                "sons": ["mithi"]
+            }
+        }
+    },
+    "parashurama": {
+        "id": "ENT-121",
+        "canonical_name": "Parashurama",
+        "entity_type": "human",
+        "aliases": ["Bhargava", "Parasurama"],
+        "description": "Parashurama, son of Jamadagni and Renuka, is a powerful sage and warrior, known for his bravery and adherence to dharma.",
+        "disambiguation_context": ["Brahma's Favor", "Kshatriya Slayer", "Rama's Ancestor", "Dharma Protector"],
+        "relations": {
+            "parents": {
+                "father": "jamadagni",
+                "mother": "renuka"
+            }
+        }
+    },
+    "pracheta": {
+        "id": "ENT-122",
+        "canonical_name": "Pracheta",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Named among lords of Prajapati-style lists in Ramayana-aligned enumerations.",
+        "disambiguation_context": ["Prajapati Listing"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "prahasta": {
+        "id": "ENT-123",
+        "canonical_name": "Prahasta",
+        "entity_type": "rakshasa",
+        "aliases": ["Prahastha"],
+        "description": "Prahasta, a powerful rakshasa, serves as Ravana's commander, playing a key role in the Lanka army during the Ramayana war.",
+        "disambiguation_context": ["Ravana's Army", "Lanka Commander", "Ramayana War", "Rakshasa Warrior", "Ravana's Commander"],
+        "relations": {}
+    },
+    "prahlada": {
+        "id": "ENT-124",
+        "canonical_name": "Prahlada",
+        "entity_type": "asura",
+        "aliases": [],
+        "description": "Prahlada is a renowned devotee born in the Daitya line, son of Hiranyakasipu, father of Virochana, and grandfather of Bali.",
+        "disambiguation_context": ["Hiranyakasipu's Son", "Father of Virochana", "Grandfather of Bali"],
+        "relations": {
+            "parents": {
+                "father": "hiranyakasipu"
+            },
+            "children": {
+                "sons": ["virochana"]
+            },
+            "siblings": {
+                "brothers": ["anuhlada"]
+            }
+        }
+    },
+    "prasenajit": {
+        "id": "ENT-125",
+        "canonical_name": "Prasenajit",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Prasenajit, son of Susandhi, brother of Dhruvasandhi, plays a role in the Ramayana as a king.",
+        "disambiguation_context": ["Son of Susandhi", "Brother of Dhruvasandhi"],
+        "relations": {
+            "parents": {
+                "father": "susandhi"
+            },
+            "siblings": {
+                "brothers": ["dhruvasandhi"]
+            }
+        }
+    },
+    "prashushruva": {
+        "id": "ENT-126",
+        "canonical_name": "Prashushruva",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Prashushruva, son of Maru Ikshvaku, is a king and father of Ambarisha, playing a role in the Ikshvaku dynasty's lineage.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Maru Ikshvaku Son", "Ambarisha Father"],
+        "relations": {
+            "parents": {
+                "father": "maru_1"
+            },
+            "children": {
+                "sons": ["ambarisha"]
+            }
+        }
+    },
+    "pratindhaka": {
+        "id": "ENT-127",
+        "canonical_name": "Pratindhaka",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Pratindhaka, son of Maru Videha, is the father of Kirtiratha, playing a role in the genealogy of the solar dynasty.",
+        "disambiguation_context": ["Son of Maru Videha", "Kirtiratha's Father", "Solar Dynasty"],
+        "relations": {
+            "parents": {
+                "father": "maru_2"
+            },
+            "children": {
+                "sons": ["kirtiratha"]
+            }
+        }
+    },
+    "pravriddha": {
+        "id": "ENT-128",
+        "canonical_name": "Pravriddha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Pravriddha, son of Raghu, father of Shankhana, plays a role in the lineage of Raghu's dynasty.",
+        "disambiguation_context": ["Son of Raghu", "Shankhana's Father", "Raghuvansha"],
+        "relations": {
+            "parents": {
+                "father": "raghu"
+            },
+            "children": {
+                "sons": ["shankhana"]
+            }
+        }
+    },
+    "prithu": {
+        "id": "ENT-129",
+        "canonical_name": "Prithu",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Prithu, son of Anaranya, was a king and father of Trishanku, known for his role in the Valmiki Ramayana.",
+        "disambiguation_context": ["Son of Anaranya", "Father of Trishanku", "King Prithu"],
+        "relations": {
+            "parents": {
+                "father": "anaranya"
+            },
+            "children": {
+                "sons": ["trishanku"]
+            }
+        }
+    },
+    "pulaha": {
+        "id": "ENT-130",
+        "canonical_name": "Pulaha",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Pulaha, one of Brahma's mind-born sages and counted among Prajapatis in several lists.",
+        "disambiguation_context": ["Mind-born of Brahma", "Prajapati"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            }
+        }
+    },
+    "pulastya": {
+        "id": "ENT-131",
+        "canonical_name": "Pulastya",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "Pulastya, a sage and son of Brahma, is the father of Vishrava, highlighting his pivotal role in the lineage of notable figures in the Ramayana.",
+        "disambiguation_context": ["Son of Brahma", "Father of Vishrava", "Ancient Sage"],
+        "relations": {
+            "parents": {
+                "father": "brahma"
+            },
+            "children": {
+                "sons": ["vishrava"]
+            }
+        }
+    },
+    "puloma": {
+        "id": "ENT-132",
+        "canonical_name": "Puloma",
+        "entity_type": "asura",
+        "aliases": [],
+        "description": "Puloma is an Asura noted as the father of Sachi, queen of the devas.",
+        "disambiguation_context": ["Father of Sachi"],
+        "relations": {
+            "children": {
+                "daughters": ["sachi"]
+            }
+        }
+    },
+    "raghu": {
+        "id": "ENT-133",
+        "canonical_name": "Raghu",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "King Raghu, is an ancestor of Rama, known for his valor and righteousness in the Ikshvaku dynasty.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Rama's Ancestor", "Son of Kakutstha"],
+        "relations": {
+            "parents": {
+                "father": "kakutstha"
+            },
+            "children": {
+                "sons": ["pravriddha"]
+            }
+        }
+    },
+    "rama": {
+        "id": "ENT-134",
+        "canonical_name": "Rama",
+        "entity_type": "human",
+        "aliases": ["Purushottama", "Raghava", "Ram"],
+        "description": "Rama, son of Dasharatha and Kausalya, is the king of Ayodhya, husband of Sita, and brother of Bharata, Lakshmana, and Shatrughna, known for his righteousness and bravery.",
+        "disambiguation_context": ["Son of Dasharatha", "Husband of Sita", "Brother of Lakshmana", "Exiled Prince", "Vanquisher of Ravana"],
+        "relations": {
+            "parents": {
+                "father": "dasharatha",
+                "mother": "kausalya"
+            },
+            "spouses": ["sita"],
+            "siblings": {
+                "brothers": ["bharata_1", "lakshmana", "shatrughna"]
+            }
+        }
+    },
+    "ravana": {
+        "id": "ENT-135",
+        "canonical_name": "Ravana",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Ravana, son of Vishrava and Kaikesi, is a powerful rakshasa king, brother of Kumbhakarna and Vibhishana, and husband of Mandodari, playing a central role in the Ramayana as the primary antagonist.",
+        "disambiguation_context": ["Lanka King", "Ten-Headed", "Rama Enemy", "Brahma Boon"],
+        "relations": {
+            "parents": {
+                "father": "vishrava",
+                "mother": "kaikasi"
+            },
+            "spouses": ["mandodari"],
+            "siblings": {
+                "brothers": ["kumbhakarna", "vibhishana"],
+                "sisters": ["shurpanakha"]
+            },
+            "children": {
+                "sons": ["akshayakumara", "atikaya", "devantaka", "indrajit", "naranthaka", "trishira"]
+            }
+        }
+    },
+    "renuka": {
+        "id": "ENT-136",
+        "canonical_name": "Renuka",
+        "entity_type": "human",
+        "aliases": ["Satyavati"],
+        "description": "Renuka, wife of Jamadagni and mother of Parashurama, plays a significant role in the narrative, highlighting her familial bonds and tragic fate.",
+        "disambiguation_context": ["Jamadagni's Wife", "Parashurama's Mother", "Bhrigu Dynasty"],
+        "relations": {
+            "spouses": ["jamadagni"],
+            "children": {
+                "sons": ["parashurama"]
+            }
+        }
+    },
+    "rishyasringa": {
+        "id": "ENT-137",
+        "canonical_name": "Rishyasringa",
+        "entity_type": "sage",
+        "aliases": [],
+        "description": "A sage who performed the putrakameshti yagna for Dasharatha, leading to the birth of Rama and his brothers.",
+        "disambiguation_context": ["Son of Vibhandaka", "Sage Rishyasringa", "Putrakameshti Yagna", "Baala Kanda"],
+        "relations": {
+            "parents": {
+                "father": "vibhandaka"
+            }
+        }
+    },
+    "ruma": {
+        "id": "ENT-138",
+        "canonical_name": "Ruma",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Ruma is Sugriva's wife, a vanara, playing a minor role in the narrative, mainly mentioned in relation to her husband.",
+        "disambiguation_context": ["Sugriva's Spouse", "Kishkindha Resident", "Sugriva's Wife"],
+        "relations": {
+            "spouses": ["sugriva"]
+        }
+    },
+    "sabari": {
+        "id": "ENT-139",
+        "canonical_name": "Sabari",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Sabari, a devoted ascetic, waited for Rama, recognizing him and serving with devotion, showcasing her unwavering dedication and faith.",
+        "disambiguation_context": ["Rama's Devotee", "Ascetic Woman", "Forest Dweller", "Ber Fruit Offerer", "Elderly Tribal Devotee"],
+        "relations": {
+            "mentors": ["matanga"]
+        }
+    },
+    "sachi": {
+        "id": "ENT-140",
+        "canonical_name": "Sachi",
+        "entity_type": "divine",
+        "aliases": ["Poulomi"],
+        "description": "Sachi, also called Poulomi, is the queen of the devas and consort of Indra, described as the daughter of the asura Puloma.",
+        "disambiguation_context": ["Indra's Consort", "Puloma's Daughter", "Queen of Devas"],
+        "relations": {
+            "spouses": ["indra"],
+            "parents": {
+                "father": "puloma"
+            }
+        }
+    },
+    "sagara": {
+        "id": "ENT-141",
+        "canonical_name": "Sagara",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Sagara, son of Asita, was a king and father of Asamanja, known for his role in the horse sacrifice and the discovery of the Ganga river.",
+        "disambiguation_context": ["Father of Asamanja", "Sons Sixty Thousand", "Horse Sacrifice", "Ganga Descent", "King Sagara"],
+        "relations": {
+            "parents": {
+                "father": "asita"
+            },
+            "children": {
+                "sons": ["asamanja"]
+            }
+        }
+    },
+    "sampati": {
+        "id": "ENT-142",
+        "canonical_name": "Sampati",
+        "entity_type": "bird",
+        "aliases": [],
+        "description": "Sampati, son of Aruna and brother of Jatayu, is a bird who helps Rama by providing information about Sita's location in Lanka.",
+        "disambiguation_context": ["Son of Aruna", "Brother of Jatayu", "Lanka Informant", "Bird Sampati"],
+        "relations": {
+            "parents": {
+                "father": "aruna",
+                "mother": "syeni"
+            },
+            "siblings": {
+                "brothers": ["jatayu"]
+            }
+        }
+    },
+    "sarabha": {
+        "id": "ENT-143",
+        "canonical_name": "Sarabha",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Sarabha, son of Yama, is a vanara who plays a role in the Ramayana, reflecting his father's legacy.",
+        "disambiguation_context": ["Son of Yama", "Yamaja"],
+        "relations": {
+            "parents": {
+                "father": "yama"
+            }
+        }
+    },
+    "sarama": {
+        "id": "ENT-144",
+        "canonical_name": "Sarama",
+        "entity_type": "rakshasa",
+        "aliases": ["Rakshasi"],
+        "description": "A rakshasi in Lanka who was kind to Sita during her captivity and offered solace in Ashoka Vatika.",
+        "disambiguation_context": ["Lanka Resident", "Ashoka Vatika", "Comforted Sita"],
+        "relations": {}
+    },
+    "shankhana": {
+        "id": "ENT-145",
+        "canonical_name": "Shankhana",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Shankhana, son of Pravriddha, is the father of Sudarshana, playing a minor role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Pravriddha", "Father of Sudarshana", "Minor Character"],
+        "relations": {
+            "parents": {
+                "father": "pravriddha"
+            },
+            "children": {
+                "sons": ["sudarshana"]
+            }
+        }
+    },
+    "shatananda": {
+        "id": "ENT-146",
+        "canonical_name": "Shatananda",
+        "entity_type": "sage",
+        "aliases": ["Satananda"],
+        "description": "Shatananda, son of Gautama and Ahalya, is a sage who plays a significant role in the Ramayana, particularly in the Baala Kanda.",
+        "disambiguation_context": ["Son of Gautama", "Ahalya's Child", "Sage Shatananda"],
+        "relations": {
+            "parents": {
+                "father": "gautama",
+                "mother": "ahalya"
+            }
+        }
+    },
+    "shatrughna": {
+        "id": "ENT-147",
+        "canonical_name": "Shatrughna",
+        "entity_type": "human",
+        "aliases": ["Satrughna"],
+        "description": "Youngest son of Dasharatha and Sumitra, brother of Rama, Bharata, and Lakshmana, husband of Srutakirti, known for his loyalty and valor.",
+        "disambiguation_context": ["Youngest Brother", "Son of Sumitra", "Srutakirti's Husband", "Ayodhya Prince"],
+        "relations": {
+            "parents": {
+                "father": "dasharatha",
+                "mother": "sumitra"
+            },
+            "spouses": ["srutakirti"],
+            "siblings": {
+                "brothers": ["bharata_1", "lakshmana", "rama"]
+            }
+        }
+    },
+    "shighraga": {
+        "id": "ENT-148",
+        "canonical_name": "Shighraga",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Ancestor of Rama, son of Agnivarna and father of Maru (Ikshvaku).",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Agnivarna Son", "Maru Father"],
+        "relations": {
+            "parents": {
+                "father": "agnivarna"
+            },
+            "children": {
+                "sons": ["maru_1"]
+            }
+        }
+    },
+    "shiva": {
+        "id": "ENT-149",
+        "canonical_name": "Shiva",
+        "entity_type": "divine",
+        "aliases": ["Mahadeva", "Rudra"],
+        "description": "Shiva, invoked in accounts of obstructing Daksha's yajna and associated with the Pinaka bow.",
+        "disambiguation_context": ["Daksha Yajna", "Pinaka Bow"],
+        "relations": {}
+    },
+    "shukracharya": {
+        "id": "ENT-150",
+        "canonical_name": "Shukracharya",
+        "entity_type": "sage",
+        "aliases": ["Usanas"],
+        "description": "Shukracharya, Brahmin preceptor of the Asuras, famed for counsel and austerities; son of Bhrigu and Kavya.",
+        "disambiguation_context": ["Asura Preceptor", "Usanas", "Shukracharya"],
+        "relations": {
+            "parents": {
+                "father": "bhrigu",
+                "mother": "kavya"
+            }
+        }
+    },
+    "shurpanakha": {
+        "id": "ENT-151",
+        "canonical_name": "Shurpanakha",
+        "entity_type": "rakshasa",
+        "aliases": ["Surpanakha"],
+        "description": "Shurpanakha, sister of Ravana, is a rakshasa who attempts to seduce Rama and later mutilated by Lakshmana, leading to Ravana's revenge against Rama.",
+        "disambiguation_context": ["Sister of Ravana", "Daughter of Vishrava", "Kaikesi's Child", "Nose cut by Lakshmana"],
+        "relations": {
+            "parents": {
+                "father": "vishrava",
+                "mother": "kaikasi"
+            },
+            "siblings": {
+                "brothers": ["kumbhakarna", "ravana", "vibhishana"]
+            }
+        }
+    },
+    "sita": {
+        "id": "ENT-152",
+        "canonical_name": "Sita",
+        "entity_type": "human",
+        "aliases": ["Janaki", "Maithili", "Vaidehi"],
+        "description": "Sita, daughter of Janaka, is Rama's wife, known for her devotion and virtue, playing a central role in the Ramayana.",
+        "disambiguation_context": ["Rama's Wife", "Daughter of Janaka", "Kingdom Mithila"],
+        "relations": {
+            "parents": {
+                "father": "janaka"
+            },
+            "siblings": {
+                "sisters": ["urmila"]
+            },
+            "spouses": ["rama"]
+        }
+    },
+    "soma": {
+        "id": "ENT-153",
+        "canonical_name": "Soma",
+        "entity_type": "divine",
+        "aliases": ["Chandra"],
+        "description": "Soma, the divine moon god, is the father of Dadhimukha, playing a role in the Ramayana's cosmological context.",
+        "disambiguation_context": ["Moon God", "Divine Father", "Dadhimukha's Father", "Celestial Body"],
+        "relations": {
+            "children": {
+                "sons": ["dadhimukha"]
+            }
+        }
+    },
+    "srutakirti": {
+        "id": "ENT-154",
+        "canonical_name": "Srutakirti",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Srutakirti, daughter of Kushadhvaja, married Shatrughna, highlighting her role in the Ramayana's familial narrative.",
+        "disambiguation_context": ["sister-in-law of Rama", "Shatrughna's Spouse", "Kushadhvaja's Child", "Daughter of Kushadhvaja", "Shatrughna's Wife"],
+        "relations": {
+            "parents": {
+                "father": "kushadhvaja"
+            },
+            "siblings": {
+                "sisters": ["mandavi"]
+            },
+            "spouses": ["shatrughna"]
+        }
+    },
+    "subahu": {
+        "id": "ENT-155",
+        "canonical_name": "Subahu",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Subahu, son of Tataka and brother of Maricha, is a rakshasa who harasses sage Vishvamitra and is killed by Rama and Lakshmana.",
+        "disambiguation_context": ["Rakshasa Son", "Tataka's Child", "Brother of Maricha", "Vishvamitra's Harasser", "Subahu the Rakshasa"],
+        "relations": {
+            "parents": {
+                "father": "sunda",
+                "mother": "tataka"
+            },
+            "siblings": {
+                "brothers": ["maricha"]
+            }
+        }
+    },
+    "sudarshana": {
+        "id": "ENT-156",
+        "canonical_name": "Sudarshana",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Sudarshana, son of Shankhana, is a minor character with sons like Agnivarna, playing a small role in the Ramayana.",
+        "disambiguation_context": ["Son of Shankhana", "Father of Agnivarna"],
+        "relations": {
+            "parents": {
+                "father": "shankhana"
+            },
+            "children": {
+                "sons": ["agnivarna"]
+            }
+        }
+    },
+    "sudhruti": {
+        "id": "ENT-157",
+        "canonical_name": "Sudhruti",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Sudhruti, son of Mahavira, is the father of Drishtaketu, playing a role in the genealogy of the kings.",
+        "disambiguation_context": ["Son of Mahavira", "Father of Drishtaketu", "King's Lineage"],
+        "relations": {
+            "parents": {
+                "father": "mahavira"
+            },
+            "children": {
+                "sons": ["drishtaketu"]
+            }
+        }
+    },
+    "sugriva": {
+        "id": "ENT-158",
+        "canonical_name": "Sugriva",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Sugriva, son of Surya, is a vanara king and Rama's ally, helping him find Sita, with wife Ruma, and a complex relationship with brother Vali.",
+        "disambiguation_context": ["Vanara King", "Rama's Ally", "Son of Surya", "Brother of Vali"],
+        "relations": {
+            "parents": {
+                "father": "surya"
+            },
+            "siblings": {
+                "brothers": ["vali"]
+            },
+            "spouses": ["ruma"]
+        }
+    },
+    "suketu_1": {
+        "id": "ENT-159",
+        "canonical_name": "Suketu (Nandivardhana's son)",
+        "entity_type": "human",
+        "aliases": ["Suketu"],
+        "description": "Suketu, son of Nandivardhana, is a king and father of Devarata, playing a minor role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Nandivardhana", "Father of Devarata", "King Suketu"],
+        "relations": {
+            "parents": {
+                "father": "nandivardhana"
+            },
+            "children": {
+                "sons": ["devarata"]
+            }
+        }
+    },
+    "suketu_2": {
+        "id": "ENT-160",
+        "canonical_name": "Suketu (Tataka's father)",
+        "entity_type": "yaksha",
+        "aliases": ["Suketu"],
+        "description": "Suketu, a Yaksha, is Tataka's father, playing a role in the narrative of the Ramayana, particularly in the encounters of Rama and his brother Lakshmana.",
+        "disambiguation_context": ["Tataka's Father", "Forest Dweller", "Yaksha Suketu"],
+        "relations": {
+            "children": {
+                "sons": ["tataka"]
+            }
+        }
+    },
+    "sumali": {
+        "id": "ENT-161",
+        "canonical_name": "Sumali",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Sumali, a rakshasa, is Kaikesi's father and Malyavan's brother, playing a role in Ravana's lineage.",
+        "disambiguation_context": ["Rakshasa Clan", "Kaikesi's Father", "Brother of Malyavan", "Ravana's Ancestor"],
+        "relations": {
+            "siblings": {
+                "brothers": ["malyavan"]
+            },
+            "children": {
+                "daughters": ["kaikasi"]
+            }
+        }
+    },
+    "sumantra": {
+        "id": "ENT-162",
+        "canonical_name": "Sumantra",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Sumantra is King Dasaratha's minister and chariot driver, playing a key role in the narrative, especially during Rama's exile.",
+        "disambiguation_context": ["Chariot Driver"],
+        "relations": {}
+    },
+    "sumitra": {
+        "id": "ENT-163",
+        "canonical_name": "Sumitra",
+        "entity_type": "human",
+        "aliases": ["Sumithra"],
+        "description": "Sumitra is Dasharatha's third wife, mother of Lakshmana and Shatrughna, playing a supportive role in the Ramayana.",
+        "disambiguation_context": ["Dasharatha's Wife", "Lakshmana's Mother", "Shatrughna's Mother", "Ayodhya Queen", "Kaikeyi's Co-wife"],
+        "relations": {
+            "spouses": ["dasharatha"],
+            "children": {
+                "sons": ["lakshmana", "shatrughna"]
+            }
+        }
+    },
+    "sunda": {
+        "id": "ENT-164",
+        "canonical_name": "Sunda",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Sunda, a rakshasa, is the son of Jharjha, husband of Tataka, and father of Maricha and Subahu, playing a role in the narrative of the Ramayana.",
+        "disambiguation_context": ["Tataka's Husband", "Maricha's Father", "Son of Jharjha", "Rakshasa Sunda"],
+        "relations": {
+            "parents": {
+                "father": "jharjha"
+            },
+            "spouses": ["tataka"],
+            "children": {
+                "sons": ["maricha", "subahu"]
+            }
+        }
+    },
+    "suprabha": {
+        "id": "ENT-165",
+        "canonical_name": "Suprabha",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, noted in lists as mother to a hundred sons collectively called astras and shastras.",
+        "disambiguation_context": ["Daksha's Daughter", "Astras & Shastras"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            }
+        }
+    },
+    "surasa": {
+        "id": "ENT-166",
+        "canonical_name": "Surasa",
+        "entity_type": "divine",
+        "aliases": ["Naga"],
+        "description": "Surasa, a divine Naga, is the mother of snakes, playing a role in Rama's journey, testing his courage and resolve.",
+        "disambiguation_context": ["Mother of Nagas", "Divine Naga", "Rama's Test", "Snake Mother", "Naga Clan"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "siblings": {
+                "sisters": ["kadru", "vinata"]
+            }
+        }
+    },
+    "surya": {
+        "id": "ENT-167",
+        "canonical_name": "Surya",
+        "entity_type": "divine",
+        "aliases": ["Aditya"],
+        "description": "Surya, the sun god, is the father of Sugriva and other sons, playing a significant role in the Ramayana narrative, especially in the context of his sons' interactions with Rama.",
+        "disambiguation_context": ["Sun God", "Father Sugriva", "Celestial Body"],
+        "relations": {
+            "children": {
+                "sons": ["jyothirmukha", "sugriva", "sweta"]
+            }
+        }
+    },
+    "susandhi": {
+        "id": "ENT-168",
+        "canonical_name": "Susandhi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Susandhi, son of Mandhata, is a king and father of Dhruvasandhi and Prasenajit, playing a role in the lineage of ancient Indian kings.",
+        "disambiguation_context": ["Son of Mandhata", "Father of Dhruvasandhi"],
+        "relations": {
+            "parents": {
+                "father": "mandhata"
+            },
+            "children": {
+                "sons": ["dhruvasandhi", "prasenajit"]
+            }
+        }
+    },
+    "susena": {
+        "id": "ENT-169",
+        "canonical_name": "Susena",
+        "entity_type": "vanara",
+        "aliases": ["Sushena"],
+        "description": "Susena, a vanara, is the father of Tara and son of Yama, playing a role in the Ramayana narrative.",
+        "disambiguation_context": ["Tara's Father", "Son of Yama"],
+        "relations": {
+            "children": {
+                "daughters": ["tara"]
+            },
+            "parents": {
+                "father": "yama"
+            }
+        }
+    },
+    "suteekshna": {
+        "id": "ENT-170",
+        "canonical_name": "Suteekshna",
+        "entity_type": "sage",
+        "aliases": ["Sutikshna"],
+        "description": "Suteekshna, a sage, plays a role in the Valmiki Ramayana, particularly in the context of Rama's story, highlighting his spiritual and narrative significance.",
+        "disambiguation_context": ["Rama's Story", "Spiritual Guide", "Ancient Sage"],
+        "relations": {}
+    },
+    "swarnaroma": {
+        "id": "ENT-171",
+        "canonical_name": "Swarnaroma",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Swarnaroma, son of Maharoma, is a sage and father of Hrasvaroma, known for his wisdom and role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Maharoma", "Father of Hrasvaroma", "Sage Character", "Ramayana Figure"],
+        "relations": {
+            "parents": {
+                "father": "maharoma"
+            },
+            "children": {
+                "sons": ["hrasvaroma"]
+            }
+        }
+    },
+    "sweta": {
+        "id": "ENT-172",
+        "canonical_name": "Sweta",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Sweta, son of Surya, is a vanara, playing a role in Ramayana as a minor character with divine lineage.",
+        "disambiguation_context": ["Son of Surya"],
+        "relations": {
+            "parents": {
+                "father": "surya"
+            }
+        }
+    },
+    "syeni": {
+        "id": "ENT-173",
+        "canonical_name": "Syeni",
+        "entity_type": "bird",
+        "aliases": [],
+        "description": "Syeni is the wife of Aruna and mother of the bird brothers Jatayu and Sampati.",
+        "disambiguation_context": ["Aruna's Spouse", "Mother of Jatayu", "Mother of Sampati"],
+        "relations": {
+            "spouses": ["aruna"],
+            "children": {
+                "sons": ["jatayu", "sampati"]
+            }
+        }
+    },
+    "tamra": {
+        "id": "ENT-174",
+        "canonical_name": "Tamra",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Daughter of Daksha, counted among Kasyapa's eight wives in Ramayana enumerations.",
+        "disambiguation_context": ["Daksha's Daughter", "Consort of Kasyapa"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"]
+        }
+    },
+    "tara": {
+        "id": "ENT-175",
+        "canonical_name": "Tara",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Tara, wife of Vali, plays a crucial role in the Ramayana, advising Vali and showcasing her intelligence and loyalty as a vanara and mother of Angada.",
+        "disambiguation_context": ["Vali's Wife", "Angada's Mother"],
+        "relations": {
+            "spouses": ["vali"],
+            "children": {
+                "sons": ["angada"]
+            },
+            "parents": {
+                "father": "susena"
+            }
+        }
+    },
+    "tataka": {
+        "id": "ENT-176",
+        "canonical_name": "Tataka",
+        "entity_type": "rakshasa",
+        "aliases": ["Rakshasi"],
+        "description": "Tataka, a rakshasa, was Suketu Yaksha's daughter and Sunda's wife, mother of Maricha and Subahu, playing a significant role in the Ramayana as a fierce adversary.",
+        "disambiguation_context": ["Sunda's Spouse", "Maricha's Mother", "Yaksha Daughter"],
+        "relations": {
+            "parents": {
+                "father": "suketu_2"
+            },
+            "spouses": ["sunda"],
+            "children": {
+                "sons": ["maricha", "subahu"]
+            }
+        }
+    },
+    "trijata": {
+        "id": "ENT-177",
+        "canonical_name": "Trijata",
+        "entity_type": "rakshasa",
+        "aliases": ["Rakshasi"],
+        "description": "Trijata, a rakshasa, is Sarduli's daughter and a guardian of Sita in Ravana's ashoka grove, playing a significant role in the narrative.",
+        "disambiguation_context": ["Ravana's Guard", "Sita's Watcher", "Ashoka Grove", "Daughter of Sarduli"],
+        "relations": {}
+    },
+    "trishanku": {
+        "id": "ENT-178",
+        "canonical_name": "Trishanku",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Trishanku, son of Prithu, was a king who sought to ascend to heaven with his physical body, highlighting his determination and spiritual ambition.",
+        "disambiguation_context": ["King of Ikshvaku", "Son of Prithu", "Father of Dundhumara"],
+        "relations": {
+            "parents": {
+                "father": "prithu"
+            },
+            "children": {
+                "sons": ["dundhumara"]
+            }
+        }
+    },
+    "trishira": {
+        "id": "ENT-179",
+        "canonical_name": "Trishira",
+        "entity_type": "rakshasa",
+        "aliases": ["Trisiras"],
+        "description": "Trishira, son of Ravana and brother of Indrajit, was a powerful rakshasa who played a role in the Ramayana.",
+        "disambiguation_context": ["Son of Ravana", "Brother of Indrajit", "Rakshasa Warrior", "Lanka's Prince"],
+        "relations": {
+            "parents": {
+                "father": "ravana"
+            },
+            "siblings": {
+                "brothers": ["indrajit"]
+            }
+        }
+    },
+    "udavasu": {
+        "id": "ENT-180",
+        "canonical_name": "Udavasu",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Udavasu, son of Mithi, is the father of Nandivardhana, playing a minor role in the Ramayana narrative.",
+        "disambiguation_context": ["Son of Mithi", "Father of Nandivardhana"],
+        "relations": {
+            "parents": {
+                "father": "mithi"
+            },
+            "children": {
+                "sons": ["nandivardhana"]
+            }
+        }
+    },
+    "urmila": {
+        "id": "ENT-181",
+        "canonical_name": "Urmila",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Urmila is Janaka's daughter, Sita's sister, and Lakshmana's wife, known for her patience and devotion during her husband's exile.",
+        "disambiguation_context": ["Daughter of Janaka", "Sister of Sita", "Mithila Princess", "Lakshmana's Wife"],
+        "relations": {
+            "parents": {
+                "father": "janaka"
+            },
+            "siblings": {
+                "sisters": ["sita"]
+            },
+            "spouses": ["lakshmana"]
+        }
+    },
+    "vali": {
+        "id": "ENT-182",
+        "canonical_name": "Vali",
+        "entity_type": "vanara",
+        "aliases": [],
+        "description": "Vali, son of Indra, was a powerful vanara king, husband of Tara, and father of Angada, playing a significant role in the Ramayana before his conflict with brother Sugriva.",
+        "disambiguation_context": ["Vanara King", "Kishkindha Ruler", "Brother of Sugriva", "Son of Indra"],
+        "relations": {
+            "parents": {
+                "father": "indra"
+            },
+            "siblings": {
+                "brothers": ["sugriva"]
+            },
+            "spouses": ["tara"],
+            "children": {
+                "sons": ["angada"]
+            }
+        }
+    },
+    "vamana": {
+        "id": "ENT-183",
+        "canonical_name": "Vamana",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Vamana is the dwarf avatar of Vishnu who, as the son of Kasyapa and Aditi, secured the three worlds by taking three cosmic steps against King Bali.",
+        "disambiguation_context": ["Vishnu Avatar", "Aditi's Son", "Bali Episode"],
+        "relations": {
+            "parents": {
+                "father": "kasyapa",
+                "mother": "aditi"
+            }
+        }
+    },
+    "varuna": {
+        "id": "ENT-184",
+        "canonical_name": "Varuna",
+        "entity_type": "divine",
+        "aliases": ["Lord of the Ocean"],
+        "description": "Varuna is the divine lord of the ocean and father of Hemakuta, playing a role in the cosmic order.",
+        "disambiguation_context": ["Ocean Lord", "Sea God", "Hemakuta's Father", "Cosmic Ruler"],
+        "relations": {
+            "children": {
+                "sons": ["hemakuta"],
+                "daughters": ["varuni"]
+            }
+        }
+    },
+    "varuni": {
+        "id": "ENT-185",
+        "canonical_name": "Varuni",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Varuni is the goddess of wine, commonly described as the daughter of Varuna and associated with the churning of the ocean.",
+        "disambiguation_context": ["Goddess of Wine", "Varuna's Daughter", "Samudra Manthana"],
+        "relations": {
+            "parents": {
+                "father": "varuna"
+            }
+        }
+    },
+    "vashistha": {
+        "id": "ENT-186",
+        "canonical_name": "Vashistha",
+        "entity_type": "sage",
+        "aliases": ["Vasistha"],
+        "description": "Vashistha is a revered sage, advisor to King Dasharatha, and a key figure in Rama's life, known for his wisdom and role in the royal court.",
+        "disambiguation_context": ["Royal Advisor", "Rama's Guru", "Dasharatha's Priest", "Sage Counselor"],
+        "relations": {}
+    },
+    "vasu": {
+        "id": "ENT-187",
+        "canonical_name": "Vasu",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Vasu, a divine being, is the father of Durdhara, playing a minor role in the epic.",
+        "disambiguation_context": ["Father of Durdhara", "Minor Role"],
+        "relations": {
+            "children": {
+                "sons": ["durdhara"]
+            }
+        }
+    },
+    "vayu": {
+        "id": "ENT-188",
+        "canonical_name": "Vayu",
+        "entity_type": "divine",
+        "aliases": ["Marut"],
+        "description": "Vayu, the wind god, is Hanuman's father, playing a significant role in the Ramayana as a divine being and a supporter of Rama's quest.",
+        "disambiguation_context": ["Wind God", "Hanuman's Father", "Rama's Ally"],
+        "relations": {
+            "children": {
+                "sons": ["hanuman"]
+            }
+        }
+    },
+    "vibhandaka": {
+        "id": "ENT-189",
+        "canonical_name": "Vibhandaka",
+        "entity_type": "sage",
+        "aliases": ["Maharshi"],
+        "description": "Vibhandaka is a sage and father of Rishyasringa, known for his ascetic life and role in the Ramayana narrative.",
+        "disambiguation_context": ["Father of Rishyasringa", "Sage Kasyapa", "Ascetic Life"],
+        "relations": {
+            "children": {
+                "sons": ["rishyasringa"]
+            }
+        }
+    },
+    "vibhishana": {
+        "id": "ENT-190",
+        "canonical_name": "Vibhishana",
+        "entity_type": "rakshasa",
+        "aliases": [],
+        "description": "Vibhishana, brother of Ravana, defected to Rama's side, aiding in the battle against his brother, showcasing his virtuous character amidst familial conflict.",
+        "disambiguation_context": ["Brother of Ravana", "Rama's Ally", "Lanka's King", "Son of Vishrava"],
+        "relations": {
+            "parents": {
+                "father": "vishrava",
+                "mother": "kaikasi"
+            },
+            "siblings": {
+                "brothers": ["kumbhakarna", "ravana"],
+                "sisters": ["shurpanakha"]
+            },
+            "spouses": []
+        }
+    },
+    "vibudha": {
+        "id": "ENT-191",
+        "canonical_name": "Vibudha",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Vibudha, son of Devarmidha, is a minor character and father of Mahidhraka, known for his familial connections in the Ramayana.",
+        "disambiguation_context": ["Son of Devarmidha", "Father of Mahidhraka"],
+        "relations": {
+            "parents": {
+                "father": "devamidha"
+            },
+            "children": {
+                "sons": ["mahidhraka"]
+            }
+        }
+    },
+    "vikukshi": {
+        "id": "ENT-192",
+        "canonical_name": "Vikukshi",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Vikukshi, son of Kukshi, is a king and father of Bana, playing a role in the Ikshvaku dynasty's lineage.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "King Kukshi", "Father of Bana"],
+        "relations": {
+            "parents": {
+                "father": "kukshi"
+            },
+            "children": {
+                "sons": ["bana"]
+            }
+        }
+    },
+    "vinata": {
+        "id": "ENT-193",
+        "canonical_name": "Vinata",
+        "entity_type": "divine",
+        "aliases": [],
+        "description": "Vinata is Garuda and Aruna's mother, a divine being, playing a significant role in the narrative as the mother of the bird-like creatures.",
+        "disambiguation_context": ["Garuda's Mother", "Aruna's Mother", "Suparna's Mother"],
+        "relations": {
+            "parents": {
+                "father": "daksha"
+            },
+            "spouses": ["kasyapa"],
+            "children": {
+                "sons": ["aruna", "garuda"]
+            },
+            "siblings": {
+                "sisters": ["kadru", "surasa"]
+            }
+        }
+    },
+    "virochana": {
+        "id": "ENT-194",
+        "canonical_name": "Virochana",
+        "entity_type": "asura",
+        "aliases": [],
+        "description": "Virochana is an Asura, son of Prahlada, and father of Bali.",
+        "disambiguation_context": ["Prahlada's Son", "Father of Bali"],
+        "relations": {
+            "parents": {
+                "father": "prahlada"
+            },
+            "children": {
+                "sons": ["bali"],
+                "daughters": ["manthara_2"]
+            }
+        }
+    },
+    "vishnu": {
+        "id": "ENT-195",
+        "canonical_name": "Vishnu",
+        "entity_type": "divine",
+        "aliases": ["Hari", "Narayana", "Vasudeva"],
+        "description": "Vishnu, the supreme deity, is Rama's avatar on a mission to vanquish evil, upholding dharma.",
+        "disambiguation_context": ["Supreme Deity", "Dharma Protector", "Cosmic Order", "Divine Helper"],
+        "relations": {}
+    },
+    "vishrava": {
+        "id": "ENT-196",
+        "canonical_name": "Vishrava",
+        "entity_type": "sage",
+        "aliases": ["Visrava", "Visravas"],
+        "description": "Vishrava, a sage and son of Pulastya, is the father of Ravana, Kumbhakarna, and Kubera, and husband Kaikesi, playing a significant role in the Ramayana's narrative.",
+        "disambiguation_context": ["Son of Pulastya", "Father of Ravana", "Husband of Kaikesi", "Sage Vishrava"],
+        "relations": {
+            "parents": {
+                "father": "pulastya"
+            },
+            "spouses": ["kaikasi"],
+            "children": {
+                "sons": ["kubera", "kumbhakarna", "ravana", "vibhishana"],
+                "daughters": ["shurpanakha"]
+            }
+        }
+    },
+    "vishvamitra": {
+        "id": "ENT-197",
+        "canonical_name": "Vishvamitra",
+        "entity_type": "sage",
+        "aliases": ["Kausika"],
+        "description": "Vishvamitra, son of Gadhi, is a powerful sage who plays a significant role in Ramayana, testing Rama's abilities and providing him with divine weapons.",
+        "disambiguation_context": ["Son of Gadhi", "Powerful Sage", "Rama's Mentor", "Possesses Divine Weapons"],
+        "relations": {
+            "parents": {
+                "father": "gadhi"
+            }
+        }
+    },
+    "vishwakarma": {
+        "id": "ENT-198",
+        "canonical_name": "Vishwakarma",
+        "entity_type": "divine",
+        "aliases": ["Visvakarma"],
+        "description": "Vishwakarma, the divine architect, is Nala's father, skilled in craftsmanship, and plays a significant role in the narrative.",
+        "disambiguation_context": ["Divine Architect", "Nala's Father", "Skilled Craftsman"],
+        "relations": {
+            "children": {
+                "sons": ["nala"]
+            }
+        }
+    },
+    "vivasvana": {
+        "id": "ENT-199",
+        "canonical_name": "Vivasvana",
+        "entity_type": "divine",
+        "aliases": ["Aditya", "Vivasvan"],
+        "description": "Vivasvana, father of Manu and son of Kasyapa, is the sun god, illuminating the world with his radiance, playing a pivotal role in the cosmos and lineage.",
+        "disambiguation_context": ["Sun God", "Manu's Father", "Son of Kasyapa", "Cosmic Illuminator"],
+        "relations": {
+            "parents": {
+                "father": "kasyapa",
+                "mother": "aditi"
+            },
+            "children": {
+                "sons": ["manu_1"]
+            }
+        }
+    },
+    "yama": {
+        "id": "ENT-200",
+        "canonical_name": "Yama",
+        "entity_type": "divine",
+        "aliases": ["Vaivasvata"],
+        "description": "Yama, the divine god of death, is Dharmaraja, upholding righteousness, playing a narrative role in cosmic order.",
+        "disambiguation_context": ["God of Death", "Dharmaraja", "Righteousness", "Cosmic Order"],
+        "relations": {
+            "children": {
+                "sons": ["gaja", "gandhamadana", "gavaksha", "gavaya", "sarabha", "susena"]
+            }
+        }
+    },
+    "yayati": {
+        "id": "ENT-201",
+        "canonical_name": "Yayati",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Yayati, son of Nahusha, is a king and ancestor of the Puru dynasty, father of Nabhaga and other sons, known for his story in the Mahabharata but mentioned in the Valmiki Ramayana as an ancestor.",
+        "disambiguation_context": ["Puru Dynasty", "Son of Nahusha", "King and Ancestor", "Father of Nabhaga"],
+        "relations": {
+            "parents": {
+                "father": "nahusha"
+            },
+            "children": {
+                "sons": ["nabhaga"]
+            }
+        }
+    },
+    "yudhajit": {
+        "id": "ENT-202",
+        "canonical_name": "Yudhajit",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Yudhajit is Kaikeyi's brother and a skilled warrior, playing a role in the events of the Valmiki Ramayana.",
+        "disambiguation_context": ["Skilled Warrior", "Valmiki Ramayana"],
+        "relations": {
+            "siblings": {
+                "sisters": ["kaikeyi"]
+            }
+        }
+    },
+    "yuvanashva": {
+        "id": "ENT-203",
+        "canonical_name": "Yuvanashva",
+        "entity_type": "human",
+        "aliases": [],
+        "description": "Yuvanashva, son of Dundhumara, is a king and father of Mandhata, known for his role in the Ikshvaku dynasty.",
+        "disambiguation_context": ["Ikshvaku Dynasty", "Father of Mandhata", "Son of Dundhumara", "King Yuvanashva"],
+        "relations": {
+            "parents": {
+                "father": "dundhumara"
+            },
+            "children": {
+                "sons": ["mandhata"]
+            }
+        }
+    }
+}

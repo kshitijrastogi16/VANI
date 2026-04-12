@@ -32,10 +32,11 @@ class VANIInterface {
     this.queryForm = document.getElementById('query-form');
     this.questionInput = document.getElementById('question-input');
     this.askButton = document.getElementById('ask-button');
-    this.includeContext = document.getElementById('include-context');
-    this.maxResults = document.getElementById('max-results');
-    this.advancedToggle = document.getElementById('advanced-toggle');
-    this.advancedPanel = document.getElementById('advanced-panel');
+  // Optional UI controls — some templates may omit them. Provide safe defaults when missing.
+  this.includeContext = document.getElementById('include-context') || { checked: true };
+  this.maxResults = document.getElementById('max-results') || { value: '10' };
+  this.advancedToggle = document.getElementById('advanced-toggle') || null;
+  this.advancedPanel = document.getElementById('advanced-panel') || null;
 
     // Display sections
     this.answerSection = document.getElementById('answer-section');
@@ -115,7 +116,9 @@ class VANIInterface {
       }
     } catch (error) {
       console.error('Query error:', error);
-      this.showError('Failed to connect to VANI server. Please try again.');
+      // Surface the server-provided message when available to aid debugging
+      const msg = (error && error.message) ? String(error.message) : 'Failed to connect to VANI server. Please try again.';
+      this.showError(msg);
     } finally {
       this.setLoadingState(false);
     }
@@ -137,7 +140,14 @@ class VANIInterface {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      // Try to read response body for a helpful error message
+      let body = '';
+      try {
+        body = await response.text();
+      } catch (e) {
+        body = response.statusText || '';
+      }
+      throw new Error(`HTTP ${response.status}: ${body}`);
     }
 
     return await response.json();

@@ -1,0 +1,23 @@
+{
+  "model_id": "BAAI/bge-m3",
+  "dim": 1024,
+  "count": 4607,
+  "normalization": "L2",
+  "creation_time": "2025-09-22 09:49:18 UTC",
+  "processing_time_seconds": 594.36,
+  "processing_rate_texts_per_sec": 7.75,
+  "batch_size": 64,
+  "device": "cuda",
+  "languages_included": [
+    "en",
+    "iast"
+  ],
+  "windowing": {
+    "window_size_units": 5,
+    "stride_units": 4,
+    "min_window_size_units": 1,
+    "unit_type": "atomic_verse",
+    "multi_verse_policy": "atomic"
+  },
+  "source": "ramayana.json"
+}

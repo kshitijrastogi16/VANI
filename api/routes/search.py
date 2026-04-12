@@ -7,7 +7,7 @@ import asyncio
 import time
 import re
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Literal
 from fastapi import APIRouter, HTTPException, Depends, Query, Request, Path
 from pydantic import BaseModel, Field, validator
 from slowapi import _rate_limit_exceeded_handler
@@ -30,7 +30,8 @@ router = APIRouter(prefix="/search", tags=["search"])
 
 class SearchRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=500, description="Search query")
-    search_type: str = Field(default="hybrid", pattern="^(hybrid|bm25|vector|exact)$")
+    # Use Literal for strict allowed values (better compatibility with pydantic v2)
+    search_type: Literal["hybrid", "bm25", "vector", "exact"] = "hybrid"
     max_results: int = Field(default=10, ge=1, le=50)
     include_metadata: bool = Field(default=True)
     min_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)

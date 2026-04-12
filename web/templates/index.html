@@ -34,7 +34,7 @@
             <!-- Query Section -->
             <section class="query-section">
                 <div class="query-container">
-                    <h2>Ask about the Ramayana</h2>
+                    <h2 style="color: #000000;">Ask about the Ramayana</h2>
                     
                     <form id="query-form" class="query-form">
                         <div class="input-group">
@@ -50,31 +50,6 @@
                                 <span class="loading-spinner hidden">🔄</span>
                             </button>
                         </div>
-                        
-                        <div class="query-options">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-context" checked>
-                                <span class="checkmark"></span>
-                                Include detailed context
-                            </label>
-                            <div class="advanced-options">
-                                <button type="button" id="advanced-toggle" class="advanced-toggle" title="Show advanced options">Advanced ▾</button>
-                                <div id="advanced-panel" class="advanced-panel hidden mt-2">
-                                    <div class="max-results">
-                                        <label for="max-results">
-                                            Max sources to show
-                                            <span class="info" title="Retrieval uses adaptive auto-K. This controls how many sources are displayed.">ℹ️</span>
-                                        </label>
-                                        <select id="max-results" name="max-results">
-                                            <option value="5">5</option>
-                                            <option value="10" selected>10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </form>
 
                     <!-- Query Suggestions -->
@@ -84,26 +59,19 @@
                             <!-- Relationship queries (KG-first) -->
                             <button class="suggestion-btn" data-query="Who is Rama's grandfather?">Who is Rama's grandfather?</button>
                             <button class="suggestion-btn" data-query="Who is Vishrava's father?">Who is Vishrava's father?</button>
-                            <button class="suggestion-btn" data-query="Who are Ravana's siblings?">Who are Ravana's siblings?</button>
-                            <button class="suggestion-btn" data-query="Parents of Ravana">Parents of Ravana</button>
-                            <button class="suggestion-btn" data-query="Family of Dasharatha">Family of Dasharatha</button>
 
                             <!-- Citation queries (direct verse) -->
-                            <button class="suggestion-btn" data-query="1.70.43">Quote verse 1.70.43</button>
-                            <button class="suggestion-btn" data-query="6.71.27">Quote verse 6.71.27</button>
+                            <button class="suggestion-btn" data-query="1.7.10">Quote verse 1.7.10</button>
 
                             <!-- Count queries -->
-                            <button class="suggestion-btn" data-query="How many kandas are in the Ramayana?">How many kandas are in the Ramayana?</button>
                             <button class="suggestion-btn" data-query="How many verses are there in the Ramayana?">How many verses are there in the Ramayana?</button>
 
                             <!-- General / narrative -->
                             <button class="suggestion-btn" data-query="Tell me about Rama's exile">Tell me about Rama's exile</button>
                             <button class="suggestion-btn" data-query="Battle between Rama and Ravana">Battle between Rama and Ravana</button>
-                            <button class="suggestion-btn" data-query="What is dharma according to Ramayana?">What is dharma according to Ramayana?</button>
 
                             <!-- Entity / location -->
-                            <button class="suggestion-btn" data-query="Who is Hanuman?">Who is Hanuman?</button>
-                            <button class="suggestion-btn" data-query="Where is Lanka described?">Where is Lanka described?</button>
+                            <button class="suggestion-btn" data-query="Who is Sugriva?">Who is Sugriva?</button>
                         </div>
                     </div>
                 </div>
