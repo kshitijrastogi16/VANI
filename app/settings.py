@@ -167,13 +167,17 @@ class Settings(BaseSettings):
     # Router-gated entity expansion confidence threshold for relationship/narrative queries
     entity_expansion_router_confidence: float = Field(default=0.7, env="ENTITY_EXPANSION_ROUTER_CONFIDENCE")
     
-    # LLM Configuration (V1 Multi-Model Strategy RESTORED)
+    # LLM Configuration
+    # Current Groq hosted model IDs. Override with GROQ_MODELS in .env.
     groq_api_key: str = Field(default="", env="GROQ_API_KEY")
-    groq_models: List[str] = [
-        "llama-3.3-70b-versatile",      # Primary production
-        "deepseek-r1-distill-llama-70b", # Complex narrative
-        "llama-3.1-8b-instant"        # Speed fallback
-    ]
+    groq_models: List[str] = Field(
+        default=[
+            "openai/gpt-oss-120b",  # Primary production
+            "qwen/qwen3.8-27b",     # Complex narrative
+            "openai/gpt-oss-20b",   # Speed fallback
+        ],
+        env="GROQ_MODELS",
+    )
     llm_temperature: float = 0.3
     llm_max_tokens: int = 1024
     # llm_timeout configured above

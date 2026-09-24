@@ -70,33 +70,70 @@ class GroqClient:
         self.max_retries = max_retries or app_settings.llm_max_retries
         self.retry_delay = retry_delay
         
-        # Model configurations with priority ordering
-        self.model_configs = [
-            ModelConfig(
-                id="llama-3.3-70b-versatile",
-                name="LLaMA 3.3 70B",
+
+        # Model configurations with priority ordering.
+        #
+        # Groq retired the previous Llama 3.1/3.3 IDs used by VANI.
+        # Keep model IDs in this single catalog and allow GROQ_MODELS to
+        # override the defaults at runtime.
+        model_catalog = {
+            "openai/gpt-oss-120b": ModelConfig(
+                id="openai/gpt-oss-120b",
+                name="GPT-OSS 120B",
                 type="production",
                 max_tokens=32768,
                 best_for="General production queries",
-                priority=1
+                priority=1,
             ),
-            ModelConfig(
-                id="deepseek-r1-distill-llama-70b",
-                name="DeepSeek R1 LLaMA 70B",
-                type="complex", 
-                max_tokens=8192,
+            "qwen/qwen3.8-27b": ModelConfig(
+                id="qwen/qwen3.8-27b",
+                name="Qwen 3.8 27B",
+                type="complex",
+                max_tokens=32768,
                 best_for="Complex narrative understanding",
-                priority=2
+                priority=2,
             ),
-            ModelConfig(
-                id="llama-3.1-8b-instant",
-                name="LLaMA 3.1 8B Instant",
+            "openai/gpt-oss-20b": ModelConfig(
+                id="openai/gpt-oss-20b",
+                name="GPT-OSS 20B",
                 type="speed",
-                max_tokens=8192, 
+                max_tokens=32768,
                 best_for="Fast responses",
-                priority=3
-            )
-        ]
+                priority=3,
+            ),
+        }
+
+        configured_models = models if models is not None else app_settings.groq_models
+        configured_models = [m.strip() for m in configured_models if isinstance(m, str) and m.strip()]
+
+        # Preserve custom model support: if a caller supplies a model ID that
+        # is not in the catalog, build a conservative generic configuration.
+        self.model_configs = []
+        for index, model_id in enumerate(configured_models, start=1):
+            template = model_catalog.get(model_id)
+            if template:
+                self.model_configs.append(
+                    ModelConfig(
+                        id=template.id,
+                        name=template.name,
+                        type=template.type,
+                        max_tokens=template.max_tokens,
+                        best_for=template.best_for,
+                        timeout=template.timeout,
+                        priority=template.priority,
+                    )
+                )
+            else:
+                self.model_configs.append(
+                    ModelConfig(
+                        id=model_id,
+                        name=model_id,
+                        type="production",
+                        max_tokens=32768,
+                        best_for="Configured custom Groq model",
+                        priority=index,
+                    )
+                )
         # Optional runtime denylist for decommissioned/unsupported models
         denylist = set((os.getenv('GROQ_SKIP_MODELS') or '').split(',')) if os.getenv('GROQ_SKIP_MODELS') else set()
         if denylist:
@@ -291,19 +328,44 @@ class GroqClient:
                     raise Exception(f"Timeout after {self.max_retries} attempts: {e}")
                     
             except (httpx.HTTPStatusError, httpx.RequestError) as e:
+                # Retry only transient HTTP/network failures. Model-not-found,
+                # decommissioned, invalid-request, and permission errors are
+                # permanent for this model and should immediately fall through
+                # to the next configured model.
+                status_code = getattr(getattr(e, "response", None), "status_code", None)
+                if status_code in [400, 401, 403, 404]:
+                    raise Exception(f"Non-retryable HTTP error ({status_code}): {e}")
+
                 if attempt < self.max_retries - 1:
-                    # Check if it's a retryable error
-                    if hasattr(e, 'response') and e.response.status_code in [429, 500, 502, 503, 504]:
+                    if status_code in [429, 500, 502, 503, 504] or status_code is None:
                         delay = self.retry_delay * (2 ** attempt)
-                        logger.warning(f"HTTP error {e.response.status_code} on attempt {attempt + 1}, retrying in {delay}s")
+                        logger.warning(
+                            f"HTTP error {status_code or 'network'} on attempt "
+                            f"{attempt + 1}, retrying in {delay}s"
+                        )
                         time.sleep(delay)
                         continue
                 raise Exception(f"HTTP error: {e}")
                 
             except Exception as e:
+                error_text = str(e).lower()
+
+                # Groq can surface model lifecycle/access failures as generic
+                # exceptions from the SDK. Do not waste retries on these.
+                permanent_markers = (
+                    "model_not_found",
+                    "model_decommissioned",
+                    "does not exist or you do not have access",
+                    "decommissioned and is no longer supported",
+                )
+                if any(marker in error_text for marker in permanent_markers):
+                    raise Exception(f"Non-retryable model error: {e}")
+
                 if attempt < self.max_retries - 1:
                     delay = self.retry_delay * (2 ** attempt)
-                    logger.warning(f"Error on attempt {attempt + 1}: {e}, retrying in {delay}s")
+                    logger.warning(
+                        f"Error on attempt {attempt + 1}: {e}, retrying in {delay}s"
+                    )
                     time.sleep(delay)
                     continue
                 else:

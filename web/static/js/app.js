@@ -21,6 +21,17 @@ function formatCitation(verseId) {
   return id.replace(/-/g, '.');
 }
 
+function formatDuration(seconds) {
+  const value = Number(seconds);
+  if (!Number.isFinite(value) || value < 0) return '—';
+  if (value < 1) return `${Math.round(value * 1000)}ms`;
+  if (value < 60) return `${value.toFixed(1).replace(/\.0$/, '')}s`;
+
+  const minutes = Math.floor(value / 60);
+  const remainingSeconds = Math.round(value % 60);
+  return remainingSeconds ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+}
+
 class VANIInterface {
   constructor() {
     this.initializeElements();
@@ -32,11 +43,15 @@ class VANIInterface {
     this.queryForm = document.getElementById('query-form');
     this.questionInput = document.getElementById('question-input');
     this.askButton = document.getElementById('ask-button');
-  // Optional UI controls — some templates may omit them. Provide safe defaults when missing.
-  this.includeContext = document.getElementById('include-context') || { checked: true };
-  this.maxResults = document.getElementById('max-results') || { value: '10' };
-  this.advancedToggle = document.getElementById('advanced-toggle') || null;
-  this.advancedPanel = document.getElementById('advanced-panel') || null;
+    // Optional UI controls — some templates may omit them. Provide safe defaults when missing.
+    this.includeContext = document.getElementById('include-context') || { checked: true };
+    this.maxResults = document.getElementById('max-results') || { value: '10' };
+    this.advancedToggle = document.getElementById('advanced-toggle') || null;
+    this.advancedPanel = document.getElementById('advanced-panel') || null;
+
+    // About modal (optional)
+    this.aboutToggle = document.getElementById('about-toggle') || null;
+    this.aboutModal = document.getElementById('about-modal') || null;
 
     // Display sections
     this.answerSection = document.getElementById('answer-section');
@@ -44,6 +59,8 @@ class VANIInterface {
     this.errorSection = document.getElementById('error-section');
 
     // Content elements
+    this.answerQuestion = document.getElementById('answer-question') || null;
+    this.answerQuestionWrap = document.getElementById('answer-question-wrap') || null;
     this.answerText = document.getElementById('answer-text');
     this.queryType = document.getElementById('query-type');
     this.responseTime = document.getElementById('response-time');
@@ -68,13 +85,10 @@ class VANIInterface {
       });
     });
 
-    // Advanced panel toggle
+    // Advanced panel toggle — a simple on/off switch
     if (this.advancedToggle && this.advancedPanel) {
-      this.advancedToggle.addEventListener('click', () => {
-        const isHidden = this.advancedPanel.classList.contains('hidden');
-        this.advancedPanel.classList.toggle('hidden', !isHidden);
-        // Flip caret
-        this.advancedToggle.textContent = isHidden ? 'Advanced ▴' : 'Advanced ▾';
+      this.advancedToggle.addEventListener('change', () => {
+        this.advancedPanel.classList.toggle('hidden', !this.advancedToggle.checked);
       });
     }
 
@@ -83,6 +97,44 @@ class VANIInterface {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         this.handleSubmit();
+      }
+    });
+
+    // Auto-grow the single-line search field as the person types
+    this.questionInput.addEventListener('input', () => {
+      this.questionInput.style.height = 'auto';
+      this.questionInput.style.height = Math.min(this.questionInput.scrollHeight, 130) + 'px';
+    });
+
+    // About modal
+    this.bindAboutModal();
+  }
+
+  bindAboutModal() {
+    if (!this.aboutToggle || !this.aboutModal) return;
+
+    const openModal = () => {
+      this.aboutModal.classList.remove('hidden');
+      this.aboutToggle.setAttribute('aria-expanded', 'true');
+      const closeBtn = this.aboutModal.querySelector('.about-modal__close');
+      if (closeBtn) closeBtn.focus();
+    };
+
+    const closeModal = () => {
+      this.aboutModal.classList.add('hidden');
+      this.aboutToggle.setAttribute('aria-expanded', 'false');
+      this.aboutToggle.focus();
+    };
+
+    this.aboutToggle.addEventListener('click', openModal);
+
+    this.aboutModal.querySelectorAll('[data-about-close]').forEach((el) => {
+      el.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !this.aboutModal.classList.contains('hidden')) {
+        closeModal();
       }
     });
   }
@@ -95,6 +147,13 @@ class VANIInterface {
       this.showError('Please enter a question about the Ramayana.');
       return;
     }
+
+    this.lastQuestion = question;
+
+    // Treat submission as a fresh query: clear the input immediately so the
+    // previous question never remains in the search control while results load.
+    this.questionInput.value = '';
+    this.questionInput.style.height = '20px';
 
     this.setLoadingState(true);
     this.hideAllSections();
@@ -154,11 +213,23 @@ class VANIInterface {
   }
 
   displayAnswer(data) {
+    // Echo the question that was asked
+    if (this.answerQuestion) {
+      if (this.lastQuestion) {
+        this.answerQuestion.textContent = this.lastQuestion;
+        this.answerQuestion.classList.remove('hidden');
+        if (this.answerQuestionWrap) this.answerQuestionWrap.classList.remove('hidden');
+      } else {
+        this.answerQuestion.classList.add('hidden');
+        if (this.answerQuestionWrap) this.answerQuestionWrap.classList.add('hidden');
+      }
+    }
+
     // Display answer
     this.answerText.innerHTML = this.formatAnswer(data.answer);
     this.queryType.textContent = data.query_type || 'general';
-    // API provides seconds; display in milliseconds
-    this.responseTime.textContent = Math.round((data.response_time || 0) * 1000);
+    // API provides seconds; show a human-friendly duration for end users.
+    this.responseTime.textContent = formatDuration(data.response_time || 0);
     this.confidenceScore.textContent = data.confidence
       ? (data.confidence * 100).toFixed(1) + '%'
       : 'N/A';
@@ -181,6 +252,7 @@ class VANIInterface {
     }
 
     this.answerSection.classList.remove('hidden');
+    document.body.classList.add('has-result');
 
     // Display sources if available
     if (data.sources && data.sources.length > 0) {
@@ -188,7 +260,7 @@ class VANIInterface {
       const titleEl = document.getElementById('sources-title');
       if (titleEl) {
         titleEl.textContent =
-          data.query_type === 'citation' ? '📚 Context Verses' : '📚 Sources & Citations';
+          data.query_type === 'citation' ? 'Context Verses' : 'Sources';
       }
       this.displaySources(data.sources, data.citations);
       this.sourcesSection.classList.remove('hidden');
@@ -215,7 +287,7 @@ class VANIInterface {
           if (source.sarga_titles.length > 1) {
             const moreId = `titles-more-${index}`;
             const allTitlesItems = source.sarga_titles
-              .map((t) => `<div class="title-item">${escapeHTML(t)}</div>`) 
+              .map((t) => `<div class="title-item">${escapeHTML(t)}</div>`)
               .join('');
             moreBlock = ` <button class="titles-toggle" data-target="${moreId}">+${
               source.sarga_titles.length - 1
@@ -225,26 +297,18 @@ class VANIInterface {
           titlesBlock = `<div class="source-context" title="${allTitlesTooltip}">${firstTitle}${moreBlock}</div>`;
         }
 
-        // Safe verse content
+        // Safe verse content — quiet, labeled lines rather than colored blocks
         const skt = source.shloka_sanskrit
-          ? `<div class="sanskrit"><strong>Sanskrit:</strong> ${escapeHTML(
-              source.shloka_sanskrit
-            )}</div>`
+          ? `<p class="verse-line sanskrit"><span class="field-label">Sanskrit</span>${escapeHTML(source.shloka_sanskrit)}</p>`
           : '';
         const iast = source.shloka_iast
-          ? `<div class="sanskrit"><strong>Sanskrit (IAST):</strong> ${escapeHTML(
-              source.shloka_iast
-            )}</div>`
+          ? `<p class="verse-line"><span class="field-label">IAST</span>${escapeHTML(source.shloka_iast)}</p>`
           : '';
         const en = source.translation_en
-          ? `<div class="translation en"><strong>English:</strong> ${escapeHTML(
-              source.translation_en
-            )}</div>`
+          ? `<p class="verse-line"><span class="field-label">English</span>${escapeHTML(source.translation_en)}</p>`
           : '';
         const hi = source.translation_hi
-          ? `<div class="translation hi"><strong>Hindi:</strong> ${escapeHTML(
-              source.translation_hi
-            )}</div>`
+          ? `<p class="verse-line"><span class="field-label">Hindi</span>${escapeHTML(source.translation_hi)}</p>`
           : '';
 
         return `
@@ -252,9 +316,9 @@ class VANIInterface {
                 <div class="source-header">
                     <span class="verse-id">${citationFormat}</span>
                     <span class="source-location">${kandaName}, Sarga ${sargaNum}</span>
-                    ${source.search_score ? `<span class="relevance-score">Score: ${(
+                    ${source.search_score ? `<span class="relevance-score">${(
                       source.search_score * 100
-                    ).toFixed(1)}%</span>` : ''}
+                    ).toFixed(1)}% match</span>` : ''}
                 </div>
                 ${titlesBlock}
                 <div class="verse-content">
@@ -281,31 +345,88 @@ class VANIInterface {
 
   formatAnswer(text) {
     if (!text) return '';
-    // Escape all HTML first to prevent injection
-    let safe = escapeHTML(text);
-    // Transform special lines into styled blocks and preserve other lines
+
+    // Escape HTML first to keep generated answer content safe.
+    const safe = escapeHTML(text);
     const lines = safe.split('\n');
-    let html = lines
-      .map((line) => {
-        let m = line.match(/^Context Summary:\s*(.*)$/);
-        if (m) {
-          return `<div class="context-summary"><span class="label">Context Summary:</span> ${m[1]}</div>`;
-        }
-        m = line.match(/^Context:\s*(.*)$/);
-        if (m) {
-          return `<div class="context-note"><span class="label">Context:</span> ${m[1]}</div>`;
-        }
-        return line;
-      })
-      .join('<br>');
-    // Highlight verse citations like K.S.V or K.S.V1-V2
-    html = html.replace(/\b(\d+\.\d+\.\d+(?:-\d+)?)\b/g, '<span class="verse-citation">$1</span>');
-    // Highlight Sanskrit/IAST terms (basic heuristic)
-    html = html.replace(
-      /\b([A-Za-z]*[āīūṛṝḷĕŏāīūṛṝḷṃḥṅñṇṭḍśṣ][A-Za-z]*)\b/g,
-      '<span class="sanskrit-term">$1</span>'
-    );
-    return html;
+    const blocks = [];
+
+    const highlightTerms = (value) => {
+      let html = value;
+      html = html.replace(/\b(\d+\.\d+\.\d+(?:-\d+)?)\b/g, '<span class="verse-citation">$1</span>');
+      html = html.replace(
+        /\b([A-Za-z]*[āīūṛṝḷĕŏṃḥṅñṇṭḍśṣ][A-Za-z]*)\b/g,
+        '<span class="sanskrit-term">$1</span>'
+      );
+      return html;
+    };
+
+    lines.forEach((rawLine) => {
+      const line = rawLine.trim();
+
+      if (!line) {
+        blocks.push('<div class="answer-spacer" aria-hidden="true"></div>');
+        return;
+      }
+
+      let m = line.match(/^Context Summary:\s*(.*)$/);
+      if (m) {
+        blocks.push(`<div class="context-summary"><span class="label">Context Summary</span>${highlightTerms(m[1])}</div>`);
+        return;
+      }
+
+      m = line.match(/^Context:\s*(.*)$/);
+      if (m) {
+        blocks.push(`<div class="context-note"><span class="label">Context</span>${highlightTerms(m[1])}</div>`);
+        return;
+      }
+
+      // Citation answers often contain clearly structured Sanskrit / IAST / English fields.
+      // Render these as distinct, quiet sections instead of one oversized paragraph.
+      m = line.match(/^Sanskrit:\s*(.*)$/i);
+      if (m) {
+        blocks.push(
+          `<div class="answer-verse-field answer-verse-field--sanskrit">` +
+          `<span class="answer-field-label">Sanskrit</span>` +
+          `<div class="answer-field-content">${m[1]}</div></div>`
+        );
+        return;
+      }
+
+      m = line.match(/^IAST:\s*(.*)$/i);
+      if (m) {
+        blocks.push(
+          `<div class="answer-verse-field answer-verse-field--iast">` +
+          `<span class="answer-field-label">IAST</span>` +
+          `<div class="answer-field-content">${m[1]}</div></div>`
+        );
+        return;
+      }
+
+      m = line.match(/^English:\s*(.*)$/i);
+      if (m) {
+        blocks.push(
+          `<div class="answer-verse-field">` +
+          `<span class="answer-field-label">English</span>` +
+          `<div class="answer-field-content">${m[1]}</div></div>`
+        );
+        return;
+      }
+
+      m = line.match(/^Hindi:\s*(.*)$/i);
+      if (m) {
+        blocks.push(
+          `<div class="answer-verse-field answer-verse-field--hindi">` +
+          `<span class="answer-field-label">Hindi</span>` +
+          `<div class="answer-field-content">${m[1]}</div></div>`
+        );
+        return;
+      }
+
+      blocks.push(`<div class="answer-line">${highlightTerms(line)}</div>`);
+    });
+
+    return blocks.join('');
   }
 
   attachTitlesToggleHandlers() {
@@ -325,7 +446,7 @@ class VANIInterface {
   }
 
   ensureGlobalTitlesControls(anyExpandable) {
-    const container = document.querySelector('.sources-container');
+    const container = document.querySelector('#sources-section .result-card');
     if (!container) return;
     let controls = container.querySelector('.titles-controls');
     if (!controls) {
@@ -369,6 +490,7 @@ class VANIInterface {
   showError(message) {
     this.errorMessage.textContent = message;
     this.errorSection.classList.remove('hidden');
+    document.body.classList.add('has-result');
     this.errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 

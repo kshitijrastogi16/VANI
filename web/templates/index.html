@@ -3,118 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VANI</title>
+    <title>VANI — Voice of Ancient Narrative Intelligence</title>
     <meta name="description" content="AI-powered Ramayana question answering system with comprehensive verse citations">
-    
-    <!-- Favicon -->
+
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-    
-    <!-- Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:wght@400;500;600&family=Merriweather:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Merriweather:wght@300;400;500&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <div class="om-symbol">🕉️</div>
-                <h1>VANI</h1>
-                <p class="tagline">Voice of Ancient Narrative Intelligence</p>
-            </div>
+    <!-- Fixed artwork backdrop -->
+    <div class="bg-artwork" aria-hidden="true"></div>
+    <div class="bg-scrim" aria-hidden="true"></div>
+
+    <div class="page">
+        <header class="top-bar">
+            <span class="mantra-group">
+                <img class="mantra-icon" src="/static/images/ganesh.jpg" alt="" aria-hidden="true">
+                <span class="mantra">ॐ श्री गणेशाय नमः</span>
+            </span>
+            <span class="wordmark" aria-label="VANI — Voice of Ancient Narrative Intelligence">
+                <span class="om" aria-hidden="true">ॐ</span>
+                <span class="wordmark-name">VANI</span>
+                <span class="wordmark-subtitle">— Voice of Ancient Narrative Intelligence</span>
+            </span>
+            <button type="button" id="about-toggle" class="about-trigger" aria-haspopup="dialog" aria-controls="about-modal" aria-expanded="false">About</button>
         </header>
 
-        <!-- Main Content -->
-        <main class="main">
-            <!-- Query Section -->
-            <section class="query-section">
-                <div class="query-container">
-                    <h2 style="color: #000000;">Ask about the Ramayana</h2>
-                    
-                    <form id="query-form" class="query-form">
-                        <div class="input-group">
-                            <textarea 
-                                id="question-input" 
-                                class="question-input" 
-                                placeholder="Ask about characters, verses, stories, or philosophical teachings..."
-                                rows="3"
-                                required
-                            ></textarea>
-                            <button type="submit" id="ask-button" class="ask-button">
-                                <span class="button-text">Ask VANI</span>
-                                <span class="loading-spinner hidden">🔄</span>
-                            </button>
-                        </div>
-                    </form>
+        <main class="stage" id="main-content">
 
-                    <!-- Query Suggestions -->
-                    <div class="suggestions">
-                        <p class="suggestions-label">Try these examples:</p>
-                        <div class="suggestion-buttons">
-                            <!-- Relationship queries (KG-first) -->
-                            <button class="suggestion-btn" data-query="Who is Rama's grandfather?">Who is Rama's grandfather?</button>
-                            <button class="suggestion-btn" data-query="Who is Vishrava's father?">Who is Vishrava's father?</button>
+            <!-- Landing: search + examples -->
+            <div class="landing">
+                <form id="query-form" class="query-form">
+                    <div class="search-box">
+                        <img class="search-avatar" src="/static/images/hanuman.jpg" alt="" aria-hidden="true">
+                        <textarea
+                            id="question-input"
+                            class="question-input"
+                            placeholder="Ask about the Ramayana....."
+                            rows="1"
+                            required
+                        ></textarea>
 
-                            <!-- Citation queries (direct verse) -->
-                            <button class="suggestion-btn" data-query="1.7.10">Quote verse 1.7.10</button>
+                        <!-- Advanced search: compact toggle inside the search control. -->
+                        <label class="advanced-switch" title="Advanced options">
+                            <input type="checkbox" id="advanced-toggle" aria-controls="advanced-panel" aria-label="Toggle advanced options">
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
 
-                            <!-- Count queries -->
-                            <button class="suggestion-btn" data-query="How many verses are there in the Ramayana?">How many verses are there in the Ramayana?</button>
+                        <button type="submit" id="ask-button" class="search-submit" aria-label="Ask VANI">
+                            <span class="button-text" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            </span>
+                            <span class="loading-spinner hidden" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                            </span>
+                        </button>
+                    </div>
 
-                            <!-- General / narrative -->
-                            <button class="suggestion-btn" data-query="Tell me about Rama's exile">Tell me about Rama's exile</button>
-                            <button class="suggestion-btn" data-query="Battle between Rama and Ravana">Battle between Rama and Ravana</button>
-
-                            <!-- Entity / location -->
-                            <button class="suggestion-btn" data-query="Who is Sugriva?">Who is Sugriva?</button>
+                    <div id="advanced-panel" class="advanced-panel hidden">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="include-context" checked>
+                            Include detailed context
+                        </label>
+                        <div class="max-results">
+                            <label for="max-results">Results</label>
+                            <select id="max-results">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-            </section>
+                </form>
 
-            <!-- Answer Section -->
-            <section id="answer-section" class="answer-section hidden">
-                <div class="answer-container">
+                <div class="suggestions">
+                    <p class="suggestions-label">Try these examples:</p>
+                    <div class="suggestion-buttons">
+                        <button class="suggestion-btn" data-query="1.1.1">Quote verse 1.1.1</button>
+                        <button class="suggestion-btn" data-query="How many verses are there in the Ramayana?">How many verses are there in the Ramayana?</button>
+                        <button class="suggestion-btn" data-query="Tell me about Rama's exile">Tell me about Rama's exile</button>
+                        <button class="suggestion-btn" data-query="Family of Dasharatha">Family of Dasharatha</button>
+                        <button class="suggestion-btn" data-query="Battle between Rama and Ravana">Battle between Rama and Ravana</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer -->
+            <section id="answer-section" class="answer-section result-panel hidden">
+                <div class="result-card">
+                    <div class="answer-question-wrap hidden" id="answer-question-wrap">
+                        <div class="answer-question-label">Question</div>
+                        <div id="answer-question" class="answer-question"></div>
+                    </div>
                     <h3>📜 Answer</h3>
                     <div id="answer-text" class="answer-text"></div>
                     <div id="answer-metadata" class="answer-metadata">
-                        <span class="metadata-item">Query Type: <span id="query-type"></span></span>
-                        <span class="metadata-item">Response Time: <span id="response-time"></span>ms</span>
-                        <span class="metadata-item">Confidence: <span id="confidence-score"></span></span>
+                        <span class="metadata-item">
+                            <span class="metadata-label">Query Type</span>
+                            <span id="query-type" class="metadata-value"></span>
+                        </span>
+                        <span class="metadata-item">
+                            <span class="metadata-label">Response</span>
+                            <span id="response-time" class="metadata-value"></span>
+                        </span>
+                        <span class="metadata-item">
+                            <span class="metadata-label">Confidence</span>
+                            <span id="confidence-score" class="metadata-value"></span>
+                        </span>
                     </div>
                 </div>
             </section>
 
-            <!-- Sources Section -->
-            <section id="sources-section" class="sources-section hidden">
-                <div class="sources-container">
-                    <h3 id="sources-title">📚 Sources & Citations</h3>
+            <!-- Sources -->
+            <section id="sources-section" class="sources-section result-panel hidden">
+                <div class="result-card">
+                    <h3 id="sources-title">Sources</h3>
                     <div id="sources-list" class="sources-list"></div>
                 </div>
             </section>
 
-            <!-- Error Section -->
-            <section id="error-section" class="error-section hidden">
-                <div class="error-container">
-                    <h3>⚠️ Error</h3>
+            <!-- Error -->
+            <section id="error-section" class="error-section result-panel hidden">
+                <div class="result-card">
+                    <h3>Unable to answer</h3>
                     <div id="error-message" class="error-message"></div>
                 </div>
             </section>
+
         </main>
 
-        <!-- Footer -->
         <footer class="footer">
-            <p>&copy; 2025 VANI - Voice of Ancient Narrative Intelligence</p>
-            <p>Built with devotion to preserve and share the wisdom of the Ramayana</p>
+            <p>VANI — exploring the Ramayana through Valmiki's verses</p>
         </footer>
     </div>
 
-    <!-- JavaScript -->
+    <!-- About modal -->
+    <div id="about-modal" class="about-modal hidden" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+        <div class="about-modal__backdrop" data-about-close></div>
+        <div class="about-modal__panel">
+            <button type="button" class="about-modal__close" data-about-close aria-label="Close">&times;</button>
+
+            <div class="about-modal__portrait">
+                <img src="/static/images/valmiki.jpg" alt="Maharishi Valmiki">
+            </div>
+
+            <div id="about-modal-title" class="about-modal__brand">About VANI</div>
+            <p class="about-modal__desc">VANI — Voice of Ancient Narrative Intelligence — is an AI-powered interface for exploring the Ramayana through its verses, characters, and ancient narratives.
+            </p>
+
+            <div class="about-modal__author">
+                <span class="about-modal__author-label">Author</span>
+                <span class="about-modal__author-name">Kshitij Rastogi</span>
+            </div>
+        </div>
+    </div>
+
     <script src="/static/js/app.js" defer></script>
 </body>
 </html>
