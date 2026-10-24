@@ -404,8 +404,8 @@ async def _initialize_components():
         db_manager = get_database_manager(settings.database_path)
         app.state.db_manager = db_manager
         
-        # Initialize vector store (if available)
-        if settings.embeddings_dir:
+        # Initialize vector store only when vector search is enabled
+        if settings.embeddings_dir and not settings.disable_vector_search:
             try:
                 from core.embeddings.storage import VectorStore
                 vector_store = VectorStore(
@@ -416,10 +416,13 @@ async def _initialize_components():
                 )
                 vector_store.load()
                 app.state.vector_store = vector_store
-                logger.info("✅ Vector store initialized")
+                logger.info("Vector store initialized")
             except Exception as e:
                 logger.warning(f"Vector store initialization failed: {e}")
                 app.state.vector_store = None
+        else:
+            app.state.vector_store = None
+            logger.info("Vector search disabled; skipping vector store initialization")
         
         # Initialize LLM client
         try:
