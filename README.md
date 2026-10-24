@@ -83,10 +83,23 @@ pip install -r requirements.txt
 # Copy environment template
 cp .env.example .env
 
-# Edit .env file with your settings
-# REQUIRED: Add your Groq API key
-GROQ_API_KEY=your_actual_groq_api_key_here
+# Edit .env file with deployment settings.
+# LLM credentials are supplied by each visitor in the VANI UI (BYOK);
+# do not add GROQ_API_KEY to deployment environment variables.
 ```
+
+
+### Bring Your Own Key (BYOK)
+
+VANI uses Groq for LLM synthesis. Visitors can expand **Bring your own Groq API key** in the web UI, enter their own key, and select **Test key** before asking questions.
+
+- The key is sent over HTTPS in the `X-Groq-API-Key` request header.
+- VANI does not save the key in a database, browser storage, or server-wide settings.
+- The key is used only for the current page/session and is lost when the page is reloaded.
+- Without a key, retrieval and template-based answers remain available; LLM-generated synthesis requires a valid key.
+- Do not configure a personal `GROQ_API_KEY` in Render or commit credentials to Git.
+
+For local development, copy `.env.example` to `.env` for non-secret settings only. Never commit `.env`.
 
 #### Config: Citation Context Window
 You can control how many neighboring verses (context) are included around a cited verse.

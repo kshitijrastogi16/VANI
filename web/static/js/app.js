@@ -48,6 +48,9 @@ class VANIInterface {
     this.maxResults = document.getElementById('max-results') || { value: '10' };
     this.advancedToggle = document.getElementById('advanced-toggle') || null;
     this.advancedPanel = document.getElementById('advanced-panel') || null;
+    this.groqApiKeyInput = document.getElementById('groq-api-key') || null;
+    this.testGroqKeyButton = document.getElementById('test-groq-key') || null;
+    this.byokStatus = document.getElementById('byok-status') || null;
 
     // About modal (optional)
     this.aboutToggle = document.getElementById('about-toggle') || null;
@@ -105,6 +108,17 @@ class VANIInterface {
       this.questionInput.style.height = 'auto';
       this.questionInput.style.height = Math.min(this.questionInput.scrollHeight, 130) + 'px';
     });
+
+    // BYOK validation
+    if (this.testGroqKeyButton) {
+      this.testGroqKeyButton.addEventListener('click', () => this.validateGroqKey());
+    }
+    if (this.groqApiKeyInput && this.byokStatus) {
+      this.groqApiKeyInput.addEventListener('input', () => {
+        this.byokStatus.textContent = '';
+        this.byokStatus.className = 'byok-status';
+      });
+    }
 
     // About modal
     this.bindAboutModal();
@@ -190,11 +204,15 @@ class VANIInterface {
       max_results: parseInt(this.maxResults.value),
     };
 
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const key = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
+    if (key) headers['X-Groq-API-Key'] = key;
+
     const response = await fetch('/query', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(payload),
     });
 
@@ -210,6 +228,41 @@ class VANIInterface {
     }
 
     return await response.json();
+  }
+
+  async validateGroqKey() {
+    const key = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
+    if (!key) {
+      this.setByokStatus('Enter your Groq API key first.', 'error');
+      return;
+    }
+
+    this.testGroqKeyButton.disabled = true;
+    this.testGroqKeyButton.textContent = 'Testing…';
+    this.setByokStatus('Checking your key with Groq…', 'pending');
+
+    try {
+      const response = await fetch('/byok/validate', {
+        method: 'POST',
+        headers: { 'X-Groq-API-Key': key },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.valid) {
+        throw new Error(data.detail || 'Key validation failed. Check the key and try again.');
+      }
+      this.setByokStatus('Key verified. VANI will use it for your questions.', 'success');
+    } catch (error) {
+      this.setByokStatus(error.message || 'Could not validate the key. Please try again.', 'error');
+    } finally {
+      this.testGroqKeyButton.disabled = false;
+      this.testGroqKeyButton.textContent = 'Test key';
+    }
+  }
+
+  setByokStatus(message, state) {
+    if (!this.byokStatus) return;
+    this.byokStatus.textContent = message;
+    this.byokStatus.className = `byok-status ${state || ''}`;
   }
 
   displayAnswer(data) {
@@ -316,9 +369,7 @@ class VANIInterface {
                 <div class="source-header">
                     <span class="verse-id">${citationFormat}</span>
                     <span class="source-location">${kandaName}, Sarga ${sargaNum}</span>
-                    ${source.search_score ? `<span class="relevance-score">${(
-                      source.search_score * 100
-                    ).toFixed(1)}% match</span>` : ''}
+                    ${Number.isFinite(Number(source.search_score)) ? `<span class="relevance-score" title="Internal retrieval ranking score; not a probability of correctness">Score ${Number(source.search_score).toFixed(3)}</span>` : ''}
                 </div>
                 ${titlesBlock}
                 <div class="verse-content">

@@ -83,6 +83,25 @@
                     </div>
                 </form>
 
+                <details class="byok-details">
+                    <summary>Bring your own Groq API key</summary>
+                    <div class="byok-settings">
+                        <label for="groq-api-key">Your Groq API key</label>
+                        <input
+                            id="groq-api-key"
+                            type="password"
+                            autocomplete="off"
+                            spellcheck="false"
+                            maxlength="512"
+                            placeholder="gsk_…"
+                            aria-describedby="byok-help byok-status"
+                        >
+                        <button type="button" id="test-groq-key" class="byok-test-button">Test key</button>
+                        <p id="byok-help" class="byok-help">Used for requests from this page only. VANI does not save it. Get a key from console.groq.com.</p>
+                        <p id="byok-status" class="byok-status" role="status" aria-live="polite"></p>
+                    </div>
+                </details>
+
                 <div class="suggestions">
                     <p class="suggestions-label">Try these examples:</p>
                     <div class="suggestion-buttons">

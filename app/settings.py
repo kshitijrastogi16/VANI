@@ -171,7 +171,6 @@ class Settings(BaseSettings):
     
     # LLM Configuration
     # Current Groq hosted model IDs. Override with GROQ_MODELS in .env.
-    groq_api_key: str = Field(default="", env="GROQ_API_KEY")
     groq_models: List[str] = Field(
         default=[
             "openai/gpt-oss-120b",  # Primary production

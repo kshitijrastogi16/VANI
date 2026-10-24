@@ -60,9 +60,11 @@ class GroqClient:
         if not GROQ_AVAILABLE:
             raise ImportError("Groq library not available. Install with: pip install groq")
         
-        self.api_key = api_key or os.getenv('GROQ_API_KEY')
+        # BYOK: credentials must be explicitly supplied for this request.
+        # Never fall back to a deployment-wide environment variable.
+        self.api_key = (api_key or "").strip()
         if not self.api_key:
-            raise ValueError("Groq API key required. Set GROQ_API_KEY environment variable.")
+            raise ValueError("A Groq API key is required for this request.")
             
         self.temperature = temperature
         self.max_tokens = max_tokens

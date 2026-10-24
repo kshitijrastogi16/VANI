@@ -9,9 +9,9 @@ import time
 import logging
 import uuid
 from contextlib import asynccontextmanager
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
-from fastapi import FastAPI, HTTPException, Depends, Request, status, Response
+from fastapi import FastAPI, HTTPException, Depends, Request, status, Response, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -41,7 +41,7 @@ except Exception:
 from pydantic import BaseModel, Field
 
 from app.settings import settings
-from app.dependencies import get_database_status, get_embeddings_status, get_llm_status
+from app.dependencies import get_database_status, get_embeddings_status
 from api.routes import health, search
 from utils.logging import setup_logging
 from rag.citations import denormalize_verse_id
@@ -252,7 +252,7 @@ async def query_endpoint(
     query_request: QueryRequest,
     db_status: bool = Depends(get_database_status),
     embeddings_status: bool = Depends(get_embeddings_status),
-    llm_status: bool = Depends(get_llm_status)
+    groq_api_key: Optional[str] = Header(default=None, alias="X-Groq-API-Key")
 ):
     """Main RAG query endpoint with comprehensive error handling"""
     
@@ -265,7 +265,7 @@ async def query_endpoint(
         
         # Execute RAG pipeline using default thread executor
         result = await asyncio.to_thread(
-            _execute_rag_pipeline, query_request, embeddings_status, llm_status
+            _execute_rag_pipeline, query_request, embeddings_status, groq_api_key
         )
         
         processing_time = time.time() - start_time
@@ -309,6 +309,33 @@ async def query_endpoint(
             query_type="error"
         )
 
+@app.post("/byok/validate")
+@limiter.limit("10/minute")
+async def validate_byok_key(
+    request: Request,
+    groq_api_key: Optional[str] = Header(default=None, alias="X-Groq-API-Key"),
+):
+    """Validate a Groq key without persisting or logging it."""
+    if not groq_api_key or not groq_api_key.strip():
+        raise HTTPException(status_code=400, detail="Enter a Groq API key first.")
+    if len(groq_api_key) > 512:
+        raise HTTPException(status_code=400, detail="The API key format is invalid.")
+
+    try:
+        from groq import Groq
+        client = Groq(api_key=groq_api_key.strip(), timeout=settings.llm_timeout, max_retries=0)
+        # A lightweight authenticated API request verifies the supplied credential.
+        client.models.list()
+        return {"valid": True, "provider": "groq", "message": "Groq key validated."}
+    except Exception as exc:
+        # Never echo provider exceptions: they can contain request details.
+        logger.info("BYOK validation failed (%s)", type(exc).__name__)
+        raise HTTPException(
+            status_code=401,
+            detail="Groq could not validate this key. Check it and try again.",
+        ) from None
+
+
 # Web interface
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -342,9 +369,6 @@ def _validate_environment():
     if missing:
         raise RuntimeError(f"Missing required environment variables: {missing}")
     
-    if not getattr(settings, 'groq_api_key', None):
-        logger.warning("GROQ_API_KEY not set; LLM features will be disabled.")
-
 def _validate_data_files():
     """Validate required data files exist"""
     
@@ -424,18 +448,10 @@ async def _initialize_components():
             app.state.vector_store = None
             logger.info("Vector search disabled; skipping vector store initialization")
         
-        # Initialize LLM client
-        try:
-            from llm.client import GroqClient
-            llm_client = GroqClient(
-                api_key=settings.groq_api_key,
-                models=settings.groq_models
-            )
-            app.state.llm_client = llm_client
-            logger.info("✅ LLM client initialized")
-        except Exception as e:
-            logger.warning(f"LLM client initialization failed: {e}")
-            app.state.llm_client = None
+        # BYOK: never initialize or retain a deployment-wide user LLM key.
+        # A provider client is created per query when X-Groq-API-Key is supplied.
+        app.state.llm_client = None
+        logger.info("BYOK enabled: Groq credentials are request-scoped")
         
         # Initialize Relationship Graph
         try:
@@ -507,10 +523,21 @@ async def _cleanup_resources():
     except Exception as e:
         logger.error(f"Cleanup error: {e}")
 
-def _execute_rag_pipeline(query_request: QueryRequest, embeddings_status: bool, llm_status: bool) -> Dict[str, Any]:
-    """Execute RAG pipeline safely"""
-    
+def _execute_rag_pipeline(
+    query_request: QueryRequest,
+    embeddings_status: bool,
+    groq_api_key: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Execute RAG pipeline using an optional request-scoped BYOK credential."""
+
     try:
+        llm_client = None
+        if groq_api_key and groq_api_key.strip():
+            from llm.client import GroqClient
+            llm_client = GroqClient(
+                api_key=groq_api_key.strip(),
+                models=settings.groq_models,
+            )
         from rag.query_router import QueryRouter
         from rag.retriever import RAGRetriever
         from rag.synthesizer import ResponseSynthesizer
@@ -524,7 +551,7 @@ def _execute_rag_pipeline(query_request: QueryRequest, embeddings_status: bool, 
         # Count queries (direct DB)
         if analysis.type == "count":
             count_result = query_router.handle_count_query(analysis)
-            synthesizer = ResponseSynthesizer(app.state.llm_client if llm_status else None)
+            synthesizer = ResponseSynthesizer(llm_client)
             syn = synthesizer.synthesize_count_response(count_result)
             return {
                 "answer": syn.answer,
@@ -549,7 +576,7 @@ def _execute_rag_pipeline(query_request: QueryRequest, embeddings_status: bool, 
             else:
                 sources = []
             # Generate a concise context summary using surrounding verses when requested
-            _syn = ResponseSynthesizer(app.state.llm_client if llm_status else None)
+            _syn = ResponseSynthesizer(llm_client)
             context_summary = ""
             try:
                 # Always use full list (main verse first, then neighbors) for summarization
@@ -1020,7 +1047,7 @@ def _execute_rag_pipeline(query_request: QueryRequest, embeddings_status: bool, 
                 entity_boost=getattr(settings, 'entity_boost_for_general', False)
             )
 
-        synthesizer = ResponseSynthesizer(app.state.llm_client if llm_status else None)
+        synthesizer = ResponseSynthesizer(llm_client)
         syn = synthesizer.synthesize(
             query=query_request.question,
             documents=ret.results,

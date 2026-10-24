@@ -335,6 +335,15 @@ class HybridSearchEngine:
         when window-level English content is reasonably sized."""
         try:
             q = (query or '').strip().lower()
+            # Use content relevance signals, not just document length or entity popularity.
+            # Keep stopwords out so a short narrative question is judged on its key terms.
+            stopwords = {
+                'a', 'an', 'and', 'are', 'about', 'as', 'at', 'be', 'by', 'did',
+                'do', 'for', 'from', 'how', 'in', 'is', 'it', 'of', 'on', 'or',
+                'tell', 'the', 'to', 'was', 'what', 'when', 'where', 'who', 'why',
+                'with', 'me', 'please', 'describe', 'explain', 'story'
+            }
+            q_terms = set(re.findall(r"[a-z0-9]+", q)) - stopwords
             # Resolve query entities once
             ents = []
             try:
@@ -346,24 +355,33 @@ class HybridSearchEngine:
             scored: List[Tuple[float, SearchResult]] = []
             for r in results:
                 boost = 0.0
-                # Exact phrase (English)
+                en = (r.translation_en or '').lower()
+                titles = ' '.join(r.sarga_titles or []).lower()
+                hay = f"{en} {titles} {(r.kanda_name or '').lower()}"
+                # Exact phrase (small bonus only; user questions rarely occur verbatim).
+                if q and q in en:
+                    boost += 0.02
+                # Query-term coverage in the actual passage/title. This helps distinguish
+                # a related character from a passage about the requested event.
+                if q_terms:
+                    present = {term for term in q_terms if re.search(r"\b" + re.escape(term) + r"\b", hay)}
+                    coverage = len(present) / len(q_terms)
+                    boost += min(0.06, 0.06 * coverage)
+                    # Penalize candidates that contain none of the meaningful query terms.
+                    # Keep penalty modest because semantic paraphrases may share no words.
+                    if not present:
+                        boost -= 0.025
+                # Entity overlap: capped and kept secondary to passage relevance.
                 try:
-                    en = (r.translation_en or '').lower()
-                    if q and q in en:
-                        boost += 0.02
-                except Exception:
-                    pass
-                # Entity overlap
-                try:
-                    hay = f"{(r.translation_en or '').lower()} {' '.join(r.sarga_titles or [])}"
                     matches = sum(1 for n in ent_names if n and n in hay)
-                    boost += min(0.05, 0.01 * matches)
+                    boost += min(0.025, 0.008 * matches)
                 except Exception:
                     pass
-                # Kanda alignment
+                # Kanda alignment only when explicitly requested by the user.
                 try:
                     kn = (r.kanda_name or '').lower()
-                    if q and any(tok in kn for tok in q.split() if len(tok) >= 5):
+                    requested_kanda = self._detect_kanda(query)
+                    if requested_kanda and requested_kanda.lower() == kn:
                         boost += 0.03
                 except Exception:
                     pass
@@ -803,13 +821,9 @@ class HybridSearchEngine:
         if matching_fields >= 3:
             boosted_score *= 1.2
         
-        # Boost important kandas (narrative significance)
-        kanda_name = result.get('kanda_name', '').lower()
-        important_kandas = ['sundara kanda', 'yuddha kanda', 'ayodhya kanda']
-        
-        if any(important in kanda_name for important in important_kandas):
-            boosted_score *= 1.05
-
+        # Do not globally boost particular kandas: that creates a popularity bias
+        # and can rank an unrelated passage above a query-relevant passage.
+        # Only boost a kanda when the user explicitly asks for that kanda.
         # Extra boost when query explicitly mentions a kanda matching this result
         try:
             q_kanda = self._detect_kanda(query)

@@ -498,20 +498,43 @@ class ResponseSynthesizer:
             }
             sources.append(source)
         
-        # Determine confidence based on citation validity and source quality
-        confidence = 0.7  # Base confidence
-        
-        if valid_citations:
-            confidence += 0.1  # Boost for valid citations
-        
-        if llm_used:
-            confidence += 0.1  # Boost for LLM usage
-        
-        # Calibrated threshold: hybrid final_score typically ranges ~0.1–0.4 for strong hits
-        if documents and documents[0].final_score > 0.25:
-            confidence += 0.1  # Boost for high-quality search results
-        
-        confidence = min(confidence, 1.0)
+        # Confidence should reflect evidence relevance, not whether an LLM was used
+        # or whether citations were mechanically attached. Fused retrieval scores are
+        # not probabilities, so keep this conservative and include query/source overlap.
+        confidence = 0.15
+        if documents:
+            top = documents[0]
+            try:
+                top_score = max(0.0, float(top.final_score or 0.0))
+            except (TypeError, ValueError):
+                top_score = 0.0
+            # A saturating score contribution avoids treating an arbitrary fused score
+            # (which can exceed 1 after reranking) as a percentage probability.
+            confidence += 0.25 * (top_score / (top_score + 0.5)) if top_score > 0 else 0.0
+            query_terms = set(re.findall(r"[a-z0-9]+", (query or '').lower()))
+            stopwords = {
+                'a', 'an', 'and', 'are', 'about', 'as', 'at', 'be', 'by', 'did',
+                'do', 'for', 'from', 'how', 'in', 'is', 'it', 'of', 'on', 'or',
+                'tell', 'the', 'to', 'was', 'what', 'when', 'where', 'who', 'why',
+                'with', 'me', 'please', 'describe', 'explain', 'story'
+            }
+            query_terms -= stopwords
+            source_text = ' '.join(
+                str(getattr(doc, 'translation_en', '') or '') + ' ' +
+                ' '.join(getattr(doc, 'sarga_titles', None) or []) + ' ' +
+                str(getattr(doc, 'kanda_name', '') or '')
+                for doc in documents[:3]
+            ).lower()
+            if query_terms:
+                covered = sum(1 for term in query_terms if re.search(r"\b" + re.escape(term) + r"\b", source_text))
+                coverage = covered / len(query_terms)
+                confidence += 0.25 * coverage
+            if valid_citations:
+                confidence += 0.05
+            # An LLM may write fluently even when retrieval is wrong; do not reward it.
+            confidence = min(0.75, max(0.0, confidence))
+        else:
+            confidence = 0.0
         
         # Apply output policy sanitization (e.g., remove 'Uttara Kanda' mentions)
         response_text = self._apply_policy_sanitization(response_text)
