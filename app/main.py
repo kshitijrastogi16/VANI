@@ -119,8 +119,12 @@ app = FastAPI(
 
 # Security middleware
 app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.local"] if settings.debug else ["localhost", "127.0.0.1"]
+    TrustedHostMiddleware,
+    allowed_hosts=(
+        ["localhost", "127.0.0.1", "*.local", "*.onrender.com"]
+        if settings.debug
+        else ["localhost", "127.0.0.1", "*.onrender.com"]
+    ),
 )
 
 # CORS middleware
