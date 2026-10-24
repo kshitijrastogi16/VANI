@@ -71,6 +71,8 @@ class Settings(BaseSettings):
     fallback_embedding_model: str = "intfloat/multilingual-e5-large"
     tertiary_embedding_model: str = "l3cube-pune/indic-sentence-similarity-sbert"
     batch_size: int = 32
+
+    disable_vector_search: bool = Field(default=False, env="DISABLE_VECTOR_SEARCH")
     
     # Search Configuration
     hybrid_top_k: int = 10

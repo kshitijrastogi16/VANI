@@ -75,21 +75,40 @@ async def search_verses(
     start_time = time.time()
     
     try:
-        # Execute using default thread executor to avoid per-request pools
+        # Execute search without loading large embedding models on free hosting
+        vector_search_enabled = (
+            embeddings_status and not settings.disable_vector_search
+        )
+
         if search_request.search_type == "bm25":
-            results = await asyncio.to_thread(_execute_bm25_search, search_request)
+            results = await asyncio.to_thread(
+                _execute_bm25_search, search_request
+            )
+
         elif search_request.search_type == "vector":
-            if not embeddings_status:
-                raise HTTPException(status_code=503, detail="Vector search not available")
-            results = await asyncio.to_thread(_execute_vector_search, request, search_request)
+            if not vector_search_enabled:
+                raise HTTPException(
+                    status_code=503,
+                    detail="Vector search is disabled on this deployment."
+                )
+            results = await asyncio.to_thread(
+                _execute_vector_search, request, search_request
+            )
+
         elif search_request.search_type == "exact":
-            results = await asyncio.to_thread(_execute_exact_search, search_request)
+            results = await asyncio.to_thread(
+                _execute_exact_search, search_request
+            )
+
         else:  # hybrid
-            if not embeddings_status:
-                # Fallback to BM25
-                results = await asyncio.to_thread(_execute_bm25_search, search_request)
+            if not vector_search_enabled:
+                results = await asyncio.to_thread(
+                    _execute_bm25_search, search_request
+                )
             else:
-                results = await asyncio.to_thread(_execute_hybrid_search, request, search_request)
+                results = await asyncio.to_thread(
+                    _execute_hybrid_search, request, search_request
+                )
         
         # Apply score filtering
         if search_request.min_score is not None:
@@ -336,8 +355,16 @@ def _execute_diagnostics(req_request: Request, request: SearchRequest, embedding
     try:
         # Prepare vector store (reuse app state when available)
         vector_store = getattr(getattr(req_request, 'app', object()), 'state', None)
-        vector_store = getattr(vector_store, 'vector_store', None) if embeddings_status else None
-        if embeddings_status and not vector_store:
+        vector_search_enabled = (
+            embeddings_status and not settings.disable_vector_search
+        )
+
+        vector_store = (
+            getattr(vector_store, 'vector_store', None)
+            if vector_search_enabled else None
+        )
+
+        if vector_search_enabled and not vector_store:
             vector_store = VectorStore(
                 embeddings_dir=settings.embeddings_dir,
                 primary_model=settings.primary_embedding_model,
