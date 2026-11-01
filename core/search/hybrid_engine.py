@@ -799,41 +799,47 @@ class HybridSearchEngine:
             return results
     
     def _apply_query_boosting(self, base_score: float, result: Dict, query: str) -> float:
-        """
-        Apply query-specific score boosting (V1 intelligence)
-        """
-        
-        boosted_score = base_score
-        query_lower = query.lower()
-        
-        # Boost results where query terms appear in multiple fields
-        fields_to_check = ['translation_en', 'shloka_iast']
-        matching_fields = 0
-        
-        for field in fields_to_check:
-            field_content = str(result.get(field, '')).lower()
-            if any(term in field_content for term in query_lower.split()):
-                matching_fields += 1
-        
-        # Multi-field boost
-        if matching_fields >= 2:
-            boosted_score *= 1.1
-        if matching_fields >= 3:
-            boosted_score *= 1.2
-        
-        # Do not globally boost particular kandas: that creates a popularity bias
-        # and can rank an unrelated passage above a query-relevant passage.
-        # Only boost a kanda when the user explicitly asks for that kanda.
-        # Extra boost when query explicitly mentions a kanda matching this result
+        """Apply small, token-aware evidence boosts without substring false positives."""
+        boosted_score = float(base_score or 0.0)
+        stopwords = {
+            "a", "an", "and", "are", "as", "at", "be", "by", "can", "did",
+            "do", "does", "for", "from", "how", "i", "in", "is", "it", "me",
+            "of", "on", "or", "please", "tell", "that", "the", "their", "them",
+            "there", "this", "to", "was", "what", "when", "where", "which", "who",
+            "why", "with", "you", "your", "about", "explain", "describe",
+        }
+        query_terms = set(re.findall(r"[a-z0-9]+", (query or "").lower())) - stopwords
+        if query_terms:
+            fields_to_check = ("translation_en", "shloka_iast", "sarga_titles")
+            matching_fields = 0
+            covered_terms = set()
+            for field in fields_to_check:
+                value = result.get(field, "") or ""
+                if isinstance(value, (list, tuple)):
+                    value = " ".join(str(item) for item in value)
+                field_terms = set(re.findall(r"[a-z0-9]+", str(value).lower()))
+                overlap = query_terms & field_terms
+                if overlap:
+                    matching_fields += 1
+                    covered_terms |= overlap
+            coverage = len(covered_terms) / max(1, len(query_terms))
+            # This heuristic is deliberately small; the main score comes from retrieval.
+            if matching_fields >= 2 and coverage >= 0.35:
+                boosted_score *= 1.03
+            elif coverage >= 0.75:
+                boosted_score *= 1.02
+
+        # Never apply a global Kanda popularity boost. Only provide a tiny location
+        # prior when the user explicitly names the matching Kanda.
         try:
             q_kanda = self._detect_kanda(query)
-            if q_kanda and q_kanda.lower() == result.get('kanda_name', '').lower():
-                boosted_score *= 1.05
+            if q_kanda and q_kanda.lower() == str(result.get("kanda_name", "")).lower():
+                boosted_score *= 1.03
         except Exception:
             pass
-        
+
         return boosted_score
-    
+
     def _enrich_results(self, scored_results: List[Tuple[float, Dict]]) -> List[SearchResult]:
         """
         Enrich results with contextual metadata (V1 approach)

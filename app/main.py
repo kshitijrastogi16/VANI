@@ -9,7 +9,7 @@ import time
 import logging
 import uuid
 from contextlib import asynccontextmanager
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Literal
 
 from fastapi import FastAPI, HTTPException, Depends, Request, status, Response, Header
 from fastapi.staticfiles import StaticFiles
@@ -234,6 +234,7 @@ class QueryRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=1000)
     include_context: bool = Field(default=True)
     max_results: int = Field(default=10, ge=1, le=50)
+    response_language: Literal["auto", "en", "hi", "hinglish"] = "auto"
 
 class QueryResponse(BaseModel):
     success: bool
@@ -243,6 +244,7 @@ class QueryResponse(BaseModel):
     confidence: float
     response_time: float
     query_type: str
+    provenance: Dict[str, Any] = Field(default_factory=dict)
 
 # Main query endpoint
 @app.post("/query", response_model=QueryResponse)
@@ -278,20 +280,34 @@ async def query_endpoint(
         except Exception:
             pass
         
+        sources = result.get("sources", [])
+        citations = result.get("citations", [])
+        provenance = result.get("provenance") or {
+            "data_source": "VANI Ramayana corpus",
+            "query_type": result.get("query_type", "general"),
+            "source_verse_ids": list(dict.fromkeys(
+                [str(item.get("verse_id")) for item in sources
+                 if isinstance(item, dict) and item.get("verse_id")]
+                + [str(item) for item in citations if item]
+            )),
+            "note": "Provenance identifies the data path and source references; it is not a separate proof that every generated claim is entailed by those sources.",
+        }
         return QueryResponse(
             success=True,
             answer=result.get("answer", "No answer generated"),
-            sources=result.get("sources", []),
-            citations=result.get("citations", []),
+            sources=sources,
+            citations=citations,
             confidence=result.get("confidence", 0.0),
             response_time=round(processing_time, 3),
-            query_type=result.get("query_type", "general")
+            query_type=result.get("query_type", "general"),
+            provenance=provenance,
         )
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Query processing error: {e}", exc_info=True)
+        # Avoid logging provider exception text; it may contain request metadata.
+        logger.error("Query processing failed (%s)", type(e).__name__)
         
         processing_time = time.time() - start_time
         try:
@@ -306,7 +322,8 @@ async def query_endpoint(
             citations=[],
             confidence=0.0,
             response_time=round(processing_time, 3),
-            query_type="error"
+            query_type="error",
+            provenance={"planner": "unavailable", "data_source": "VANI Ramayana corpus", "note": "The request failed before a trustworthy answer could be produced."},
         )
 
 @app.post("/byok/validate")
@@ -321,6 +338,7 @@ async def validate_byok_key(
     if len(groq_api_key) > 512:
         raise HTTPException(status_code=400, detail="The API key format is invalid.")
 
+    client = None
     try:
         from groq import Groq
         client = Groq(api_key=groq_api_key.strip(), timeout=settings.llm_timeout, max_retries=0)
@@ -334,6 +352,12 @@ async def validate_byok_key(
             status_code=401,
             detail="Groq could not validate this key. Check it and try again.",
         ) from None
+    finally:
+        if client is not None:
+            try:
+                client.close()
+            except Exception:
+                pass
 
 
 # Web interface
@@ -539,26 +563,102 @@ def _execute_rag_pipeline(
                 models=settings.groq_models,
             )
         from rag.query_router import QueryRouter
+        from rag.query_planner import QueryPlanner, detect_response_language, normalize_retrieval_query
         from rag.retriever import RAGRetriever
         from rag.synthesizer import ResponseSynthesizer
         from core.entities.resolver import EntityResolver
         from core.search.hybrid_engine import HybridSearchEngine
-        
-        # Router
-        query_router = QueryRouter(settings.database_path)
-        analysis = query_router.analyze_query(query_request.question)
 
-        # Count queries (direct DB)
+        query_router = QueryRouter(settings.database_path)
+        rule_analysis = query_router.analyze_query(query_request.question)
+        analysis = rule_analysis
+        response_language = detect_response_language(
+            query_request.response_language, query_request.question
+        )
+        retrieval_query = normalize_retrieval_query(query_request.question)
+        planner_provenance: Dict[str, Any] = {
+            "planner": "deterministic_fast_path",
+            "llm_used_for_planning": False,
+            "intent": analysis.type,
+            "target": analysis.target,
+            "response_language": response_language,
+            "retrieval_query": retrieval_query,
+        }
+        clarification = None
+
+        # Exact citations and recognized DB-count intents use deterministic fast paths.
+        # Other questions are planned by the request-scoped LLM when BYOK is available.
+        if llm_client is not None and rule_analysis.type not in {"citation", "count", "error"}:
+            plan_result = QueryPlanner(llm_client, query_router).plan(
+                query_request.question, query_request.response_language
+            )
+            if plan_result is not None:
+                planner_provenance = plan_result.to_provenance()
+                response_language = plan_result.response_language
+                retrieval_query = plan_result.retrieval_query or retrieval_query
+                if plan_result.needs_clarification:
+                    clarification = plan_result.clarification_question
+                elif plan_result.analysis is not None:
+                    analysis = plan_result.analysis
+                else:
+                    planner_provenance["planner"] = "deterministic_fallback_after_invalid_plan"
+                    planner_provenance["llm_used_for_planning"] = True
+            else:
+                planner_provenance["planner"] = "deterministic_fallback_after_planner_error"
+                planner_provenance["llm_used_for_planning"] = True
+        elif llm_client is None and rule_analysis.type not in {"citation", "count", "error"}:
+            planner_provenance["planner"] = "deterministic_fallback_no_llm"
+
+        if clarification:
+            return {
+                "answer": clarification,
+                "sources": [],
+                "citations": [],
+                "confidence": 0.0,
+                "query_type": "clarification",
+                "provenance": {
+                    **planner_provenance,
+                    "needs_clarification": True,
+                    "data_source": "No corpus lookup performed; clarification required",
+                    "source_verse_ids": [],
+                },
+            }
+
+        # Count queries are always calculated from local data, never by the LLM.
         if analysis.type == "count":
             count_result = query_router.handle_count_query(analysis)
             synthesizer = ResponseSynthesizer(llm_client)
-            syn = synthesizer.synthesize_count_response(count_result)
+            syn = synthesizer.synthesize_count_response(count_result, response_language)
+            table_map = {
+                "kandas": ["kandas"], "verses": ["kandas"],
+                "sargas_total": ["kandas"], "sargas": ["kandas"],
+                "verses_in_kanda": ["kandas"], "verses_in_sarga": ["sargas", "kandas"],
+                "kanda_breakdown": ["kandas"], "occurrences": ["verses"],
+            }
+            target = analysis.target or "unknown"
+            if target == "characters_total":
+                data_source, tables = "data/raw/characters.json", []
+            elif target == "locations_total":
+                data_source, tables = "data/raw/locations.json", []
+            else:
+                data_source, tables = "data/processed/ramayana.db", table_map.get(target, [])
             return {
                 "answer": syn.answer,
                 "sources": syn.sources,
                 "citations": syn.citations,
                 "confidence": syn.confidence,
-                "query_type": "count"
+                "query_type": syn.query_type or "count",
+                "provenance": {
+                    **planner_provenance,
+                    "execution_method": "deterministic_data_query",
+                    "data_source": data_source,
+                    "tables": tables,
+                    "count_value": count_result.get("count"),
+                    "entity_resolved": count_result.get("entity_resolved", True),
+                    "llm_used_for_answer": False,
+                    "source_verse_ids": [],
+                    "note": "The count value is computed from VANI's local dataset; the LLM is not used to calculate it.",
+                },
             }
 
         # Citation lookup (direct verse)
@@ -582,7 +682,7 @@ def _execute_rag_pipeline(
                 # Always use full list (main verse first, then neighbors) for summarization
                 context_summary = _syn.summarize_citation_context({
                     "sources": all_sources
-                })
+                }, response_language=response_language)
             except Exception:
                 context_summary = ""
             answer_text = citation_result.get("answer", "")
@@ -592,8 +692,18 @@ def _execute_rag_pipeline(
                 "answer": answer_text,
                 "sources": sources,
                 "citations": citations,
-                "confidence": 1.0 if verse_id else 0.5,
-                "query_type": "citation"
+                "confidence": 1.0 if verse_id else 0.0,
+                "query_type": "citation",
+                "provenance": {
+                    **planner_provenance,
+                    "execution_method": "exact_sql_verse_lookup",
+                    "data_source": "data/processed/ramayana.db",
+                    "tables": ["verses"],
+                    "source_verse_ids": [str(verse_id)] if verse_id else [],
+                    "llm_used_for_answer": False,
+                    "llm_used_for_context_summary": bool(_syn.last_context_summary_llm_used),
+                    "note": "The cited verse is retrieved by exact verse identifier from the local SQLite corpus.",
+                },
             }
 
         # Build retrieval stack for relationship/general using singleton resolver
@@ -841,7 +951,19 @@ def _execute_rag_pipeline(
                             "sources": sources,
                             "citations": citations,
                             "confidence": confidence,
-                            "query_type": "relationship"
+                            "query_type": "relationship",
+                            "provenance": {
+                                **planner_provenance,
+                                "execution_method": "local_relationship_graph_with_optional_verse_support",
+                                "data_source": "data/raw/characters.json and data/processed/ramayana.db",
+                                "tables": ["relationship graph", "verses"],
+                                "source_verse_ids": list(dict.fromkeys(
+                                    str(item.get("verse_id")) for item in sources
+                                    if isinstance(item, dict) and item.get("verse_id")
+                                )),
+                                "llm_used_for_answer": False,
+                                "note": "Relationship names are inferred from VANI's local relationship graph; listed verse IDs are supporting retrieval results when available.",
+                            },
                         }
 
             # Fallback A: On-the-fly relation inference (pattern + BM25) with citations
@@ -1014,7 +1136,19 @@ def _execute_rag_pipeline(
                             "sources": sources[:limit],
                             "citations": citations,
                             "confidence": confidence,
-                            "query_type": "relationship"
+                            "query_type": "relationship",
+                            "provenance": {
+                                **planner_provenance,
+                                "execution_method": "local_relationship_inference_with_verse_retrieval",
+                                "data_source": "data/raw/characters.json and data/processed/ramayana.db",
+                                "tables": ["relationship inference", "verses"],
+                                "source_verse_ids": list(dict.fromkeys(
+                                    str(item.get("verse_id")) for item in sources[:limit]
+                                    if isinstance(item, dict) and item.get("verse_id")
+                                )),
+                                "llm_used_for_answer": False,
+                                "note": "Relationship candidates come from local VANI data and inference rules; verse IDs show retrieved supporting passages.",
+                            },
                         }
                 except Exception as _e:
                     logger.warning(f"Relation inference fallback failed: {_e}")
@@ -1041,7 +1175,7 @@ def _execute_rag_pipeline(
             # In production we often want to avoid entity-driven OR expansion for general queries
             # Use settings.entity_boost_for_general to control this behavior (default False)
             ret = retriever.retrieve(
-                query=query_request.question,
+                query=retrieval_query,
                 top_k=retrieving_k,
                 include_context=query_request.include_context,
                 entity_boost=getattr(settings, 'entity_boost_for_general', False)
@@ -1052,26 +1186,51 @@ def _execute_rag_pipeline(
             query=query_request.question,
             documents=ret.results,
             query_type=analysis.type or "general",
-            max_sources=min(query_request.max_results, 10)
+            max_sources=min(query_request.max_results, 10),
+            response_language=response_language,
         )
 
+        source_ids = list(dict.fromkeys(
+            str(source.get("verse_id")) for source in syn.sources
+            if isinstance(source, dict) and source.get("verse_id")
+        ))
         return {
             "answer": syn.answer,
             "sources": syn.sources,
             "citations": syn.citations,
             "confidence": syn.confidence,
-            "query_type": syn.query_type
+            "query_type": syn.query_type,
+            "provenance": {
+                **planner_provenance,
+                "execution_method": "hybrid_retrieval_and_grounded_synthesis",
+                "data_source": "data/processed/ramayana.db",
+                "tables": ["verses"],
+                "retrieval_method": "BM25 + vector search when embeddings are available; otherwise configured lexical retrieval",
+                "retrieved_source_count": len(syn.sources),
+                "source_verse_ids": source_ids,
+                "llm_used_for_answer": bool(syn.llm_used),
+                "note": "Provenance identifies the source records and pipeline used. It does not independently prove entailment for every generated claim.",
+            },
         }
         
     except Exception as e:
-        logger.error(f"RAG pipeline error: {e}")
+        # Do not emit raw provider exceptions or request content into logs.
+        logger.error("RAG pipeline failed (%s)", type(e).__name__)
         return {
             "answer": "Error in RAG pipeline",
             "sources": [],
             "citations": [],
             "confidence": 0.0,
-            "query_type": "error"
+            "query_type": "error",
+            "provenance": {"planner": "error_fallback", "data_source": "VANI Ramayana corpus", "note": "Pipeline failed; no source-backed answer was produced."},
         }
+    finally:
+        # GroqClient owns HTTP clients that must be closed after each request.
+        if llm_client is not None:
+            try:
+                llm_client.cleanup()
+            except Exception:
+                logger.debug("Request-scoped LLM cleanup failed")
 
 if __name__ == "__main__":
     import uvicorn

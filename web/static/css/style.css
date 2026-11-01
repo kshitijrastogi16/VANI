@@ -1745,3 +1745,34 @@ body.has-result .answer-section {
 .byok-details summary { cursor: pointer; color: var(--on-art-dim); }
 .byok-details[open] summary { margin-bottom: 10px; color: var(--on-art); }
 .byok-settings { margin: 0 auto; }
+
+/* Query access gate, language control, and inspectable data provenance */
+.query-access-status {
+    margin: 0.55rem auto 0;
+    text-align: center;
+    color: var(--on-art-dim);
+    font-size: 0.78rem;
+}
+.query-access-status.unlocked { color: #b7e8bf; }
+.language-select { display: flex; align-items: center; gap: 7px; }
+.language-select select {
+    padding: 3px 7px;
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    background: rgba(10, 6, 2, 0.3);
+    color: var(--text-ink-medium);
+    font-size: 0.9rem;
+}
+.query-form button:disabled, .suggestion-btn:disabled { opacity: 0.48; cursor: not-allowed; }
+.provenance-panel {
+    margin-top: 1rem;
+    border-top: 1px solid var(--hairline-ink);
+    padding-top: 0.75rem;
+    color: var(--text-ink-medium);
+    font-size: 0.82rem;
+}
+.provenance-panel summary { cursor: pointer; font-weight: 600; }
+.provenance-content { margin-top: 0.65rem; overflow-wrap: anywhere; }
+.provenance-row { margin: 0.3rem 0; }
+.provenance-row strong { color: var(--text-ink); }
+.provenance-note { opacity: 0.85; font-size: 0.76rem; }

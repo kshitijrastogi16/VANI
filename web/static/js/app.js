@@ -34,6 +34,9 @@ function formatDuration(seconds) {
 
 class VANIInterface {
   constructor() {
+    // The verified credential intentionally lives only in page memory.
+    this.validatedGroqApiKey = null;
+    this.keyValidationSequence = 0;
     this.initializeElements();
     this.bindEvents();
   }
@@ -51,6 +54,8 @@ class VANIInterface {
     this.groqApiKeyInput = document.getElementById('groq-api-key') || null;
     this.testGroqKeyButton = document.getElementById('test-groq-key') || null;
     this.byokStatus = document.getElementById('byok-status') || null;
+    this.queryAccessStatus = document.getElementById('query-access-status') || null;
+    this.responseLanguage = document.getElementById('response-language') || { value: 'auto' };
 
     // About modal (optional)
     this.aboutToggle = document.getElementById('about-toggle') || null;
@@ -70,10 +75,14 @@ class VANIInterface {
     this.confidenceScore = document.getElementById('confidence-score');
     this.sourcesList = document.getElementById('sources-list');
     this.errorMessage = document.getElementById('error-message');
+    this.confidenceLabel = document.getElementById('confidence-label') || null;
+    this.provenancePanel = document.getElementById('provenance-panel') || null;
+    this.provenanceContent = document.getElementById('provenance-content') || null;
 
     // UI elements
     this.buttonText = document.querySelector('.button-text');
     this.loadingSpinner = document.querySelector('.loading-spinner');
+    this.setQueryAccess(false);
   }
 
   bindEvents() {
@@ -113,10 +122,12 @@ class VANIInterface {
     if (this.testGroqKeyButton) {
       this.testGroqKeyButton.addEventListener('click', () => this.validateGroqKey());
     }
-    if (this.groqApiKeyInput && this.byokStatus) {
+    if (this.groqApiKeyInput) {
       this.groqApiKeyInput.addEventListener('input', () => {
-        this.byokStatus.textContent = '';
-        this.byokStatus.className = 'byok-status';
+        this.keyValidationSequence += 1;
+        this.validatedGroqApiKey = null;
+        this.setQueryAccess(false);
+        this.setByokStatus('Key changed. Test it again to unlock questions.', 'pending');
       });
     }
 
@@ -155,6 +166,14 @@ class VANIInterface {
 
   async handleSubmit(e) {
     if (e) e.preventDefault();
+
+    const currentKey = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
+    if (!this.validatedGroqApiKey || currentKey !== this.validatedGroqApiKey) {
+      this.validatedGroqApiKey = null;
+      this.setQueryAccess(false);
+      this.setByokStatus('Validate your Groq API key before asking a question.', 'error');
+      return;
+    }
 
     const question = this.questionInput.value.trim();
     if (!question) {
@@ -202,13 +221,15 @@ class VANIInterface {
       question: question,
       include_context: this.includeContext.checked,
       max_results: parseInt(this.maxResults.value),
+      response_language: this.responseLanguage.value || 'auto',
     };
 
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    const key = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
-    if (key) headers['X-Groq-API-Key'] = key;
+    const headers = { 'Content-Type': 'application/json' };
+    const currentKey = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
+    if (!this.validatedGroqApiKey || currentKey !== this.validatedGroqApiKey) {
+      throw new Error('The Groq API key is not currently validated. Test the key again.');
+    }
+    headers['X-Groq-API-Key'] = this.validatedGroqApiKey;
 
     const response = await fetch('/query', {
       method: 'POST',
@@ -233,12 +254,19 @@ class VANIInterface {
   async validateGroqKey() {
     const key = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
     if (!key) {
+      this.validatedGroqApiKey = null;
+      this.setQueryAccess(false);
       this.setByokStatus('Enter your Groq API key first.', 'error');
       return;
     }
 
-    this.testGroqKeyButton.disabled = true;
-    this.testGroqKeyButton.textContent = 'Testing…';
+    const sequence = ++this.keyValidationSequence;
+    this.validatedGroqApiKey = null;
+    this.setQueryAccess(false);
+    if (this.testGroqKeyButton) {
+      this.testGroqKeyButton.disabled = true;
+      this.testGroqKeyButton.textContent = 'Testing…';
+    }
     this.setByokStatus('Checking your key with Groq…', 'pending');
 
     try {
@@ -250,12 +278,41 @@ class VANIInterface {
       if (!response.ok || !data.valid) {
         throw new Error(data.detail || 'Key validation failed. Check the key and try again.');
       }
-      this.setByokStatus('Key verified. VANI will use it for your questions.', 'success');
+      // Do not unlock if the user edited the key while validation was in flight.
+      const latestKey = this.groqApiKeyInput ? this.groqApiKeyInput.value.trim() : '';
+      if (sequence !== this.keyValidationSequence || latestKey !== key) {
+        this.validatedGroqApiKey = null;
+        this.setQueryAccess(false);
+        this.setByokStatus('The key changed during validation. Test the current key again.', 'error');
+        return;
+      }
+      this.validatedGroqApiKey = key;
+      this.setQueryAccess(true);
+      this.setByokStatus('Key verified. Questions are unlocked for this page session.', 'success');
     } catch (error) {
+      this.validatedGroqApiKey = null;
+      this.setQueryAccess(false);
       this.setByokStatus(error.message || 'Could not validate the key. Please try again.', 'error');
     } finally {
-      this.testGroqKeyButton.disabled = false;
-      this.testGroqKeyButton.textContent = 'Test key';
+      if (this.testGroqKeyButton) {
+        this.testGroqKeyButton.disabled = false;
+        this.testGroqKeyButton.textContent = 'Test key';
+      }
+    }
+  }
+
+  setQueryAccess(allowed) {
+    const enabled = Boolean(allowed && this.validatedGroqApiKey);
+    if (this.questionInput) this.questionInput.disabled = !enabled;
+    if (this.askButton) this.askButton.disabled = !enabled;
+    document.querySelectorAll('.suggestion-btn').forEach((button) => {
+      button.disabled = !enabled;
+    });
+    if (this.queryAccessStatus) {
+      this.queryAccessStatus.textContent = enabled
+        ? 'Groq key verified. VANI is ready for your question.'
+        : 'Validate your Groq API key below to unlock questions.';
+      this.queryAccessStatus.classList.toggle('unlocked', enabled);
     }
   }
 
@@ -283,9 +340,26 @@ class VANIInterface {
     this.queryType.textContent = data.query_type || 'general';
     // API provides seconds; show a human-friendly duration for end users.
     this.responseTime.textContent = formatDuration(data.response_time || 0);
-    this.confidenceScore.textContent = data.confidence
-      ? (data.confidence * 100).toFixed(1) + '%'
-      : 'N/A';
+    if (data.query_type === 'clarification') {
+      if (this.confidenceLabel) this.confidenceLabel.textContent = 'Status';
+      this.confidenceScore.textContent = 'Clarification needed';
+    } else if (data.query_type === 'count') {
+      if (this.confidenceLabel) this.confidenceLabel.textContent = 'Verification';
+      this.confidenceScore.textContent = data.provenance && data.provenance.execution_method === 'deterministic_data_query'
+        ? 'Computed from dataset' : 'Database result';
+    } else if (data.query_type === 'citation') {
+      if (this.confidenceLabel) this.confidenceLabel.textContent = 'Verification';
+      this.confidenceScore.textContent = data.provenance && data.provenance.execution_method === 'exact_sql_verse_lookup'
+        ? 'Exact database lookup' : 'Source lookup';
+    } else {
+      if (this.confidenceLabel) this.confidenceLabel.textContent = 'Evidence signal (heuristic)';
+      this.confidenceScore.textContent = Number.isFinite(Number(data.confidence))
+        ? `${(Number(data.confidence) * 100).toFixed(0)}/100 · not calibrated`
+        : 'N/A';
+    }
+    if (this.provenancePanel && this.provenanceContent) {
+      this.displayProvenance(data.provenance || {});
+    }
     // Show abstention indicator when applicable
     if (
       data.query_type === 'insufficient_evidence' ||
@@ -321,6 +395,47 @@ class VANIInterface {
 
     // Smooth scroll to answer
     this.answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  displayProvenance(provenance) {
+    if (!this.provenancePanel || !this.provenanceContent) return;
+    this.provenanceContent.replaceChildren();
+
+    const rows = [
+      ['Planner', provenance.planner],
+      ['LLM used for planning', typeof provenance.llm_used_for_planning === 'boolean' ? String(provenance.llm_used_for_planning) : undefined],
+      ['Intent', provenance.intent || provenance.query_type],
+      ['Operation', provenance.execution_method],
+      ['Data source', provenance.data_source],
+      ['Tables', Array.isArray(provenance.tables) ? provenance.tables.join(', ') : provenance.tables],
+      ['Retrieval', provenance.retrieval_method],
+      ['Retrieval query', provenance.retrieval_query],
+      ['Response language', provenance.response_language],
+      ['Records returned', provenance.retrieved_source_count],
+      ['Database count', provenance.count_value],
+      ['Source verse IDs', Array.isArray(provenance.source_verse_ids) ? provenance.source_verse_ids.join(', ') : provenance.source_verse_ids],
+      ['LLM used for answer', typeof provenance.llm_used_for_answer === 'boolean' ? String(provenance.llm_used_for_answer) : undefined],
+      ['LLM used for context summary', typeof provenance.llm_used_for_context_summary === 'boolean' ? String(provenance.llm_used_for_context_summary) : undefined],
+    ];
+
+    rows.forEach(([label, value]) => {
+      if (value === undefined || value === null || value === '') return;
+      const row = document.createElement('p');
+      row.className = 'provenance-row';
+      const strong = document.createElement('strong');
+      strong.textContent = `${label}: `;
+      row.appendChild(strong);
+      row.appendChild(document.createTextNode(String(value)));
+      this.provenanceContent.appendChild(row);
+    });
+
+    if (provenance.note) {
+      const note = document.createElement('p');
+      note.className = 'provenance-row provenance-note';
+      note.textContent = String(provenance.note);
+      this.provenanceContent.appendChild(note);
+    }
+    this.provenancePanel.classList.toggle('hidden', this.provenanceContent.childElementCount === 0);
   }
 
   displaySources(sources, citations) {
@@ -552,7 +667,15 @@ class VANIInterface {
   }
 
   setLoadingState(loading) {
-    this.askButton.disabled = loading;
+    const verified = Boolean(
+      this.validatedGroqApiKey && this.groqApiKeyInput &&
+      this.groqApiKeyInput.value.trim() === this.validatedGroqApiKey
+    );
+    this.askButton.disabled = loading || !verified;
+    this.questionInput.disabled = loading || !verified;
+    document.querySelectorAll('.suggestion-btn').forEach((button) => {
+      button.disabled = loading || !verified;
+    });
 
     if (loading) {
       this.buttonText.classList.add('hidden');

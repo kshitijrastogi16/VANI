@@ -162,15 +162,20 @@ class QueryRouter:
         Detect and classify count queries for direct database processing
         """
         
-        # 1) Specific counts FIRST to avoid being shadowed by generic patterns
-        # Verses in a specific sarga within a specific kanda
-        sarga_verse_match = re.search(
-            r"\bhow many\s+(?:shlokas|verses?)\b(?:\s+(?:are\s+there\s+in|are\s+in|in))?\s+(?:sarga|chapter|canto)\s+(\d+)\s+(?:of|in)\s+(?:the\s+)?([a-z]+(?:\s+[a-z]+)*)\s+kanda\b",
-            query,
+        # Specific verse counts within a Sarga. Use separate grammatical forms so
+        # auxiliary words such as "does" are never captured as part of the Kanda name.
+        sarga_verse_patterns = [
+            r"\bhow many\s+(?:shlokas|verses?)\s+(?:are there|are)\s+in\s+(?:sarga|chapter|canto)\s+(\d+)\s+(?:of|in)\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\bhow many\s+(?:shlokas|verses?)\s+in\s+(?:sarga|chapter|canto)\s+(\d+)\s+(?:of|in)\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\b(?:(?:tell|show|give)\s+me\s+)?(?:the\s+)?(?:verse|shloka)\s+count\s+of\s+(?:sarga|chapter|canto)\s+(\d+)\s+(?:of|in)\s+(?:the\s+)?(.+?)\s+kanda\b",
+        ]
+        sarga_verse_match = next(
+            (m for pattern in sarga_verse_patterns if (m := re.search(pattern, query))),
+            None,
         )
         if sarga_verse_match:
             sarga_num = int(sarga_verse_match.group(1))
-            kanda_name = sarga_verse_match.group(2).strip()
+            kanda_name = sarga_verse_match.group(2).strip(" \t.,?!")
             return QueryAnalysis(
                 type="count",
                 confidence=0.98,
@@ -179,13 +184,21 @@ class QueryRouter:
                 requires_llm=False,
             )
 
-        # Sarga count in specific kanda (handle "are there in" / "are in" / "in")
-        sarga_match = re.search(
-            r"\bhow many\s+(?:sargas?|chapters?|cantos?)\b(?:\s+(?:are\s+there\s+in|are\s+in|in))?\s+(?:the\s+)?([a-z]+(?:\s+[a-z]+)*)\s+kanda\b",
-            query,
+        # Sarga count in a named Kanda; support both "how many sargas in X" and
+        # "how many sargas does X have" word orders.
+        sarga_patterns = [
+            r"\bhow many\s+(?:sargas?|chapters?|cantos?)\s+(?:are there|are)\s+in\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\bhow many\s+(?:sargas?|chapters?|cantos?)\s+in\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\bhow many\s+(?:sargas?|chapters?|cantos?)\s+does\s+(.+?)\s+kanda\s+(?:have|contain)\b",
+            r"\b(?:total|number of)\s+(?:sargas?|chapters?|cantos?)\s+(?:in|of)\s+(?:the\s+)?(.+?)\s+kanda\b",
+        ]
+        sarga_match = next(
+            (m for pattern in sarga_patterns if (m := re.search(pattern, query))),
+            None,
         )
         if sarga_match:
-            kanda_name = sarga_match.group(1).strip()
+            group = 2 if len(sarga_match.groups()) > 1 else 1
+            kanda_name = sarga_match.group(group).strip(" \t.,?!")
             return QueryAnalysis(
                 type="count",
                 confidence=0.95,
@@ -194,13 +207,21 @@ class QueryRouter:
                 requires_llm=False,
             )
 
-        # Verse count in specific kanda (support verse/shloka synonyms)
-        kanda_verse_match = re.search(
-            r"\bhow many\s+(?:shlokas|verses?)\b(?:\s+(?:are\s+there\s+in|are\s+in|in))?\s+(?:the\s+)?([a-z]+(?:\s+[a-z]+)*)\s+kanda\b",
-            query,
+        # Verse count for a Kanda. The subject is captured only after the
+        # grammatical connector, avoiding captures like "does sundara".
+        kanda_verse_patterns = [
+            r"\bhow many\s+(?:shlokas|verses?)\s+does\s+(.+?)\s+kanda\s+(?:contain|have|include)\b",
+            r"\bhow many\s+(?:shlokas|verses?)\s+(?:are there|are)\s+in\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\bhow many\s+(?:shlokas|verses?)\s+in\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\b(?:total|number of)\s+(?:verses?|shlokas?)\s+(?:in|of)\s+(?:the\s+)?(.+?)\s+kanda\b",
+            r"\b(?:verse|shloka)\s+count\s+(?:for|of|in)\s+(?:the\s+)?(.+?)\s+kanda\b",
+        ]
+        kanda_verse_match = next(
+            (m for pattern in kanda_verse_patterns if (m := re.search(pattern, query))),
+            None,
         )
         if kanda_verse_match:
-            kanda_name = kanda_verse_match.group(1).strip()
+            kanda_name = kanda_verse_match.group(1).strip(" \t.,?!")
             return QueryAnalysis(
                 type="count",
                 confidence=0.95,
@@ -581,38 +602,45 @@ class QueryRouter:
                 }
             
             elif analysis.target == "sargas" and analysis.parameters:
-                kanda_name = analysis.parameters["kanda"]
-                knum, _canon = self._normalize_kanda_identifier(kanda_name)
-                
-                # Use canonical sarga_count from kandas table (handles merged multi-verse entries)
-                if knum:
-                    cursor = conn.execute(
-                        "SELECT sarga_count as count, kanda_name FROM kandas WHERE kanda_num = ?",
-                        (knum,),
-                    )
-                else:
-                    cursor = conn.execute(
-                        """
-                        SELECT sarga_count as count, kanda_name
-                        FROM kandas
-                        WHERE LOWER(kanda_name) LIKE LOWER(?)
-                        """,
-                        (f"%{kanda_name}%",),
-                    )
-                
-                result = cursor.fetchone()
-                if result:
-                    count = result["count"]
-                    actual_kanda_name = result["kanda_name"]
-                    
+                kanda_name = str(analysis.parameters.get("kanda", "")).strip()
+                knum, canonical_name = self._normalize_kanda_identifier(kanda_name)
+                if not knum or not canonical_name:
+                    available = ", ".join(row["kanda_name"] for row in self.get_canonical_kandas())
                     return {
                         "type": "count",
-                        "answer": f"The {actual_kanda_name} contains {count} sargas (chapters).",
-                        "count": count,
+                        "answer": f"No Kanda in this dataset matches '{kanda_name}'. Available Kandas: {available}.",
+                        "count": 0,
                         "target": "sargas",
-                        "kanda": actual_kanda_name,
-                        "sources": []
+                        "sources": [],
+                        "entity_resolved": False,
                     }
+
+                # Counts come only from a canonical Kanda row in SQLite.
+                cursor = conn.execute(
+                    "SELECT sarga_count as count, kanda_name FROM kandas WHERE kanda_num = ?",
+                    (knum,),
+                )
+                result = cursor.fetchone()
+                if not result:
+                    return {
+                        "type": "count",
+                        "answer": f"No Kanda in this dataset matches '{kanda_name}'.",
+                        "count": 0,
+                        "target": "sargas",
+                        "sources": [],
+                        "entity_resolved": False,
+                    }
+                count = result["count"]
+                actual_kanda_name = result["kanda_name"]
+                return {
+                    "type": "count",
+                    "answer": f"The {actual_kanda_name} contains {count} sargas (chapters).",
+                    "count": count,
+                    "target": "sargas",
+                    "kanda": actual_kanda_name,
+                    "sources": [],
+                    "entity_resolved": True,
+                }
 
             elif analysis.target == "characters_total":
                 # Count characters from JSON file
@@ -697,7 +725,10 @@ class QueryRouter:
                 cnt = cursor.fetchone()["cnt"]
                 return {
                     "type": "count",
-                    "answer": f"{cnt} verses mention '{name}'.",
+                    "answer": (
+                        f"{cnt} matching passages mention '{name}'. "
+                        "A passage may contain multiple individual verses."
+                    ),
                     "count": cnt,
                     "target": "occurrences",
                     "parameters": {"name": name},
@@ -735,46 +766,45 @@ class QueryRouter:
                 }
             
             elif analysis.target == "verses_in_kanda" and analysis.parameters:
-                kanda_name = analysis.parameters["kanda"]
-                knum, _canon = self._normalize_kanda_identifier(kanda_name)
-                
-                # True verse (shloka) count for a kanda from canonical table
-                if knum:
-                    cursor = conn.execute(
-                        "SELECT verse_count_in_kanda as count, kanda_name FROM kandas WHERE kanda_num = ?",
-                        (knum,),
-                    )
-                else:
-                    cursor = conn.execute(
-                        """
-                        SELECT verse_count_in_kanda as count, kanda_name
-                        FROM kandas
-                        WHERE LOWER(kanda_name) LIKE LOWER(?)
-                        """,
-                        (f"%{kanda_name}%",),
-                    )
-                
-                result = cursor.fetchone()
-                if result:
-                    count = result["count"]
-                    actual_kanda_name = result["kanda_name"]
-                    
+                kanda_name = str(analysis.parameters.get("kanda", "")).strip()
+                knum, canonical_name = self._normalize_kanda_identifier(kanda_name)
+                if not knum or not canonical_name:
+                    available = ", ".join(row["kanda_name"] for row in self.get_canonical_kandas())
                     return {
                         "type": "count",
-                        "answer": f"The {actual_kanda_name} contains {count:,} verses.",
-                        "count": count,
-                        "target": "verses_in_kanda", 
-                        "kanda": actual_kanda_name,
-                        "sources": []
-                    }
-                else:
-                    return {
-                        "type": "count",
-                        "answer": f"No kanda found matching '{kanda_name}'. Please check the spelling.",
+                        "answer": f"No Kanda in this dataset matches '{kanda_name}'. Available Kandas: {available}.",
                         "count": 0,
                         "target": "verses_in_kanda",
-                        "sources": []
+                        "sources": [],
+                        "entity_resolved": False,
                     }
+
+                # Exact deterministic count from the canonical Kanda row.
+                cursor = conn.execute(
+                    "SELECT verse_count_in_kanda as count, kanda_name FROM kandas WHERE kanda_num = ?",
+                    (knum,),
+                )
+                result = cursor.fetchone()
+                if not result:
+                    return {
+                        "type": "count",
+                        "answer": f"No Kanda in this dataset matches '{kanda_name}'.",
+                        "count": 0,
+                        "target": "verses_in_kanda",
+                        "sources": [],
+                        "entity_resolved": False,
+                    }
+                count = result["count"]
+                actual_kanda_name = result["kanda_name"]
+                return {
+                    "type": "count",
+                    "answer": f"The {actual_kanda_name} contains {count:,} verses.",
+                    "count": count,
+                    "target": "verses_in_kanda",
+                    "kanda": actual_kanda_name,
+                    "sources": [],
+                    "entity_resolved": True,
+                }
 
             elif analysis.target == "verses_in_sarga" and analysis.parameters:
                 kanda_name = analysis.parameters.get("kanda")
@@ -789,31 +819,30 @@ class QueryRouter:
                         "sources": []
                     }
 
-                # Resolve via join to get canonical kanda name and sarga verse count
-                knum, _canon = self._normalize_kanda_identifier(kanda_name)
-                if knum:
-                    cursor = conn.execute(
-                        """
-                        SELECT s.verse_count_in_sarga as count, k.kanda_name, s.sarga_num
-                        FROM sargas s
-                        JOIN kandas k ON s.kanda_num = k.kanda_num
-                        WHERE s.sarga_num = ? AND s.kanda_num = ?
-                        LIMIT 1
-                        """,
-                        (sarga_num, knum),
-                    )
-                else:
-                    cursor = conn.execute(
-                        """
-                        SELECT s.verse_count_in_sarga as count, k.kanda_name, s.sarga_num
-                        FROM sargas s
-                        JOIN kandas k ON s.kanda_num = k.kanda_num
-                        WHERE s.sarga_num = ? AND LOWER(k.kanda_name) LIKE LOWER(?)
-                        LIMIT 1
-                        """,
-                        (sarga_num, f"%{kanda_name}%"),
-                    )
+                # Resolve to a canonical Kanda first. Never use a broad LIKE fallback
+                # that might silently match the wrong entity.
+                knum, canonical_name = self._normalize_kanda_identifier(kanda_name)
+                if not knum or not canonical_name:
+                    available = ", ".join(row["kanda_name"] for row in self.get_canonical_kandas())
+                    return {
+                        "type": "count",
+                        "answer": f"No Kanda in this dataset matches '{kanda_name}'. Available Kandas: {available}.",
+                        "count": 0,
+                        "target": "verses_in_sarga",
+                        "sources": [],
+                        "entity_resolved": False,
+                    }
 
+                cursor = conn.execute(
+                    """
+                    SELECT s.verse_count_in_sarga as count, k.kanda_name, s.sarga_num
+                    FROM sargas s
+                    JOIN kandas k ON s.kanda_num = k.kanda_num
+                    WHERE s.sarga_num = ? AND s.kanda_num = ?
+                    LIMIT 1
+                    """,
+                    (sarga_num, knum),
+                )
                 result = cursor.fetchone()
                 if result:
                     count = result["count"]
@@ -832,10 +861,14 @@ class QueryRouter:
                 else:
                     return {
                         "type": "count",
-                        "answer": f"No match found for Sarga {sarga_num} in '{kanda_name}'. Please check the spelling.",
+                        "answer": f"No match found for Sarga {sarga_num} in '{canonical_name}'. This Sarga may not exist in the dataset.",
                         "count": 0,
                         "target": "verses_in_sarga",
-                        "sources": []
+                        "kanda": canonical_name,
+                        "sarga": sarga_num,
+                        "entity_resolved": True,
+                        "sarga_resolved": False,
+                        "sources": [],
                     }
             
             else:
@@ -847,40 +880,88 @@ class QueryRouter:
     # --------------------
     # Helpers
     # --------------------
-    def _normalize_kanda_identifier(self, name_or_phrase: str) -> Tuple[Optional[int], Optional[str]]:
-        """Normalize kanda names to kanda_num and canonical name.
-        Accepts inputs like 'Baala', 'Bala Kanda', 'kanda 1', etc.
-        Returns (kanda_num, canonical_name) or (None, None) if not recognized.
-        """
+    def get_canonical_kandas(self) -> List[Dict[str, object]]:
+        """Return canonical Kanda records from the project's database."""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
         try:
-            text = (name_or_phrase or "").lower().strip()
-            # Extract numeric form like 'kanda 2'
-            m = re.search(r"\bkanda\s*(\d)\b", text)
-            if m:
-                num = int(m.group(1))
-                return num, None
-            # Strip trailing 'kanda'
-            text = re.sub(r"\bkanda\b", "", text).strip()
-            mapping = {
-                "baala": (1, "Baala Kanda"), "bala": (1, "Baala Kanda"),
-                "ayodhya": (2, "Ayodhya Kanda"), "ayodhaya": (2, "Ayodhya Kanda"),
-                "aranya": (3, "Aranya Kanda"),
-                "kishkindha": (4, "Kishkindha Kanda"), "kiskindha": (4, "Kishkindha Kanda"),
-                "sundara": (5, "Sundara Kanda"), "sundar": (5, "Sundara Kanda"),
-                "yuddha": (6, "Yuddha Kanda"), "yudha": (6, "Yuddha Kanda"), "lanka": (6, "Yuddha Kanda"),
-                "uttara": (7, "Uttara Kanda"), "uttar": (7, "Uttara Kanda"),
-            }
-            # Try exact key
-            if text in mapping:
-                return mapping[text]
-            # Try to match first token
-            first = text.split()[0] if text else ""
-            if first in mapping:
-                return mapping[first]
-        except Exception:
-            pass
-        return None, None
-    
+            rows = conn.execute(
+                "SELECT kanda_num, kanda_name, sarga_count, verse_count_in_kanda "
+                "FROM kandas ORDER BY kanda_num"
+            ).fetchall()
+            return [dict(row) for row in rows]
+        finally:
+            conn.close()
+
+    def _normalize_kanda_identifier(
+        self, name_or_phrase: str
+    ) -> Tuple[Optional[int], Optional[str]]:
+        """Resolve aliases/typos to an existing canonical Kanda database record.
+
+        Matching policy: exact known aliases first, then conservative character-level
+        fuzzy matching. The returned name always comes from SQLite. Unknown or
+        ambiguous names return ``(None, None)`` rather than inventing a Kanda.
+        """
+        text = re.sub(r"\s+", " ", (name_or_phrase or "").lower()).strip()
+        text = text.strip(" \t.,?!'\"")
+        if not text:
+            return None, None
+
+        records = self.get_canonical_kandas()
+        canonical = {int(row["kanda_num"]): str(row["kanda_name"]) for row in records}
+        if not canonical:
+            return None, None
+
+        # Numeric Kanda references are only valid if that ID is present in SQLite.
+        numeric_match = re.fullmatch(r"(?:kanda\s*)?(\d+)", text)
+        if numeric_match:
+            number = int(numeric_match.group(1))
+            return (number, canonical[number]) if number in canonical else (None, None)
+
+        # Normalize common transliteration/spelling variants and both "kand" endings.
+        text = re.sub(r"\s+(?:kanda|kand|kaanda|khanda)$", "", text).strip()
+        text = re.sub(r"\s+", " ", text)
+        if not text:
+            return None, None
+
+        aliases = {
+            "baala": 1, "bala": 1,
+            "ayodhya": 2, "ayodhaya": 2,
+            "aranya": 3, "aaranya": 3,
+            "kishkindha": 4, "kishkinda": 4, "kiskindha": 4,
+            "sundara": 5, "sundar": 5,
+            "yuddha": 6, "yudha": 6, "lanka": 6,
+        }
+        if text in aliases:
+            number = aliases[text]
+            return (number, canonical[number]) if number in canonical else (None, None)
+
+        # Build candidates only from IDs that exist in this database. Dedupe alias
+        # scores by Kanda ID so several aliases for one book don't create ambiguity.
+        from rapidfuzz import fuzz
+
+        candidate_terms: Dict[str, int] = {}
+        for number, name in canonical.items():
+            base = re.sub(r"\s+kanda$", "", name.lower()).strip()
+            candidate_terms[base] = number
+            for alias, alias_number in aliases.items():
+                if alias_number == number:
+                    candidate_terms[alias] = number
+
+        scores_by_id: Dict[int, int] = {}
+        for candidate, number in candidate_terms.items():
+            score = int(round(fuzz.ratio(text, candidate)))
+            scores_by_id[number] = max(scores_by_id.get(number, 0), score)
+
+        ranked = sorted(scores_by_id.items(), key=lambda item: item[1], reverse=True)
+        if not ranked or ranked[0][1] < 86:
+            return None, None
+        if len(ranked) > 1 and (ranked[0][1] - ranked[1][1]) < 8:
+            return None, None
+
+        number = ranked[0][0]
+        return number, canonical[number]
+
     def handle_citation_query(self, analysis: QueryAnalysis) -> Dict:
         """
         Execute direct verse lookup queries

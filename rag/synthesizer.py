@@ -24,6 +24,15 @@ from app.metrics import RAG_ABSTENTIONS, RAG_STRICT_CITATION_FALLBACK
 
 logger = logging.getLogger(__name__)
 
+KANDA_NAMES_HI = {
+    "baala kanda": "बालकाण्ड",
+    "ayodhya kanda": "अयोध्याकाण्ड",
+    "aranya kanda": "अरण्यकाण्ड",
+    "kishkindha kanda": "किष्किन्धाकाण्ड",
+    "sundara kanda": "सुन्दरकाण्ड",
+    "yuddha kanda": "युद्धकाण्ड",
+}
+
 
 @dataclass
 class SynthesizedResponse:
@@ -44,6 +53,7 @@ class ResponseSynthesizer:
     
     def __init__(self, llm_client: Optional[GroqClient] = None):
         self.llm_client = llm_client
+        self.last_context_summary_llm_used = False
         logger.info(f"✅ Response synthesizer initialized (LLM: {'Available' if llm_client else 'None'})")
     
     def _sanitize_summary_text(self, text: str) -> str:
@@ -151,11 +161,14 @@ class ResponseSynthesizer:
         """Get system prompt for query type via VANIPrompts"""
         return VANIPrompts.get_system_prompt(qtype)
     
-    def synthesize(self, 
-                  query: str, 
-                  documents: List[SearchResult],
-                  query_type: str = "general",
-                  max_sources: int = 5) -> SynthesizedResponse:
+    def synthesize(
+        self,
+        query: str,
+        documents: List[SearchResult],
+        query_type: str = "general",
+        max_sources: int = 5,
+        response_language: str = "en",
+    ) -> SynthesizedResponse:
         """
         Main synthesis method with LLM integration and fallback
         """
@@ -166,7 +179,7 @@ class ResponseSynthesizer:
         logger.info(f"Synthesizing response for query type: {query_type}")
         
         if not documents:
-            return self._create_no_results_response(query, start_time)
+            return self._create_no_results_response(query, start_time, response_language)
         
         # If evidence is weak, optionally abstain early
         try:
@@ -177,7 +190,7 @@ class ResponseSynthesizer:
                     RAG_ABSTENTIONS.labels(reason="low_score").inc()
                 except Exception:
                     pass
-                return self._create_insufficient_evidence_response(query, documents, start_time)
+                return self._create_insufficient_evidence_response(query, documents, start_time, response_language)
         except Exception:
             pass
         
@@ -188,10 +201,11 @@ class ResponseSynthesizer:
         # Attempt LLM generation
         if self.llm_client:
             try:
-                llm_response = self._generate_with_llm(query, top_documents, query_type)
+                llm_response = self._generate_with_llm(query, top_documents, query_type, response_language)
                 if llm_response:
                     processed = self._process_llm_response(
-                        query, llm_response, top_documents, query_type, start_time, True
+                        query, llm_response, top_documents, query_type, start_time, True,
+                        response_language=response_language,
                     )
                     # Strict citation handling: if enabled and no valid citations, fall back to template
                     try:
@@ -201,22 +215,24 @@ class ResponseSynthesizer:
                                 RAG_STRICT_CITATION_FALLBACK.inc()
                             except Exception:
                                 pass
-                            template_response = self._generate_template_response(query, top_documents)
+                            template_response = self._generate_template_response(query, top_documents, response_language)
                             return self._process_llm_response(
-                                query, template_response, top_documents, query_type, start_time, False
+                                query, template_response, top_documents, query_type, start_time, False,
+                                response_language=response_language,
                             )
                     except Exception:
                         pass
                     return processed
             except Exception as e:
-                logger.warning(f"LLM generation failed: {e}")
+                logger.warning("LLM generation failed (%s)", type(e).__name__)
         
         # Fallback to template response
         logger.info("Using template fallback response")
-        template_response = self._generate_template_response(query, top_documents)
+        template_response = self._generate_template_response(query, top_documents, response_language)
         
         return self._process_llm_response(
-            query, template_response, top_documents, query_type, start_time, False
+            query, template_response, top_documents, query_type, start_time, False,
+            response_language=response_language,
         )
     
     def _format_sources_for_llm(self, documents: List[SearchResult]) -> str:
@@ -282,7 +298,13 @@ class ResponseSynthesizer:
         
         return '\n\n'.join(formatted_lines)
     
-    def _generate_with_llm(self, query: str, sources: List[SearchResult], query_type: str) -> Optional[str]:
+    def _generate_with_llm(
+        self,
+        query: str,
+        sources: List[SearchResult],
+        query_type: str,
+        response_language: str = "en",
+    ) -> Optional[str]:
         """Generate response using LLM client with VANIPrompts"""
         # Build structured sources for prompt builder
         structured_sources = []
@@ -344,6 +366,14 @@ class ResponseSynthesizer:
             qtype = QueryType.GENERAL
 
         system_prompt = self._create_system_prompt(qtype)
+        language_instructions = {
+            "en": "Respond in clear English.",
+            "hi": "उत्तर केवल शुद्ध हिन्दी में देवनागरी लिपि में दें। अंग्रेज़ी वाक्य न मिलाएँ। पात्रों और स्थानों के प्रचलित नाम सुरक्षित रखें।",
+            "hinglish": "Answer in natural Hinglish using Roman script, mixing Hindi and English naturally. Do not use Devanagari unless quoting source text.",
+        }
+        system_prompt += "\n\nRESPONSE LANGUAGE REQUIREMENT: " + language_instructions.get(
+            response_language, language_instructions["en"]
+        )
         user_prompt = VANIPrompts.create_user_prompt(query, structured_sources, qtype)
 
         try:
@@ -353,14 +383,23 @@ class ResponseSynthesizer:
                 query_type=query_type
             )
             if response and response.strip():
+                normalized = response.strip().lower()
+                provider_fallbacks = (
+                    "i apologize, but i'm unable to process your question",
+                    "i encountered an error while processing your request",
+                )
+                if any(normalized.startswith(prefix) for prefix in provider_fallbacks):
+                    return None
                 # Sanitize out any chain-of-thought / <think> blocks proactively
                 clean = self._sanitize_summary_text(response.strip())
                 return clean
         except Exception as e:
-            logger.error(f"LLM generation error: {e}")
+            logger.error("LLM generation error (%s)", type(e).__name__)
         return None
     
-    def _generate_template_response(self, query: str, documents: List[SearchResult]) -> str:
+    def _generate_template_response(
+        self, query: str, documents: List[SearchResult], response_language: str = "en"
+    ) -> str:
         """
         Generate template-based fallback response
         """
@@ -389,14 +428,27 @@ class ResponseSynthesizer:
         except Exception:
             sarga_display = '?'
 
-        response_parts.append(
-            f"The most relevant reference is {citation} from {kanda_display}, "
-            f"Sarga {sarga_display}{context}."
-        )
-        
-        # Add translation if available
-        if best_result.translation_en:
-            response_parts.append(f"\n\"{best_result.translation_en}\"")
+        if response_language == "hi":
+            kanda_display = KANDA_NAMES_HI.get(kanda_display.lower(), kanda_display)
+            response_parts.append(
+                f"इस प्रश्न के लिए सबसे प्रासंगिक संदर्भ {citation} है। यह {kanda_display} के सर्ग {sarga_display}{context} से है।"
+            )
+            source_translation = best_result.translation_hi or best_result.translation_en
+        elif response_language == "hinglish":
+            response_parts.append(
+                f"Is question ke liye sabse relevant reference {citation} hai. Yeh {kanda_display} ke Sarga {sarga_display}{context} se hai."
+            )
+            source_translation = best_result.translation_hi or best_result.translation_en
+        else:
+            response_parts.append(
+                f"The most relevant reference is {citation} from {kanda_display}, "
+                f"Sarga {sarga_display}{context}."
+            )
+            source_translation = best_result.translation_en or best_result.translation_hi
+
+        # Add only a translation actually present in the dataset.
+        if source_translation:
+            response_parts.append(f"\n\"{source_translation}\"")
         
         # Add additional references if available
         if len(documents) > 1:
@@ -406,19 +458,26 @@ class ResponseSynthesizer:
                 additional_refs.append(f"{add_citation}")
             
             if additional_refs:
-                response_parts.append(
-                    f"\n\nSee also: {', '.join(additional_refs)}"
-                )
+                if response_language == "hi":
+                    prefix = "\n\nअन्य संदर्भ: "
+                elif response_language == "hinglish":
+                    prefix = "\n\nAur dekhein: "
+                else:
+                    prefix = "\n\nSee also: "
+                response_parts.append(prefix + ", ".join(ref for ref in additional_refs if ref))
         
         return ''.join(response_parts)
     
-    def _process_llm_response(self, 
-                            query: str,
-                            response_text: str, 
-                            documents: List[SearchResult],
-                            query_type: str,
-                            start_time: float,
-                            llm_used: bool) -> SynthesizedResponse:
+    def _process_llm_response(
+        self,
+        query: str,
+        response_text: str,
+        documents: List[SearchResult],
+        query_type: str,
+        start_time: float,
+        llm_used: bool,
+        response_language: str = "en",
+    ) -> SynthesizedResponse:
         """
         Process and validate LLM response, extract citations
         """
@@ -455,9 +514,15 @@ class ResponseSynthesizer:
             except Exception:
                 continue
 
-        # Remove any inline K.S.V markers if present in the model output
+        # Preserve source-backed template citations. For model-generated text,
+        # remove only citations that do not exist in the retrieved source set.
         try:
-            response_text = re.sub(r"\b\d+\.\d+\.\d+(?:-\d+)?\b", "", response_text)
+            if llm_used:
+                allowed_verse_ids = {
+                    str(doc.verse_id) for doc in documents
+                    if getattr(doc, "verse_id", None)
+                }
+                response_text = remove_invalid_citations(response_text, allowed_verse_ids)
             response_text = re.sub(r"\s{2,}", " ", response_text).strip()
         except Exception:
             response_text = response_text.strip() if isinstance(response_text, str) else ""
@@ -472,7 +537,7 @@ class ResponseSynthesizer:
                     RAG_STRICT_CITATION_FALLBACK.inc()
                 except Exception:
                     pass
-                template_response = self._generate_template_response(query, documents)
+                template_response = self._generate_template_response(query, documents, response_language)
                 # Derive citations again from documents (same as above)
                 valid_citations = [denormalize_verse_id(getattr(d, 'verse_id', '')) for d in documents if getattr(d, 'verse_id', None)]
                 response_text = template_response
@@ -551,13 +616,21 @@ class ResponseSynthesizer:
             processing_time=processing_time
         )
     
-    def _create_no_results_response(self, query: str, start_time: float) -> SynthesizedResponse:
+    def _create_no_results_response(
+        self, query: str, start_time: float, response_language: str = "en"
+    ) -> SynthesizedResponse:
         """
         Create response when no documents are found
         """
         
         return SynthesizedResponse(
-            answer="No relevant verses were found to answer this question. You may want to rephrase your query or try different terms.",
+            answer=(
+                "इस प्रश्न का उत्तर देने के लिए कोई प्रासंगिक श्लोक नहीं मिला। प्रश्न को दूसरे शब्दों में पूछकर देखें।"
+                if response_language == "hi" else
+                "Is sawaal ka jawab dene ke liye relevant shlok nahi mile. Sawal ko alag shabdon mein pooch kar dekhein."
+                if response_language == "hinglish" else
+                "No relevant verses were found to answer this question. You may want to rephrase your query or try different terms."
+            ),
             sources=[],
             citations=[],
             confidence=0.0,
@@ -566,7 +639,13 @@ class ResponseSynthesizer:
             processing_time=time.time() - start_time
         )
 
-    def _create_insufficient_evidence_response(self, query: str, documents: List[SearchResult], start_time: float) -> SynthesizedResponse:
+    def _create_insufficient_evidence_response(
+        self,
+        query: str,
+        documents: List[SearchResult],
+        start_time: float,
+        response_language: str = "en",
+    ) -> SynthesizedResponse:
         """Return a cautious response when the top fused score is too low.
         Include the top 1–2 citations as suggestions rather than a definitive answer."""
         try:
@@ -574,7 +653,12 @@ class ResponseSynthesizer:
             suggestions = ", ".join(denormalize_verse_id(d.verse_id) for d in top if getattr(d, 'verse_id', None))
         except Exception:
             suggestions = ""
-        text = "I don't have enough evidence to answer confidently. You may refer to these verses: " + suggestions if suggestions else "I don't have enough evidence to answer confidently."
+        if response_language == "hi":
+            text = ("विश्वसनीय उत्तर देने के लिए पर्याप्त प्रमाण नहीं मिले। संबंधित संदर्भ: " + suggestions) if suggestions else "विश्वसनीय उत्तर देने के लिए पर्याप्त प्रमाण नहीं मिले।"
+        elif response_language == "hinglish":
+            text = ("Confident jawab dene ke liye kaafi evidence nahi mila. Relevant references: " + suggestions) if suggestions else "Confident jawab dene ke liye kaafi evidence nahi mila."
+        else:
+            text = "I don't have enough evidence to answer confidently. You may refer to these verses: " + suggestions if suggestions else "I don't have enough evidence to answer confidently."
         return SynthesizedResponse(
             answer=text,
             sources=[{
@@ -597,22 +681,94 @@ class ResponseSynthesizer:
             processing_time=time.time() - start_time,
         )
     
-    def synthesize_count_response(self, count_result: Dict) -> SynthesizedResponse:
-        """
-        Handle count queries (no citations needed)
-        """
-        
+    def synthesize_count_response(
+        self, count_result: Dict, response_language: str = "en"
+    ) -> SynthesizedResponse:
+        """Format a verified database count without asking an LLM to recalculate it."""
+        answer = count_result.get("answer", "Count query processed.")
+        target = count_result.get("target")
+        count = count_result.get("count")
+        kanda = count_result.get("kanda") or ""
+        sarga = count_result.get("sarga")
+        hindi_kanda = KANDA_NAMES_HI.get(str(kanda).lower(), str(kanda))
+
+        # A zero returned for a missing Sarga is not a legitimate verse count.
+        # Keep invalid-entity / invalid-Sarga responses distinct from true counts.
+        unresolved_kanda = count_result.get("entity_resolved") is False
+        missing_sarga = count_result.get("sarga_resolved") is False
+        if unresolved_kanda or missing_sarga:
+            if response_language == "hi":
+                if missing_sarga and kanda and sarga:
+                    answer = f"{hindi_kanda} के सर्ग {sarga} की इस डेटासेट में कोई प्रविष्टि नहीं मिली। कृपया सर्ग संख्या जाँचें।"
+                else:
+                    answer = "इस कांड का नाम डेटासेट में नहीं मिला। कृपया उपलब्ध कांडों के नाम जाँचें।"
+            elif response_language == "hinglish":
+                if missing_sarga and kanda and sarga:
+                    answer = f"Is dataset mein {kanda} ke Sarga {sarga} ki entry nahi mili. Sarga number check karein."
+                else:
+                    answer = "Yeh Kanda is dataset mein nahi mila. Available Kanda names check karein."
+            else:
+                answer = count_result.get("answer", "The requested entity could not be resolved in the dataset.")
+            return SynthesizedResponse(
+                answer=answer,
+                sources=[],
+                citations=[],
+                confidence=0.0,
+                query_type="clarification",
+                llm_used=False,
+                processing_time=0.001,
+            )
+
+        if response_language == "hi":
+            breakdown = count_result.get("breakdown", []) or []
+            breakdown_hi = "; ".join(
+                f"{KANDA_NAMES_HI.get(str(item.get('kanda_name', '')).lower(), item.get('kanda_name', ''))}: "
+                f"{item.get('sarga_count', 0)} सर्ग, {int(item.get('verse_count_in_kanda', 0)):,} श्लोक"
+                for item in breakdown
+            )
+            occurrence_name = (count_result.get("parameters") or {}).get("name", "दिए गए नाम")
+            templates = {
+                "kandas": lambda: f"इस डेटासेट में रामायण के {count} काण्ड हैं।",
+                "verses": lambda: f"इस डेटासेट में रामायण के कुल {count:,} श्लोक हैं।",
+                "sargas_total": lambda: f"इस डेटासेट में रामायण के कुल {count} सर्ग हैं।",
+                "sargas": lambda: f"{hindi_kanda} में कुल {count} सर्ग हैं।",
+                "verses_in_kanda": lambda: f"{hindi_kanda} में कुल {count:,} श्लोक हैं।",
+                "verses_in_sarga": lambda: f"{hindi_kanda} के सर्ग {sarga} में {count} श्लोक हैं।",
+                "characters_total": lambda: f"इस डेटासेट में कुल {count} पात्र दर्ज हैं।",
+                "locations_total": lambda: f"इस डेटासेट में कुल {count} स्थान दर्ज हैं।",
+                "occurrences": lambda: f"'{occurrence_name}' का उल्लेख {count} मेल खाते पाठ-प्रविष्टियों में मिला। एक प्रविष्टि में एक से अधिक व्यक्तिगत श्लोक हो सकते हैं।",
+                "kanda_breakdown": lambda: "काण्ड-वार विवरण: " + breakdown_hi,
+            }
+            answer = templates[target]() if target in templates else "डेटासेट से इस गणना की पुष्टि नहीं हो सकी।"
+            if count_result.get("entity_resolved") is False:
+                answer = "इस कांड का नाम डेटासेट में नहीं मिला। कृपया उपलब्ध कांडों के नाम जाँचें।"
+        elif response_language == "hinglish":
+            templates = {
+                "kandas": lambda: f"Is dataset mein Ramayana ke {count} kanda hain.",
+                "verses": lambda: f"Is dataset mein Ramayana ke kul {count:,} shlok hain.",
+                "sargas_total": lambda: f"Is dataset mein Ramayana ke kul {count} sarga hain.",
+                "sargas": lambda: f"{kanda} mein kul {count} sarga hain.",
+                "verses_in_kanda": lambda: f"{kanda} mein kul {count:,} shlok hain.",
+                "verses_in_sarga": lambda: f"{kanda} ke Sarga {sarga} mein {count} shlok hain.",
+                "kanda_breakdown": lambda: "Kanda-wise breakdown: " + answer,
+            }
+            answer = templates[target]() if target in templates else "Is count ko dataset se verify nahi kar paaya."
+            if count_result.get("entity_resolved") is False:
+                answer = "Yeh Kanda is dataset mein nahi mila. Available Kanda names check karein."
+
         return SynthesizedResponse(
-            answer=count_result.get("answer", "Count query processed."),
-            sources=[],  # Count queries don't need verse sources
+            answer=answer,
+            sources=[],
             citations=[],
             confidence=1.0,
             query_type="count",
             llm_used=False,
-            processing_time=0.001
+            processing_time=0.001,
         )
     
-    def summarize_citation_context(self, citation_result: Dict[str, Any]) -> str:
+    def summarize_citation_context(
+        self, citation_result: Dict[str, Any], response_language: str = "en"
+    ) -> str:
         """
         Create a concise 2-3 sentence context summary for a direct verse lookup
         using the verse itself and its surrounding verses (from `citation_result['sources']`).
@@ -620,6 +776,7 @@ class ResponseSynthesizer:
         Uses LLM when available; otherwise falls back to a deterministic heuristic
         based on English translations and sarga titles.
         """
+        self.last_context_summary_llm_used = False
         try:
             sources: List[Dict[str, Any]] = citation_result.get("sources", []) or []
             if not sources:
@@ -661,12 +818,18 @@ class ResponseSynthesizer:
                             policy_tail += " Do not mention 'Uttara Kanda'."
                     except Exception:
                         pass
+                    language_instruction = {
+                        "hi": "Respond only in natural Hindi written in Devanagari script.",
+                        "hinglish": "Respond in natural Hinglish using Roman script.",
+                        "en": "Respond in clear English.",
+                    }.get(response_language, "Respond in clear English.")
                     system_prompt = (
                         "You are a precise assistant for the Ramayana. "
                         "Given a verse and its immediate surrounding verses, write a brief, neutral summary "
                         "(2-3 sentences) of what is happening in this place in the narrative. "
                         "Use ONLY the provided content. Do not invent details. Do not include citations in the text. "
-                        "Do not include any analysis, steps, chain-of-thought, or <think> blocks. Output ONLY the final 2-3 sentences." + policy_tail
+                        "Do not include any analysis, steps, chain-of-thought, or <think> blocks. "
+                        + language_instruction + " Output ONLY the final 2-3 sentences." + policy_tail
                     )
                     user_prompt = (
                         f"Summarize the immediate context of verse {main_citation} "
@@ -684,9 +847,10 @@ class ResponseSynthesizer:
                         clean = self._limit_sentences(clean, 3)
                         if len(clean) > 480:
                             clean = clean[:477].rstrip() + "..."
+                        self.last_context_summary_llm_used = True
                         return self._apply_policy_sanitization(clean)
                 except Exception as e:
-                    logger.warning(f"LLM context summary failed: {e}")
+                    logger.warning("LLM context summary failed (%s)", type(e).__name__)
 
             # Fallback heuristic summarization
             titles: List[str] = []
@@ -697,9 +861,10 @@ class ResponseSynthesizer:
                 titles = []
 
             title_lead = (titles[0].strip() if titles else "").rstrip('.')
-            main_en = (main.get("translation_en") or "").strip()
-            prev_en = next((n.get("translation_en").strip() for n in neighbors if (n.get("verse_index", 0) or 0) < (main.get("verse_index", 0) or 0) and n.get("translation_en")), "")
-            next_en = next((n.get("translation_en").strip() for n in neighbors if (n.get("verse_index", 0) or 0) > (main.get("verse_index", 0) or 0) and n.get("translation_en")), "")
+            translation_key = "translation_hi" if response_language in {"hi", "hinglish"} else "translation_en"
+            main_en = (main.get(translation_key) or main.get("translation_en") or "").strip()
+            prev_en = next((n.get(translation_key, n.get("translation_en", "")).strip() for n in neighbors if (n.get("verse_index", 0) or 0) < (main.get("verse_index", 0) or 0) and n.get(translation_key, n.get("translation_en"))), "")
+            next_en = next((n.get(translation_key, n.get("translation_en", "")).strip() for n in neighbors if (n.get("verse_index", 0) or 0) > (main.get("verse_index", 0) or 0) and n.get(translation_key, n.get("translation_en"))), "")
 
             parts: List[str] = []
             if title_lead:
@@ -715,6 +880,12 @@ class ResponseSynthesizer:
                 return "Context summary unavailable."
 
             fallback = ' '.join(p.strip() for p in parts if p).replace("\n", " ")
+            if response_language == "hi":
+                lead = f"संदर्भ श्लोक {denormalize_verse_id(str(main.get('verse_id', '')))} के आसपास का प्रसंग: "
+                fallback = lead + fallback
+            elif response_language == "hinglish":
+                lead = f"Verse {denormalize_verse_id(str(main.get('verse_id', '')))} ke aas-paas ka context: "
+                fallback = lead + fallback
             # Keep fallback concise
             if len(fallback) > 480:
                 fallback = fallback[:477].rstrip() + "..."

@@ -80,21 +80,41 @@ class RAGRetriever:
         if (qa and qa.type == "general" and getattr(settings, 'entity_boost_for_general', False)):
             allow_by_router = True
 
-        # Final allowance respects caller flag too
+        # Final allowance respects caller flag too. Entity aliases can improve a
+        # bare entity lookup, but OR-expanding them alongside a topical query can
+        # drown out the user's actual intent (e.g. "Rama exile" -> generic "Rama").
         allow_entity_boost = bool(entity_boost) and bool(allow_by_router)
 
-        # 1. Entity resolution and enhancement (only when allowed)
+        # 1. Resolve entities, but only replace the search query with aliases when
+        # the user essentially asked for one entity. Multi-concept questions stay
+        # intact and are not converted into broad entity-only OR queries.
         entities_found = []
         expanded_query = query
+        use_entity_expansion = False
         if allow_entity_boost:
-            entities_found = self.entity_resolver.resolve_multiple(query)
-            high_confidence_entities = [
-                entity for entity in entities_found 
-                if entity.confidence >= self.confidence_threshold
-            ]
-            if high_confidence_entities:
-                expanded_query = self._enhance_query_with_entities(query, high_confidence_entities)
-                logger.debug(f"Entity-enhanced query: '{expanded_query}'")
+            resolved_entities = self.entity_resolver.resolve_multiple(query)
+            content_stopwords = {
+                "a", "an", "and", "are", "as", "at", "be", "by", "can", "did",
+                "do", "does", "for", "from", "how", "i", "in", "is", "it", "me",
+                "of", "on", "or", "please", "tell", "that", "the", "their", "them",
+                "there", "this", "to", "was", "what", "when", "where", "which", "who",
+                "why", "with", "you", "your", "about", "explain", "describe", "story",
+                "could", "would", "should", "give", "details", "information",
+            }
+            content_terms = set(re.findall(r"[a-z0-9]+", (query or "").lower())) - content_stopwords
+            # Two or more substantive terms indicate a topical question whose
+            # evidence should be ranked against the original query, not aliases.
+            if len(content_terms) <= 1:
+                high_confidence_entities = [
+                    entity for entity in resolved_entities
+                    if entity.confidence >= self.confidence_threshold
+                ]
+                if high_confidence_entities:
+                    entities_found = high_confidence_entities[:1]
+                    expanded_query = self._enhance_query_with_entities(query, entities_found)
+                    use_entity_expansion = expanded_query != query
+                    if use_entity_expansion:
+                        logger.debug("Entity alias expansion applied to a single-entity query")
         
         # 2. Optional PRF expansion (English-only) after entity enhancement
         # Guard: if the query is already an OR-joined quoted expansion, skip PRF to avoid noise
@@ -117,7 +137,7 @@ class RAGRetriever:
         search_results = self.search_engine.search(
             query=expanded_query,
             top_k=fetch_k,
-            include_entities=allow_entity_boost
+            include_entities=use_entity_expansion
         )
         # 3b. Adaptive cut-off based on score drop ratio
         if getattr(settings, 'adaptive_retrieval', False) and search_results:

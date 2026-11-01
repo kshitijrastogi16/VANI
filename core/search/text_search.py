@@ -12,6 +12,20 @@ from app.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
+def _bm25_similarity(raw_score: float) -> float:
+    """Convert SQLite FTS5 BM25 into a higher-is-better value in (0, 1).
+
+    FTS5's BM25 function returns negative scores and orders the most relevant
+    result first (the most negative score). Clipping the raw score at zero
+    incorrectly mapped every result to 1.0 and erased ranking information.
+    """
+    try:
+        strength = max(0.0, -float(raw_score))
+    except (TypeError, ValueError):
+        return 0.0
+    return strength / (1.0 + strength)
+
 def _bm25_weights_clause() -> str:
     """Return a comma-separated weight clause for bm25() based on settings.
     If settings.bm25_column_weights is provided, use it as-is.
@@ -112,7 +126,7 @@ def search_bm25(db_path: str,
                 except Exception:
                     bm25_raw = 0.0
                 # Simple normalization: higher is better, bounded in (0,1]
-                similarity = 1.0 / (1.0 + max(0.0, bm25_raw))
+                similarity = _bm25_similarity(bm25_raw)
                 
                 # Apply minimum score filter if specified
                 if min_score is not None and similarity < float(min_score):
@@ -173,7 +187,7 @@ def search_bm25(db_path: str,
                         bm25_raw = float(row['bm25_score'])
                     except Exception:
                         bm25_raw = 0.0
-                    similarity = 1.0 / (1.0 + max(0.0, bm25_raw))
+                    similarity = _bm25_similarity(bm25_raw)
                     result = dict(row)
                     result['search_type'] = 'bm25'
                     result['score'] = similarity
@@ -264,7 +278,7 @@ def search_bm25_fielded(db_path: str,
                     bm25_raw = float(row['bm25_score'])
                 except Exception:
                     bm25_raw = 0.0
-                similarity = 1.0 / (1.0 + max(0.0, bm25_raw))
+                similarity = _bm25_similarity(bm25_raw)
                 if min_score is not None and similarity < float(min_score):
                     continue
                 result = dict(row)
@@ -333,7 +347,7 @@ def search_bm25_with_filters(db_path: str,
                     bm25_raw = float(row['bm25_score'])
                 except Exception:
                     bm25_raw = 0.0
-                similarity = 1.0 / (1.0 + max(0.0, bm25_raw))
+                similarity = _bm25_similarity(bm25_raw)
                 if min_score is not None and similarity < float(min_score):
                     continue
                 d = dict(row)
