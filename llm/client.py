@@ -60,9 +60,11 @@ class GroqClient:
         if not GROQ_AVAILABLE:
             raise ImportError("Groq library not available. Install with: pip install groq")
         
-        self.api_key = api_key or os.getenv('GROQ_API_KEY')
+        # BYOK: credentials must be explicitly supplied for this request.
+        # Never fall back to a deployment-wide environment variable.
+        self.api_key = (api_key or "").strip()
         if not self.api_key:
-            raise ValueError("Groq API key required. Set GROQ_API_KEY environment variable.")
+            raise ValueError("A Groq API key is required for this request.")
             
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -190,7 +192,7 @@ class GroqClient:
                 logger.debug(f"Initialized client for {config.name}")
                 
             except Exception as e:
-                logger.warning(f"Failed to initialize {config.name}: {e}")
+                logger.warning("Failed to initialize model %s (%s)", config.name, type(e).__name__)
         
         if not self.clients:
             raise RuntimeError("No Groq models available")
@@ -241,7 +243,7 @@ class GroqClient:
                     self._record_failure(config.id, e)
                     
                     # Log but continue to next model
-                    logger.warning(f"Model {config.name} failed: {e}")
+                    logger.warning("Model %s failed (%s)", config.name, type(e).__name__)
                     continue
             
             # All models failed
@@ -251,12 +253,12 @@ class GroqClient:
             fallback_msg = ("I apologize, but I'm unable to process your question at the moment. "
                           "This might be due to high demand or technical issues. Please try again in a few moments.")
             
-            logger.error(f"All LLM models failed. Last error: {last_error}")
+            logger.error("All LLM models failed (%s)", type(last_error).__name__ if last_error else "unknown")
             return fallback_msg
             
         except Exception as e:
             self._record_total_failure(start_time)
-            logger.error(f"LLM generation failed: {e}", exc_info=True)
+            logger.error("LLM generation failed (%s)", type(e).__name__)
             return "I encountered an error while processing your request. Please try again."
     
     def _generate_with_model(self, config: ModelConfig, messages: List[Dict], stream: bool) -> Optional[str]:
@@ -288,7 +290,7 @@ class GroqClient:
                                 full_content += chunk.choices[0].delta.content
                         return full_content.strip() if full_content else None
                     except Exception as e:
-                        logger.error(f"Streaming error: {e}")
+                        logger.error("Streaming error (%s)", type(e).__name__)
                         return None
                 else:
                     # Handle standard response
@@ -559,7 +561,7 @@ class GroqClient:
                 if hasattr(client, 'close'):
                     client.close()
             except Exception as e:
-                logger.warning(f"Error closing client {model_id}: {e}")
+                logger.warning("Error closing model client %s (%s)", model_id, type(e).__name__)
         
         self.clients.clear()
         logger.info("✅ LLM client cleanup complete")

@@ -335,6 +335,15 @@ class HybridSearchEngine:
         when window-level English content is reasonably sized."""
         try:
             q = (query or '').strip().lower()
+            # Use content relevance signals, not just document length or entity popularity.
+            # Keep stopwords out so a short narrative question is judged on its key terms.
+            stopwords = {
+                'a', 'an', 'and', 'are', 'about', 'as', 'at', 'be', 'by', 'did',
+                'do', 'for', 'from', 'how', 'in', 'is', 'it', 'of', 'on', 'or',
+                'tell', 'the', 'to', 'was', 'what', 'when', 'where', 'who', 'why',
+                'with', 'me', 'please', 'describe', 'explain', 'story'
+            }
+            q_terms = set(re.findall(r"[a-z0-9]+", q)) - stopwords
             # Resolve query entities once
             ents = []
             try:
@@ -346,24 +355,33 @@ class HybridSearchEngine:
             scored: List[Tuple[float, SearchResult]] = []
             for r in results:
                 boost = 0.0
-                # Exact phrase (English)
+                en = (r.translation_en or '').lower()
+                titles = ' '.join(r.sarga_titles or []).lower()
+                hay = f"{en} {titles} {(r.kanda_name or '').lower()}"
+                # Exact phrase (small bonus only; user questions rarely occur verbatim).
+                if q and q in en:
+                    boost += 0.02
+                # Query-term coverage in the actual passage/title. This helps distinguish
+                # a related character from a passage about the requested event.
+                if q_terms:
+                    present = {term for term in q_terms if re.search(r"\b" + re.escape(term) + r"\b", hay)}
+                    coverage = len(present) / len(q_terms)
+                    boost += min(0.06, 0.06 * coverage)
+                    # Penalize candidates that contain none of the meaningful query terms.
+                    # Keep penalty modest because semantic paraphrases may share no words.
+                    if not present:
+                        boost -= 0.025
+                # Entity overlap: capped and kept secondary to passage relevance.
                 try:
-                    en = (r.translation_en or '').lower()
-                    if q and q in en:
-                        boost += 0.02
-                except Exception:
-                    pass
-                # Entity overlap
-                try:
-                    hay = f"{(r.translation_en or '').lower()} {' '.join(r.sarga_titles or [])}"
                     matches = sum(1 for n in ent_names if n and n in hay)
-                    boost += min(0.05, 0.01 * matches)
+                    boost += min(0.025, 0.008 * matches)
                 except Exception:
                     pass
-                # Kanda alignment
+                # Kanda alignment only when explicitly requested by the user.
                 try:
                     kn = (r.kanda_name or '').lower()
-                    if q and any(tok in kn for tok in q.split() if len(tok) >= 5):
+                    requested_kanda = self._detect_kanda(query)
+                    if requested_kanda and requested_kanda.lower() == kn:
                         boost += 0.03
                 except Exception:
                     pass
@@ -781,45 +799,47 @@ class HybridSearchEngine:
             return results
     
     def _apply_query_boosting(self, base_score: float, result: Dict, query: str) -> float:
-        """
-        Apply query-specific score boosting (V1 intelligence)
-        """
-        
-        boosted_score = base_score
-        query_lower = query.lower()
-        
-        # Boost results where query terms appear in multiple fields
-        fields_to_check = ['translation_en', 'shloka_iast']
-        matching_fields = 0
-        
-        for field in fields_to_check:
-            field_content = str(result.get(field, '')).lower()
-            if any(term in field_content for term in query_lower.split()):
-                matching_fields += 1
-        
-        # Multi-field boost
-        if matching_fields >= 2:
-            boosted_score *= 1.1
-        if matching_fields >= 3:
-            boosted_score *= 1.2
-        
-        # Boost important kandas (narrative significance)
-        kanda_name = result.get('kanda_name', '').lower()
-        important_kandas = ['sundara kanda', 'yuddha kanda', 'ayodhya kanda']
-        
-        if any(important in kanda_name for important in important_kandas):
-            boosted_score *= 1.05
+        """Apply small, token-aware evidence boosts without substring false positives."""
+        boosted_score = float(base_score or 0.0)
+        stopwords = {
+            "a", "an", "and", "are", "as", "at", "be", "by", "can", "did",
+            "do", "does", "for", "from", "how", "i", "in", "is", "it", "me",
+            "of", "on", "or", "please", "tell", "that", "the", "their", "them",
+            "there", "this", "to", "was", "what", "when", "where", "which", "who",
+            "why", "with", "you", "your", "about", "explain", "describe",
+        }
+        query_terms = set(re.findall(r"[a-z0-9]+", (query or "").lower())) - stopwords
+        if query_terms:
+            fields_to_check = ("translation_en", "shloka_iast", "sarga_titles")
+            matching_fields = 0
+            covered_terms = set()
+            for field in fields_to_check:
+                value = result.get(field, "") or ""
+                if isinstance(value, (list, tuple)):
+                    value = " ".join(str(item) for item in value)
+                field_terms = set(re.findall(r"[a-z0-9]+", str(value).lower()))
+                overlap = query_terms & field_terms
+                if overlap:
+                    matching_fields += 1
+                    covered_terms |= overlap
+            coverage = len(covered_terms) / max(1, len(query_terms))
+            # This heuristic is deliberately small; the main score comes from retrieval.
+            if matching_fields >= 2 and coverage >= 0.35:
+                boosted_score *= 1.03
+            elif coverage >= 0.75:
+                boosted_score *= 1.02
 
-        # Extra boost when query explicitly mentions a kanda matching this result
+        # Never apply a global Kanda popularity boost. Only provide a tiny location
+        # prior when the user explicitly names the matching Kanda.
         try:
             q_kanda = self._detect_kanda(query)
-            if q_kanda and q_kanda.lower() == result.get('kanda_name', '').lower():
-                boosted_score *= 1.05
+            if q_kanda and q_kanda.lower() == str(result.get("kanda_name", "")).lower():
+                boosted_score *= 1.03
         except Exception:
             pass
-        
+
         return boosted_score
-    
+
     def _enrich_results(self, scored_results: List[Tuple[float, Dict]]) -> List[SearchResult]:
         """
         Enrich results with contextual metadata (V1 approach)

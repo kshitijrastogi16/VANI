@@ -1,8 +1,8 @@
 # VANI - Voice of Ancient Narrative Intelligence
 
-**Production-Ready RAG System for Ramayana Question Answering**
+**Dataset-grounded RAG system for Ramayana question answering (actively evaluated)**
 
-VANI is a sophisticated Retrieval-Augmented Generation (RAG) system that combines advanced entity resolution, hybrid search, and multi-model LLM integration to provide accurate, culturally-sensitive answers about the Ramayana. The retrieval and synthesis stack is focused on IAST transliteration and English. Sanskrit (Devanagari) and Hindi are preserved in the data model but are not used for ranking or LLM context.
+VANI is a Retrieval-Augmented Generation (RAG) application for exploring the Ramayana. The local corpus and SQLite database are the source of truth for exact verse lookups and count queries. Narrative answers use retrieved corpus passages as evidence; the LLM is used for query planning and/or synthesis, not as a replacement for the dataset. The retrieval stack ranks English translations and IAST; Sanskrit and Hindi fields are preserved in the database. Hindi/Hinglish response generation is supported, but query-language retrieval quality still requires systematic evaluation.
 
 ## 🎯 What VANI Can Do
 
@@ -38,7 +38,10 @@ General Questions:
 ### 🧠 Advanced Intelligence Layer
 - **V1 Entity Resolution**: Bidirectional relationship intelligence with culturally-aware normalization
 - **Sophisticated Hybrid Search**: BM25 + Vector similarity with weighted fusion and entity enhancement (EN + IAST focused)
-- **Multi-Model LLM Fallback**: 3-tier Groq model cascade with intelligent query routing
+- **Validated query planning**: where the local router cannot confidently classify a request, a request-scoped Groq LLM proposes a structured plan that is validated locally before execution
+- **Deterministic facts**: count and exact citation handlers read the local dataset rather than asking the LLM to calculate facts
+- **Inspectable provenance**: responses can show the planner path, operation, dataset table, and source verse IDs
+- **Multi-Model LLM Fallback**: Groq model cascade with controlled deterministic fallback
 
 ### 🔍 Search Capabilities
 - **Cultural Intelligence**: IAST diacritic handling (retrieval uses EN + IAST)
@@ -56,6 +59,30 @@ General Questions:
 - **Production Validation**: Comprehensive startup checks and health monitoring
 - **Error Resilience**: Graceful fallbacks and component isolation
 - **Performance Optimization**: WAL mode SQLite, FTS5 search, connection pooling
+
+
+## RAG execution model and evidence provenance
+
+VANI intentionally separates query understanding, data operations, retrieval, and answer generation:
+
+1. **Query understanding:** high-confidence exact citation and recognized count shapes use deterministic routing. Other questions may use the request-scoped LLM to propose JSON containing intent, target, entity parameters, retrieval query, response language, and clarification state.
+2. **Local validation:** query plans are validated against allowed intents/targets and canonical Kanda records from SQLite. Unknown Kandas and invalid Sarga identifiers are not silently rewritten into a valid database query.
+3. **Data execution:** counts are computed from the local database/JSON corpus; exact verse citations are queried by identifier. The model does not calculate count answers.
+4. **Narrative RAG:** the retrieval query is normalized, then sent through the configured lexical/vector retrieval path. The synthesizer is instructed to answer from retrieved evidence and uses a deterministic template when generation is unavailable.
+5. **Provenance:** the response includes a provenance object and the UI's “Answer provenance” panel can show the route, data source, operation, and returned verse IDs. Provenance is a trace of pipeline inputs/outputs, not a formal entailment proof for every generated claim.
+
+### Run tests and the retrieval smoke benchmark
+
+```bash
+python -m pytest -q
+python tools/evaluate_retrieval.py --k 5
+```
+
+The count-integrity tests verify the source-table totals. Query-understanding and query-planner tests cover canonical Kanda resolution, malformed LLM plans, unsupported Kandas, language selection, and flexible count phrasing. The BM25 smoke benchmark uses a small curated set of corpus-verified verse IDs and reports Recall@k and reciprocal rank. **It is a starting point, not a statistically strong or industry-wide benchmark**; expand it with independently reviewed queries, relevant passages, paraphrases, languages, adversarial/negative cases, and human-verified answer claims before making production-quality claims.
+
+### Operational note
+
+Provider model behavior, hybrid retrieval quality, cross-encoder/vector configurations, and BYOK browser behavior should also be verified on the target Windows environment using a valid user key. Unit tests in the repository do not replace an end-to-end test against the live provider and the user's actual embedding configuration.
 
 ## 🚀 Quick Start
 
@@ -83,10 +110,24 @@ pip install -r requirements.txt
 # Copy environment template
 cp .env.example .env
 
-# Edit .env file with your settings
-# REQUIRED: Add your Groq API key
-GROQ_API_KEY=your_actual_groq_api_key_here
+# Edit .env file with deployment settings.
+# LLM credentials are supplied by each visitor in the VANI UI (BYOK);
+# do not add GROQ_API_KEY to deployment environment variables.
 ```
+
+
+### Bring Your Own Key (BYOK)
+
+VANI uses Groq for LLM synthesis. Visitors can expand **Bring your own Groq API key** in the web UI, enter their own key, and select **Test key** before asking questions. The question box and example prompts remain locked until the current key is validated; changing the key relocks them.
+
+- The key is sent over HTTPS in the `X-Groq-API-Key` request header.
+- VANI does not save the key in a database, browser storage, or server-wide settings.
+- The key is held in page memory only and is lost when the page is reloaded. It is not written to `localStorage` or `sessionStorage`.
+- The browser sends the verified key with each `/query` request; the server creates a request-scoped provider client and does not retain a deployment-wide user key.
+- Deterministic count/citation handlers do not use the LLM to calculate database facts. The public web UI nevertheless requires key validation as an explicit access gate.
+- Do not configure a personal `GROQ_API_KEY` in Render or commit credentials to Git.
+
+For local development, copy `.env.example` to `.env` for non-secret settings only. Never commit `.env`.
 
 #### Config: Citation Context Window
 You can control how many neighboring verses (context) are included around a cited verse.

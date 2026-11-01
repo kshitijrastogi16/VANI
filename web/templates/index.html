@@ -48,6 +48,8 @@
                             placeholder="Ask about the Ramayana....."
                             rows="1"
                             required
+                            disabled
+                            aria-describedby="query-access-status"
                         ></textarea>
 
                         <!-- Advanced search: compact toggle inside the search control. -->
@@ -56,7 +58,7 @@
                             <span class="switch-track"><span class="switch-thumb"></span></span>
                         </label>
 
-                        <button type="submit" id="ask-button" class="search-submit" aria-label="Ask VANI">
+                        <button type="submit" id="ask-button" class="search-submit" aria-label="Ask VANI" disabled>
                             <span class="button-text" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             </span>
@@ -66,7 +68,18 @@
                         </button>
                     </div>
 
+                    <p id="query-access-status" class="query-access-status" role="status">Validate your Groq API key below to unlock questions.</p>
+
                     <div id="advanced-panel" class="advanced-panel hidden">
+                        <div class="language-select">
+                            <label for="response-language">Answer language</label>
+                            <select id="response-language">
+                                <option value="auto" selected>Auto-detect</option>
+                                <option value="en">English</option>
+                                <option value="hi">Hindi (Devanagari)</option>
+                                <option value="hinglish">Hinglish (Roman script)</option>
+                            </select>
+                        </div>
                         <label class="checkbox-label">
                             <input type="checkbox" id="include-context" checked>
                             Include detailed context
@@ -83,14 +96,33 @@
                     </div>
                 </form>
 
+                <details class="byok-details">
+                    <summary>Bring your own Groq API key</summary>
+                    <div class="byok-settings">
+                        <label for="groq-api-key">Your Groq API key</label>
+                        <input
+                            id="groq-api-key"
+                            type="password"
+                            autocomplete="off"
+                            spellcheck="false"
+                            maxlength="512"
+                            placeholder="gsk_…"
+                            aria-describedby="byok-help byok-status"
+                        >
+                        <button type="button" id="test-groq-key" class="byok-test-button">Test key</button>
+                        <p id="byok-help" class="byok-help">Used for requests from this page only. VANI does not save it. Get a key from console.groq.com.</p>
+                        <p id="byok-status" class="byok-status" role="status" aria-live="polite"></p>
+                    </div>
+                </details>
+
                 <div class="suggestions">
                     <p class="suggestions-label">Try these examples:</p>
                     <div class="suggestion-buttons">
-                        <button class="suggestion-btn" data-query="1.1.1">Quote verse 1.1.1</button>
-                        <button class="suggestion-btn" data-query="How many verses are there in the Ramayana?">How many verses are there in the Ramayana?</button>
-                        <button class="suggestion-btn" data-query="Tell me about Rama's exile">Tell me about Rama's exile</button>
-                        <button class="suggestion-btn" data-query="Family of Dasharatha">Family of Dasharatha</button>
-                        <button class="suggestion-btn" data-query="Battle between Rama and Ravana">Battle between Rama and Ravana</button>
+                        <button class="suggestion-btn" data-query="1.1.1" disabled>Quote verse 1.1.1</button>
+                        <button class="suggestion-btn" data-query="How many verses are there in the Ramayana?" disabled>How many verses are there in the Ramayana?</button>
+                        <button class="suggestion-btn" data-query="Tell me about Rama's exile" disabled>Tell me about Rama's exile</button>
+                        <button class="suggestion-btn" data-query="Family of Dasharatha" disabled>Family of Dasharatha</button>
+                        <button class="suggestion-btn" data-query="Battle between Rama and Ravana" disabled>Battle between Rama and Ravana</button>
                     </div>
                 </div>
             </div>
@@ -114,10 +146,14 @@
                             <span id="response-time" class="metadata-value"></span>
                         </span>
                         <span class="metadata-item">
-                            <span class="metadata-label">Confidence</span>
+                            <span id="confidence-label" class="metadata-label" title="For generated answers this is a heuristic evidence signal, not a calibrated probability.">Evidence signal (heuristic)</span>
                             <span id="confidence-score" class="metadata-value"></span>
                         </span>
                     </div>
+                    <details id="provenance-panel" class="provenance-panel hidden">
+                        <summary>Answer provenance · how VANI used its dataset</summary>
+                        <div id="provenance-content" class="provenance-content"></div>
+                    </details>
                 </div>
             </section>
 

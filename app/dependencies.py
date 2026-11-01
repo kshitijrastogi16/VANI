@@ -73,9 +73,14 @@ def get_embeddings_status() -> bool:
 
 
 def get_llm_status() -> bool:
-    """Check LLM client availability"""
+    """Report whether the BYOK LLM integration is enabled in this build.
+
+    Actual provider authentication is checked per request; no server-wide
+    user LLM credential is required.
+    """
     try:
-        return bool(settings.groq_api_key)
+        from llm.client import GROQ_AVAILABLE
+        return bool(GROQ_AVAILABLE)
     except Exception:
         return False
 
